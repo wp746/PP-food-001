@@ -1,420 +1,534 @@
 ---
 name: universal-food-commercial-photography
-description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while the exact food identity, visible ingredients, geometry, plating, vessel, packaging, hand/product relationship, shelf/display context, or other physical relationships must remain highly faithful to the source.
-version: 4.0.0
+description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving the exact food identity, visible ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity, and designing a dish-specific semantic background from explicit or inferred dish information.
+version: 5.0.0
 ---
 
-# Universal Food Commercial Photography
+# Universal Food Commercial Photography V5
 
 ## Purpose
 
-Convert an ordinary user-provided food photo into premium commercial / cinematic photography **without redesigning the food**.
+把用户提供的真实美食随手拍，升级成高级商业摄影 / 电影级美食摄影，同时保持原食物身份、主要食材、食材几何、摆盘、器皿、包装与真实物理关系高度稳定。
 
-The source image is the authoritative visual truth. The task is high-fidelity professional re-photography, not food generation.
+V5 在 V4 的 95% 高保真基础上新增：
 
-Core command:
+> **菜品语义驱动背景设计。**
 
-> **Preserve the product. Upgrade the photography.**
+核心命令：
 
-The source food is not raw material for creative reinterpretation. Treat it as the real physical product on a commercial set: the camera, light, environment, background, depth and color grading may change; the product itself does not.
+> **Preserve the product. Upgrade the photography. Design the environment from the dish semantics.**
+>
+> **保留产品本身，升级摄影品质；根据具体菜品语义设计环境。**
 
-## Success condition
+## 最终成功条件
 
-The viewer should believe:
+最终画面必须同时满足：
 
-> This is the exact same individual serving or product from the source image, professionally re-photographed by an elite commercial studio.
+1. **HIGH FIDELITY** — 一眼仍然是原来那一份具体食物；
+2. **HIGH PHOTOGRAPHY UPGRADE** — 摄影品质明显达到商业广告级；
+3. **HIGH SEMANTIC RELEVANCE** — 背景、色彩、道具和氛围与具体菜品有关，而不是套统一模板。
 
-If the result instead looks like a newly generated, re-plated, luxury-upgraded or reinterpreted version of the food, the edit has failed even if it is visually attractive.
+如果结果很漂亮但食物被重做，失败。
 
-## Perceptual fidelity targets
+如果食物很保真但摄影几乎没升级，不完整。
 
-These percentages are **acceptance targets**, not mathematical pixel-similarity commands. Enforce them through the invariants below.
+如果食物和摄影都很好，但“青花椒酸菜鱼、寿司、蛋糕、牛肉面”都使用同一套暗木桌暖黄灯背景，也不通过 V5。
 
-- Food identity fidelity: >=95%
-- Ingredient geometry fidelity: >=95%
-- Vessel/container identity fidelity: >=98%
-- Plating fidelity: >=95%
-- Physical relationship fidelity: >=95%
+---
 
-Photography quality should increase aggressively; product transformation should remain minimal.
+# 1. Source Truth / 源图事实优先
 
-## Source-truth rule
+源图中的可见事实高于：
 
-Visible source information overrides:
-
-- culinary conventions;
-- what this dish “usually” contains;
-- aesthetic assumptions;
-- brand stereotypes;
-- luxury-food conventions;
-- the model's preferred composition.
+- 菜品通常会有什么；
+- 菜系刻板印象；
+- 高级餐饮惯例；
+- 模型审美偏好；
+- 为了好看而追加的食材或器皿。
 
 **Source pixels override assumptions.**
 
-Unknown or hidden content is not permission to invent.
+未知或不可见区域不是自由创作许可。
 
-When an unseen area must be reconstructed, use **minimum plausible continuation** supported by visible source information.
+缺失区域只能使用：
 
-## Preservation invariants
+> **Minimum Plausible Continuation / 最小合理延展。**
 
-Never intentionally change identity-defining source facts.
+---
 
-### 1. Food identity
+# 2. 用户提供的菜品信息优先
 
-Preserve:
+在编辑前检查用户是否明确提供：
 
-- food category;
-- major ingredients;
-- clearly visible secondary ingredients;
-- cooking method/appearance where visually identifiable;
-- serving quantity and portion character.
+```text
+dish_name
+cuisine_type
+flavor_profile
+main_highlights
+desired_mood
+```
 
-### 2. Ingredient geometry
+如果用户明确提供菜名或菜系，这些信息是**语义背景设计的最高优先级事实**。
 
-Preserve:
+例如：
 
-- shape;
-- cut;
-- thickness;
-- width;
-- length relationships;
-- orientation;
-- curl;
-- stacking;
-- layering;
-- distribution;
-- relative scale;
-- major quantity relationships.
+> 用户说“这是青花椒酸菜鱼”。
 
-Do not make ingredients larger, cleaner, thicker, more symmetrical or more expensive-looking simply to improve aesthetics.
+则系统必须围绕：
 
-### 3. Vessel / package identity
+- 青花椒 / 藤椒
+- 鲜麻
+- 酸香
+- 川味
+- 热汤
 
-Treat the serving vessel or package as part of product identity.
+设计背景与摄影氛围，而不能继续按普通热汤或通用黑金餐饮背景处理。
 
-Preserve with extremely high fidelity:
+用户菜名只影响环境设计，不允许用来改变源图中的菜品结构。
 
-- type;
-- material;
-- color;
-- geometry;
-- depth;
-- rim characteristics;
-- visible pattern or surface marks;
-- relative scale.
+---
 
-Never replace an ordinary real vessel with a more premium one.
+# 3. 用户没有提供菜名时
 
-Examples of forbidden substitutions:
+调用 `references/dish-semantic-router.md` 进行内部推断。
 
-- white ceramic bowl -> black ceramic bowl;
-- plastic cup -> glass cup;
-- paper box -> ceramic plate;
-- iron pan -> stone plate;
-- original branded package -> redesigned package.
+推断字段至少包括：
 
-### 4. Plating topology
+```text
+probable_dish_name
+dish_confidence
+cuisine_type
+flavor_profile
+primary_ingredients
+cooking_method
+temperature_state
+dish_mood_keywords
+semantic_route
+```
 
-Preserve:
+置信度处理：
 
-- which ingredients are above/below others;
-- central vs peripheral placement;
-- sauce/broth coverage;
-- topping concentration;
-- overall stacking and layering logic.
+- `>= 0.85`：允许采用具体菜品级语义背景；
+- `0.60–0.84`：只采用品类级语义背景；
+- `< 0.60`：采用保守的类别级商业摄影环境。
 
-Do not beautify by re-plating.
+自动猜菜只用于：
 
-### 5. Physical relationships
+- 背景
+- 色彩
+- 道具
+- 环境
+- 摄影情绪
 
-Preserve meaningful source relationships such as:
+不得用于添加或删除菜品内容。
 
-- hand-food grip and orientation;
-- chopstick/fork/spoon contact;
-- food-package relationship;
-- product-shelf relationship;
-- food-display-case context;
-- food-tray/counter/table contact;
-- container/support relationship.
+---
 
-Do not convert handheld food to tabletop photography. Do not move a shelf product into a studio-table scene. Do not remove meaningful display context.
+# 4. Perceptual Fidelity Targets / 高保真目标
 
-## Priority order
+以下百分比是感知验收目标，不是像素级数学保证：
 
-When instructions conflict, preserve in this order:
+- Food identity fidelity: **>=95%**
+- Ingredient geometry fidelity: **>=95%**
+- Vessel/container identity fidelity: **>=98%**
+- Plating fidelity: **>=95%**
+- Physical relationship fidelity: **>=95%**
+
+## Preservation Priority
+
+冲突时按以下顺序：
 
 1. Food identity
 2. Major ingredient identity
 3. Ingredient geometry
 4. Vessel / packaging identity
 5. Physical relationships
-6. Plating
-7. Ingredient/material realism
+6. Plating topology
+7. Material realism
 8. Food color
 9. Composition
 10. Lighting
-11. Background
+11. Semantic background
 12. Props
 13. Atmosphere
 
-Never sacrifice levels 1–6 to improve levels 9–13.
+绝不能为了 9–13 牺牲 1–6。
 
-## Region edit budget
+---
 
-Mentally separate the image into three edit zones.
+# 5. Preservation Invariants / 主体不变量
 
-### Region A — Subject Core
+## Food Identity
 
-Includes:
+保持：
 
-- food;
-- major ingredients;
-- vessel/package;
-- food-hand/utensil contact areas.
+- 食品类别；
+- 主食材；
+- 清晰可见的重要辅料；
+- 烹饪状态；
+- 份量感。
 
-Edit budget: **very low**.
+## Ingredient Geometry
 
-Allowed changes are mainly:
+保持：
 
-- exposure correction;
-- color correction;
-- realistic light integration;
-- visibility of existing texture;
-- controlled specular highlights;
-- very minor cleanup that does not alter identity.
+- 形状；
+- 切法；
+- 厚度；
+- 宽度；
+- 长度关系；
+- 卷曲；
+- 朝向；
+- 堆叠；
+- 分层；
+- 分布；
+- 主要数量关系。
 
-Target visual preservation: roughly 95–100%.
+不得因为“更高级”让鱼片更大、肉更多、面更粗、虾更显眼。
 
-### Region B — Subject Support
+## Vessel / Package
 
-Includes:
+器皿、包装属于产品身份。
 
-- hands;
-- utensils;
-- tray;
-- immediate table/counter support;
-- shelf zone directly supporting the product.
+尽量 98% 以上保持：
 
-Edit budget: **low to moderate**.
+- 类型；
+- 材质；
+- 颜色；
+- 形状；
+- 深浅；
+- 边缘；
+- 表面纹理；
+- 花纹；
+- 相对比例。
 
-May improve lighting, cleanliness, small defects and depth, but must preserve physical relationships.
+禁止：白瓷碗换黑陶、塑料杯换玻璃杯、纸盒换瓷盘、原包装重新设计。
 
-### Region C — Environment
+## Plating Topology
 
-Includes:
+保持：
 
-- background;
-- distant table/surfaces;
-- walls;
-- unrelated clutter;
-- distant people;
-- secondary props;
-- environmental lights.
+- 上下关系；
+- 中央与边缘分布；
+- 汤汁 / 酱汁覆盖；
+- 配料集中位置；
+- 整体堆叠逻辑。
 
-Edit budget: **high**.
+禁止为了美观重新摆盘。
 
-This is the primary creative area. It may be cleaned, relit, softened, reorganized or contextually replaced if the source environment has little identity value.
+## Physical Relationships
 
-## Minimum necessary subject change
+保持：
 
-All subject-side modifications must follow:
+- 手持关系；
+- 筷子 / 刀叉 / 勺子接触；
+- 包装关系；
+- 货架关系；
+- 展示柜关系；
+- 托盘 / 桌面 / 柜台接触关系。
 
-> **Minimum Necessary Subject Change**
+---
 
-If the existing noodle width is clear, do not redraw the noodles. Improve only visibility of moisture, translucency or highlights already supported by the source.
+# 6. Region Edit Budget / 区域修改预算
 
-If fried food already has crisp texture, reveal that texture; do not regenerate a larger, more golden, more regular version.
+## Region A — Subject Core
 
-If the bowl is complete, keep it; do not recreate a more attractive bowl.
+包括：食物、主要食材、器皿/包装、食物与手/餐具接触处。
 
-## Appetite enhancement boundary
+修改预算：**极低**。
 
-Do not use “make it much juicier,” “add more steam,” “make it more luxurious,” or similar instructions that encourage product drift.
+只允许主要通过：
 
-Instead use this rule:
+- 曝光；
+- 白平衡；
+- 光线融合；
+- 已有材质显现；
+- 受控高光；
+- 不改变身份的微小清理。
 
-> Improve the visibility and photographic rendering of appetizing physical properties that already exist in the source food. Do not create appetizing properties unsupported by the source.
+## Region B — Subject Support
 
-Examples:
+包括：手、餐具、托盘、主体附近桌面、直接货架区域。
 
-- Existing red oil may receive better reflection; clear broth must not become red oil.
-- Existing meat juice may become easier to see; dry food must not become artificially dripping.
-- Existing grill char may become clearer; lightly browned food must not become deeply charred.
+修改预算：**低到中等**。
 
-## Outpainting / aspect-ratio changes
+## Region C — Environment
 
-If the target aspect ratio requires extension:
+包括：背景、远桌面、墙面、无关杂物、环境灯、远处人群、弱化道具。
 
-> **Continuation, not reinvention.**
+修改预算：**高**。
 
-Only extend the same:
+V5 的主要创意发生在 Region C。
 
-- food;
-- vessel;
-- package;
-- hand;
-- tray;
-- shelf;
-- table/contact plane;
-- contextually compatible environment.
+---
 
-Never use outpainting as permission to add ingredients, redesign plating, replace the vessel or invent hidden layers.
+# 7. Minimum Necessary Subject Change
 
-## Internal analysis workflow
+主体只允许进行获得专业摄影效果所必需的最小修改。
 
-Before editing, internally identify:
+正确：增强已有汤汁反射。
 
-1. Primary food subject
-2. Food category/subtype
-3. Temperature state
-4. Critical ingredients
-5. Structural secondary ingredients
-6. Distinctive geometry
-7. Vessel/package identity
-8. Physical relationships
-9. Original scene
-10. Main photographic problems
-11. Appropriate food material module(s)
-12. One primary scene module
-13. Photography mode
+错误：把清汤改成红油。
 
-Create a fidelity manifest using `references/fidelity-manifest.md`.
+正确：让已有鱼片纹理更清晰。
 
-## Module loading rule
+错误：重新生成更厚更规则的鱼片。
 
-Do **not** load every module.
+正确：增强已有炸物酥脆纹理。
 
-For each image, normally load:
+错误：重新做一个更大更金黄的炸物。
 
-- one primary food module;
-- zero to two secondary material modules;
-- one primary scene module.
+---
 
-Examples:
+# 8. Food Material Routing
 
-- beef noodle soup -> NOODLES + HOT_SOUP + MEAT; scene RESTAURANT or TABLETOP;
-- fried chicken -> FRIED + MEAT; one scene;
-- strawberry cream cake -> CAKE/DESSERT + FRUIT; DISPLAY_CASE or CAFE;
-- packaged chips on shelf -> PACKAGED_FOOD; RETAIL_SHELF;
-- handheld iced coffee -> COLD_DRINK; HANDHELD.
+读取 `references/food-modules.md`。
 
-Read `references/food-modules.md` and `references/scene-modules.md` only as needed.
+每张图通常只加载：
 
-## Photography mode
+- 1 个 primary food module；
+- 0–2 个 secondary material modules。
 
-Select one:
+不要加载全部模块。
 
-### NATURAL_COMMERCIAL
+例：
 
-For fresh, light, delicate or daylight-friendly subjects such as salads, fruit, breakfast, bakery, refined desserts and some café scenes.
+- 青花椒酸菜鱼 -> SEAFOOD + HOT_SOUP；
+- 牛肉汤面 -> NOODLES + HOT_SOUP + MEAT；
+- 炸鸡 -> FRIED + MEAT；
+- 草莓蛋糕 -> DESSERT/CAKE + FRUIT；
+- 手持冰咖啡 -> COLD_DRINK。
 
-Characteristics:
+---
 
-- soft natural light;
-- clean highlights;
-- fresh color;
-- bright but controlled exposure;
-- subtle editorial atmosphere.
+# 9. Scene Routing
 
-### CINEMATIC_COMMERCIAL
+读取 `references/scene-modules.md`。
 
-Default for most food photography.
+只选择一个主场景：
 
-Characteristics:
+- TABLETOP
+- HANDHELD
+- RESTAURANT
+- CAFE
+- RETAIL_SHELF
+- DISPLAY_CASE
+- STREET_FOOD
+- CLEAN_COMMERCIAL_STUDIO
 
-- directional soft light;
-- controlled highlights;
-- rich but natural shadows;
-- clear depth separation;
-- premium environmental atmosphere;
-- cinematic tonal control without cliché.
+场景路由解决“食物在哪里”。
 
-### DRAMATIC_COMMERCIAL
+菜品语义路由解决“这个环境应该是什么气质”。
 
-For barbecue, hotpot, spicy food, iron-plate food, night markets, some soups and strongly atmospheric subjects.
+两者不要混淆。
 
-Allows:
+---
 
-- deeper shadows;
-- stronger but controlled rim light;
-- physically justified heat atmosphere;
-- restrained steam/smoke;
-- higher contrast.
+# 10. Dish Semantic Routing / V5 核心
 
-Subject preservation rules do not loosen.
+读取：
 
-## Cinematic is not a preset
+- `references/dish-semantic-router.md`
+- `references/cuisine-style-map.md`
+- `references/semantic-background-rules.md`
 
-Cinematic does **not** automatically mean:
+V5 采用：
 
-- dark;
-- amber;
-- smoky;
-- teal-orange;
-- shallow-focus;
-- high contrast.
+> **Scene Context × Dish Semantics × Food Material × Photography Mode**
 
-Cinematic means purposeful light, controlled color, readable materials, deliberate composition and believable depth appropriate to the actual food.
+共同决定最终背景。
 
-Do not default every image to dark wood + amber light + ceramic props.
+例如：
 
-## Environment policy
+```text
+青花椒酸菜鱼
+= RESTAURANT/TABLETOP
+× SICHUAN_FRESH_PEPPER
+× SEAFOOD + HOT_SOUP
+× CINEMATIC_EDITORIAL
+```
 
-Ask two questions:
+得到的背景应具有：
 
-1. Does the original environment carry identity/context value?
-2. Does it harm presentation?
+- 鲜麻川味语义；
+- 藤椒绿 / 酸菜黄绿 / 汤汁暖金的环境呼应；
+- 高级川菜馆或现代川味餐饮气质；
+- 少量相关失焦辅助意象；
+- 克制热气；
+- 不改变鱼片、青花椒、汤、器皿和摆盘。
 
-If the environment has meaningful context (night market, retail shelf, café, bakery display case, street stall), **enhance rather than replace**.
+---
 
-If the environment is meaningless or damaging (random clutter, unattractive wall, poor generic tabletop), it may be substantially redesigned or replaced, but the new environment must be:
+# 11. Anti-Template Background Rule
 
-- contextually plausible;
-- perspective-compatible;
-- scale-compatible;
-- lighting-compatible;
-- contact-plane compatible.
+禁止将所有热食统一处理成：
 
-The subject must not look pasted into a new scene.
+- dark wood
+- warm amber
+- generic ceramic props
+- heavy bokeh
+- dark restaurant
+- excessive steam
 
-## Physical realism
+**Cinematic does not mean dark.**
 
-Maintain realistic:
+不同语义的菜品不得使用完全同构的背景：
 
-- gravity;
-- liquid behavior;
-- steam origin;
-- smoke origin;
-- condensation;
-- contact shadows;
-- environmental reflection;
-- utensil contact;
-- hand pressure/contact.
+- 青花椒酸菜鱼 ≠ 牛肉面
+- 牛肉面 ≠ 草莓蛋糕
+- 草莓蛋糕 ≠ 寿司
+- 寿司 ≠ 夜市烧烤
 
-Steam is only for physically hot food and must be subtle. Cold food and cold drinks must not steam. Smoke is only for contexts that physically justify it. Flying ingredients are disabled by default.
+每次生成前问：
 
-## Final execution
+> 如果把主体换成完全不同的菜，这个背景仍然毫无变化也能用吗？
 
-Assemble the image-edit instruction using `references/execution-template.md` plus the selected food and scene modules.
+如果答案是“是”，背景过于通用，重新设计。
 
-Then generate/edit the image.
+---
 
-## Post-generation validation
+# 12. Semantic Props Boundary
 
-After generation, run `references/fidelity-qc.md`.
+背景允许使用少量与菜品相关的环境提示，例如：
 
-A result passes only when:
+- 青花椒鲜麻类：远处失焦青花椒意象、酸菜/腌菜陶罐、小料碟；
+- 烧烤：摊位、烤具、暖灯、炭火环境；
+- 日料：极简原木/石材、少量小碟；
+- 甜点：咖啡馆、甜品店环境；
+- 包装食品：原货架与零售环境。
 
-- Fidelity score >=95/100;
-- Photography score >=85/100;
-- no Critical Failure is present.
+但这些道具必须：
 
-A beautiful output with low product fidelity is a failure.
+- 少；
+- 弱；
+- 失焦；
+- 不抢主体；
+- 不进入主菜；
+- 不让人误以为新增食材。
 
-A perfectly faithful output with little photographic improvement is incomplete.
+---
 
-Target:
+# 13. Semantic Color Engine
 
-> **HIGH FIDELITY × HIGH PHOTOGRAPHIC UPGRADE**
+色彩优先级：
 
-If the output fails, use `references/retry-policy.md` and retry based on the specific failure. Do not simply regenerate randomly.
+1. 真实食物颜色；
+2. 用户明确菜品/品牌信息；
+3. 风味/菜系语义；
+4. 环境协调色。
+
+语义颜色只能用于支持背景，不能为了匹配主题而重新染色主食材。
+
+例如青花椒酸菜鱼可使用：
+
+- 藤椒绿；
+- 酸菜黄绿；
+- 汤汁暖金；
+- 深灰 / 克制深木；
+- 少量暖铜环境光。
+
+但不得把鱼肉染绿、汤变荧光黄或制造赛博霓虹。
+
+---
+
+# 14. Photography Modes V5
+
+选择一个：
+
+## NATURAL_EDITORIAL
+
+适合：粤式清鲜、轻食、日料、蛋糕、烘焙、咖啡、水果、沙拉。
+
+## CINEMATIC_EDITORIAL
+
+默认。适合多数中餐、堂食、热菜、主食。
+
+## DRAMATIC_FOOD_CAMPAIGN
+
+适合：火锅、烧烤、红油麻辣、夜市、强刺激热菜。
+
+主体保真规则在任何模式下都不能放松。
+
+---
+
+# 15. Physical Realism
+
+保持真实：
+
+- gravity
+- liquid behavior
+- steam origin
+- smoke origin
+- condensation
+- contact shadows
+- environmental reflections
+- utensil contact
+- hand pressure/contact
+- perspective
+- scale
+
+热食才允许克制蒸汽；冷饮禁止热气；烧烤只有物理合理时才允许轻烟。
+
+飞舞食材默认禁用。
+
+---
+
+# 16. Execution Workflow
+
+固定执行顺序：
+
+```text
+1. Read source image
+2. Read explicit user dish information
+3. Build Fidelity Manifest
+4. Resolve dish semantics / confidence
+5. Select food module(s)
+6. Select one scene module
+7. Select semantic route
+8. Select photography mode
+9. Build semantic background direction
+10. Apply low edit budget to subject, high edit budget to environment
+11. Assemble `references/execution-template.md`
+12. Generate / edit
+13. Run Fidelity QC
+14. Run Semantic QC
+15. Targeted retry when required
+```
+
+---
+
+# 17. Quality Control
+
+先运行 `references/fidelity-qc.md`。
+
+再运行 `references/semantic-qc.md`。
+
+最终通过条件：
+
+```text
+Fidelity Score >= 95
+Photography Score >= 85
+Semantic Score >= 85
+No Fidelity Critical Failure
+No Semantic Critical Failure
+```
+
+语义背景再好，只要食材、器皿、摆盘发生明显漂移，仍然失败。
+
+主体再保真，只要背景仍是明显无差别模板，也不算 V5 完成。
+
+失败时使用 `references/retry-policy.md` 与 `references/semantic-qc.md` 中的定向重试，不要随机重生成。
+
+---
+
+# 18. Final Command
+
+> **The source food is the real product, not creative raw material.**
+>
+> **Preserve the product physically.**
+>
+> **Use explicit or inferred dish semantics to design the environment.**
+>
+> **Communicate flavor through light, color, environment and restrained context — never by inventing ingredients.**
+>
+> **Change the photography, not the product.**
