@@ -1,36 +1,36 @@
 # PP-food-001
 
-Reusable agent skill for transforming a user-provided food photo into premium commercial / cinematic food photography while preserving the original food and product identity at very high perceptual fidelity.
+一个可复用的智能体 Skill，用于将用户提供的真实美食照片升级为高级商业摄影 / 电影级美食摄影，同时以非常高的感知保真度保留原始食物和产品身份。
 
-## Core principle
+## 核心原则
 
-**Preserve the product. Upgrade the photography.**
+**保留产品本身，升级摄影品质。**
 
-The source food is not raw material for creative reinterpretation. Treat it as the real physical product on a commercial set: camera, light, background and environment may change; the product itself does not.
+源图中的食物不是供 AI 自由发挥的创作素材，而是商业摄影现场中的真实产品。可以改变相机语言、灯光、背景、环境、景深和调色，但产品本体不应被重新设计。
 
-## Intended use
+## 适用场景
 
-Use this skill when:
+当满足以下情况时，使用本 Skill：
 
-- the food subject is clearly identifiable;
-- the user wants a premium studio/commercial result;
-- the original ingredients, geometry, plating, vessel, packaging, hand/product relationship or retail context must remain highly faithful;
-- the image may be tabletop, handheld, on a shelf, in a display case, at a stall, in a café/restaurant, or another realistic food context.
+- 美食主体清晰可识别；
+- 用户希望获得高级影棚级 / 商业广告级效果；
+- 原始食材、几何形态、摆盘、器皿、包装、手持关系、货架 / 展示关系等必须高度忠于源图；
+- 原图可能来自桌面、手持、货架、展示柜、街边摊位、咖啡馆、餐厅或其他真实美食场景。
 
-The skill is model-neutral and is suitable for source-image editing workflows, including GPT Image 2.
+本 Skill 不绑定单一图像模型，适用于基于源图进行图像编辑的工作流，包括 GPT Image 2。
 
-## Target thresholds
+## 目标阈值
 
-These are perceptual acceptance targets enforced by invariants and QC, not literal pixel-similarity guarantees:
+以下数值是通过视觉不变量和质量控制实现的**感知验收目标**，并非严格的像素相似度保证：
 
-- Food identity fidelity: **>=95%**
-- Ingredient geometry fidelity: **>=95%**
-- Vessel/container identity fidelity: **>=98%**
-- Plating fidelity: **>=95%**
-- Physical-relationship fidelity: **>=95%**
-- Photography quality score: **>=85/100**
+- 食物身份保真度：**≥95%**
+- 食材几何保真度：**≥95%**
+- 器皿 / 容器身份保真度：**≥98%**
+- 摆盘保真度：**≥95%**
+- 物理关系保真度：**≥95%**
+- 商业摄影质量评分：**≥85/100**
 
-## Repository structure
+## 仓库结构
 
 ```text
 PP-food-001/
@@ -48,16 +48,56 @@ PP-food-001/
     └── test-cases.md
 ```
 
-## Runtime pattern
+## 运行流程
 
-1. Read `SKILL.md`.
-2. Build the source-truth/fidelity manifest.
-3. Load only the relevant food module(s).
-4. Load one primary scene module.
-5. Select an appropriate photography mode.
-6. Assemble the final edit instruction using `references/execution-template.md`.
-7. Generate/edit the image.
-8. Run `references/fidelity-qc.md`.
-9. If necessary, apply a targeted retry from `references/retry-policy.md`.
+1. 首先读取 `SKILL.md`。
+2. 根据源图建立 Source Truth / Fidelity Manifest，明确哪些内容必须锁定。
+3. 只加载与当前食物相关的 food module。
+4. 只选择一个主要 scene module。
+5. 根据食物类型、材质、温度和场景选择合适的商业摄影模式。
+6. 使用 `references/execution-template.md` 组装最终图像编辑指令。
+7. 执行图像生成 / 编辑。
+8. 使用 `references/fidelity-qc.md` 进行保真度与商业摄影质量检查。
+9. 如未通过，按照 `references/retry-policy.md` 中对应的失败类型执行定向重试。
 
-Do not load every module into every request. Constraint overload reduces stability.
+不要在每次任务中加载全部模块。过多约束同时进入生成阶段，反而可能降低稳定性。
+
+## 核心工作逻辑
+
+这套 Skill 的目标不是“把食物重新生成得更漂亮”，而是：
+
+> **让同一份真实食物，看起来像被世界级商业摄影团队重新布光、重新布景、重新拍摄。**
+
+因此必须优先锁定：
+
+1. 食物身份
+2. 主要食材
+3. 食材几何形态
+4. 器皿 / 包装
+5. 食物与手、餐具、货架、展示柜等真实物体之间的物理关系
+6. 原始摆盘逻辑
+
+在这些内容稳定的前提下，再最大化升级：
+
+- 商业灯光
+- 曝光与明暗层次
+- 背景和环境
+- 景深
+- 材质表现
+- 色彩管理
+- 构图
+- 氛围
+
+## 最终成功标准
+
+生成结果必须同时满足两个条件：
+
+**高保真 + 高摄影升级。**
+
+如果画面很漂亮，但已经不像原来那份食物，判定失败。
+
+如果食物几乎没变，但摄影品质没有明显提升，也不能算完成。
+
+唯一正确目标是：
+
+> **同一份食物，同一个器皿，同样的主要食材和真实结构，只是摄影品质从普通随手拍提升到了高级商业广告级。**
