@@ -1,8 +1,8 @@
-# Execution Template
+# Execution Template V5
 
-Use this as the final image-edit instruction after building the fidelity manifest and selecting the relevant modules.
+Use this as the final image-edit instruction after building the fidelity manifest, resolving dish semantics, and selecting the relevant food, scene and semantic modules.
 
-Replace placeholders with concise, source-specific content. Do not include unrelated modules.
+Replace placeholders with concise, source-specific content. Do not load unrelated modules.
 
 ---
 
@@ -10,7 +10,7 @@ Use the uploaded image as the authoritative source of truth and strict high-fide
 
 This is a professional re-photography task, **not a food redesign task**.
 
-The primary objective is to preserve the exact food subject while substantially improving only the photography.
+The primary objective is to preserve the exact food subject while substantially improving the photography and designing an environment that is semantically appropriate to the specific dish.
 
 ## Locked source facts
 
@@ -29,6 +29,37 @@ Target preservation:
 - Physical relationships >=95%
 
 These are perceptual targets enforced by preserving the listed source invariants.
+
+## Dish semantic identity
+
+Use the following dish information as semantic direction for the environment, NOT as permission to alter the food:
+
+```text
+Dish name: {{DISH_NAME}}
+Dish-name source: {{DISH_NAME_SOURCE}}
+Confidence if inferred: {{DISH_CONFIDENCE}}
+Cuisine: {{CUISINE_TYPE}}
+Flavor profile: {{FLAVOR_PROFILE}}
+Primary ingredients: {{PRIMARY_INGREDIENTS}}
+Cooking method / temperature: {{COOKING_METHOD_AND_TEMPERATURE}}
+Semantic route: {{SEMANTIC_ROUTE}}
+Mood keywords: {{DISH_MOOD_KEYWORDS}}
+```
+
+If the dish name or cuisine was explicitly provided by the user, that information overrides automatic inference.
+
+If dish identity was inferred with low confidence, use only conservative category-level semantic cues.
+
+The dish semantic layer may affect only:
+
+- background;
+- surrounding environment;
+- restrained supporting props;
+- color direction;
+- lighting character;
+- photographic mood.
+
+It must NOT cause ingredient invention, ingredient removal, re-plating, vessel replacement or product redesign.
 
 ## Subject edit policy
 
@@ -72,11 +103,33 @@ If the original environment has little contextual value and visually harms the s
 
 Any new environment must match the subject's camera angle, perspective, scale, contact plane, depth and lighting direction. Maintain realistic contact shadows and environmental reflections. The subject must never appear pasted into the scene.
 
+## Semantic background treatment
+
+{{SEMANTIC_BACKGROUND_DIRECTION}}
+
+Supporting props:
+
+{{SEMANTIC_PROP_DIRECTION}}
+
+Color direction:
+
+{{SEMANTIC_COLOR_DIRECTION}}
+
+Lighting character:
+
+{{SEMANTIC_LIGHTING_CHARACTER}}
+
+Do not default to dark wood + warm amber lighting + ceramic props simply because the subject is hot food.
+
+The environment must feel specific to this dish. Ask internally: if the food were replaced by a semantically different dish such as sushi, strawberry cake or iced tea, would the same background still work unchanged? If yes, the background is too generic and must be redesigned.
+
+Supporting props must remain few, subtle, softly defocused and clearly outside the food itself. Never allow semantic props to become new ingredients in the dish.
+
 ## Photography mode
 
 {{PHOTOGRAPHY_MODE}}
 
-Cinematic quality does not automatically mean dark, amber, smoky, teal-orange or highly dramatic. Choose the photographic language according to the actual food and context.
+Cinematic quality does not automatically mean dark, amber, smoky, teal-orange or highly dramatic. Choose the photographic language according to the actual food, cuisine, flavor profile and context.
 
 ## Lighting
 
@@ -111,7 +164,9 @@ Use shallow-to-moderate depth of field. Keep identity-defining food structure re
 
 Preserve accurate base food colors.
 
-Apply sophisticated commercial color grading appropriate to the actual subject and scene.
+Apply sophisticated commercial color grading appropriate to the actual subject and semantic scene direction.
+
+Semantic colors should support the food, not contaminate it. Do not recolor the actual ingredients merely to match a cuisine palette.
 
 Avoid generic orange warmth, extreme teal-orange grading, oversaturation, extreme HDR, clipped highlights, crushed blacks and obvious filter effects.
 
@@ -132,19 +187,20 @@ The final image should feel like:
 
 - photorealistic premium commercial food photography;
 - elite studio craft;
-- cinematic or editorial art direction appropriate to this exact subject;
+- dish-specific cinematic or editorial art direction;
 - professional advertising lighting;
 - realistic material rendering;
 - controlled highlights;
 - deep but readable shadows;
 - accurate texture;
 - believable environmental depth;
+- semantically relevant restaurant/retail/lifestyle atmosphere;
 - high-end campaign photography;
 - 4K visual quality.
 
-The viewer must believe this is the **same individual serving or product from the uploaded source**, professionally re-photographed by an elite commercial photography studio.
+The viewer must believe this is the **same individual serving or product from the uploaded source**, professionally re-photographed by an elite commercial photography studio in an environment that genuinely belongs to this specific dish.
 
-The perceived quality increase must come from photography, lighting, composition, environment, depth, material rendering and color grading — **not from changing the product itself**.
+The perceived quality increase must come from photography, lighting, composition, environment, depth, material rendering, color grading and semantic art direction — **not from changing the product itself**.
 
 ## Strict negatives
 
@@ -175,6 +231,9 @@ Strictly avoid:
 - incorrect contact shadows;
 - inconsistent perspective;
 - excessive or physically incorrect steam/smoke;
+- semantic props entering the dish as new ingredients;
+- cuisine-inappropriate generic background;
+- repetitive dark-wood amber-light template;
 - plastic/waxy food texture;
 - fake wet gloss;
 - CGI or 3D-render appearance;
@@ -198,5 +257,7 @@ CORE COMMAND:
 **PRESERVE WHAT HOLDS THE FOOD.**
 
 **PRESERVE HOW THE FOOD INTERACTS WITH THE REAL WORLD.**
+
+**USE THE DISH SEMANTICS TO DESIGN THE ENVIRONMENT, NOT TO REDESIGN THE FOOD.**
 
 **CHANGE THE PHOTOGRAPHY, NOT THE PRODUCT.**
