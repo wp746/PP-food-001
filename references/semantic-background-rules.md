@@ -13,7 +13,7 @@
 - 为什么这个环境适合这道菜；
 - 为什么这些颜色支持这道菜；
 - 为什么这些辅助元素与菜品有关；
-- 为什么新环境仍然像真实摄影现场。
+- 为什么新环境仍然像高级商拍材质舞台。
 
 ## 1. 禁止通用模板默认化
 
@@ -67,22 +67,21 @@ lighting_character
 
 一句话概括这道菜的视觉世界，例如：
 
-- 高级川味鲜麻热汤餐饮场景
-- 明亮克制的粤式清鲜中餐环境
-- 夜市炭火烧烤环境
-- 极简日料餐厅
-- 柔和咖啡馆甜品场景
+- 高级川味鲜麻热汤材质语境
+- 明亮克制的粤式清鲜浅石舞台
+- 暗调炭火烧烤材质舞台
+- 极简桧木日料舞台
+- 柔和大理石甜品舞台
 
 ### context_type
 
-必须符合真实消费语境：
+V5.3.0 起改为「材质语境」，新设计背景禁止使用真实场所：
 
-- restaurant
-- cafe
-- street stall
-- retail shelf
-- bakery display
-- home dining
+- dark matte stone stage
+- light stone / marble stage
+- wood-texture stage
+- metal / glass stage
+- fabric / linen stage
 - studio only when context is meaningless
 
 ### surface_material
@@ -151,15 +150,15 @@ lighting_character
 
 ### 有高语境价值
 
-例如：
+例如（指源图本身自带的语境）：
 
 - 夜市
-- 手持门店饮料
+- 手持饮品
 - 超市货架
 - 蛋糕展示柜
 - 烧烤摊
 
-策略：**Enhance, don't replace.**
+策略：**Enhance, don't replace**——但环境层一律向高级材质语言转译（V5.3.0）：保留语境可读性，剥离场所结构（门头/招牌/街道/人物）。
 
 ### 语境价值低
 
@@ -199,8 +198,8 @@ flavor_profile: 鲜麻、酸香、开胃、热汤
 ### 推荐设计
 
 ```text
-background_semantic_theme: 高级川味鲜麻热汤餐饮环境
-context_type: contemporary Sichuan restaurant
+background_semantic_theme: 高级川味鲜麻热汤材质舞台
+context_type: dark matte stone / restrained deep-wood stage
 surface_material: 深灰石材或克制深木中餐桌面
 supporting_props: 少量失焦青花椒意象、酸菜陶罐、小料碟；全部远离主体
 color_direction: 藤椒绿 + 酸菜黄绿 + 汤汁暖金 + 深灰/深木
@@ -210,7 +209,7 @@ photography_mode: CINEMATIC_EDITORIAL，必要时轻度 DRAMATIC_FOOD_CAMPAIGN
 
 ### 明确避免
 
-- 通用西式黑金餐厅
+- 通用西式黑金模板
 - 大量红辣椒背景
 - 只有木桌+黄色灯泡
 - 青绿色霓虹赛博风

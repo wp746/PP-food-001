@@ -105,20 +105,37 @@ Any new environment must match the subject's camera angle, perspective, scale, c
 
 ## Hero spatial stage treatment (mandatory, see hero-shot-mandate.md)
 
-The environment is a **spatial stage, never a flat backdrop**. Build the scene as a real three-dimensional place with four explicit depth layers:
+**Priority 0 — DNA lock first.** Every environment decision below is subordinate to the food DNA: if any background, atmosphere or compositional element would cause the subject's identity, geometry, vessel or plating to drift, discard that element. A beautiful stage with a drifted dish is a wasted image.
+
+The environment is a **premium material stage, never a flat backdrop and never a real venue**. World-class food campaigns are shot on crafted material stages, not inside working restaurants. Build the scene as a real three-dimensional place with four explicit depth layers:
 
 1. near-camera foreground: heavily defocused scene dressing (scattered core ingredients in raw form, counter edge) framing the hero from below;
 2. midground: the hero dish, tack sharp, sitting inside a clean pool of light that falls off toward the frame edges;
-3. mid-background: softly defocused semantic props and shelf layers about half a meter to one and a half meters behind the subject;
-4. deep background: the venue receding into darkness or depth — layered bokeh light sources, architectural planes, generous clean negative space above the subject reserved for future headline typography.
+3. mid-background: softly defocused premium material objects — artisan stoneware, dark wood grain, matte metal — about half a meter to one and a half meters behind the subject;
+4. deep background: premium darkness with layered soft bokeh, material planes receding into shadow, generous clean negative space above the subject reserved for future headline typography.
+
+NO restaurant, NO storefront, NO street, NO doors, NO windows, NO dining area — only materials and objects.
 
 Defocus must progress continuously across layers. Two-layer "sharp subject + blurred wall" flatness is prohibited.
 
 Treat the subject with hero-portrait lighting: soft directional key at 45 degrees; precise rim light from behind making translucent edges glow and glossy materials glisten; physically correct contact shadow; clear subject-background separation so the viewer's eye locks onto the dish as the single hero.
 
-Core-ingredient dressing (scene styling with this dish's own ingredients and tools) is encouraged for on-location authenticity, but only on the counter OUTSIDE the plate/vessel: never touching the food, never entering the dish, never readable as new ingredients — softly blurred, low contrast, subordinate to the hero.
+Core-ingredient dressing (scene styling with this dish's own ingredients and tools) anchors the dish's identity, but only on the counter OUTSIDE the plate/vessel: never touching the food, never entering the dish, never readable as new ingredients — softly blurred, low contrast, subordinate to the hero.
 
 Temperature logic is non-negotiable: cold dishes are lit cool, clean and crisp with zero steam; hot dishes may use restrained steam and warm volume light.
+
+## Appetite rendering (mandatory, see hero-shot-mandate.md §8)
+
+Atmosphere comes from the food itself, not from venue storytelling. Render these appetite cues (only for properties already present in the source):
+
+- mirror-like glossy sheen on oils and sauces — highlights are the first language of appetite;
+- moisture: sauce cling, juice soaking, fine droplets on fresh components;
+- macro legibility: sesame seeds, chili flakes, minced garlic, sugar dust readable within the shallow depth of field;
+- temperature made visible: restrained backlight steam for hot food / condensation droplets for cold food;
+- color saturation control: chili oil red must glow translucent, never muddy; greens must stay alive;
+- a "just finished" state: noodles glistening with sauce, garnish crisp and perky — as if plated the second before the shutter.
+
+The image must trigger a physiological "I want to eat this" reaction within three seconds.
 
 ## Semantic background treatment
 
@@ -204,7 +221,7 @@ The final image should feel like:
 
 - a world-class food hero shot — the dish as the monumental single hero of the frame;
 - photorealistic premium commercial food photography;
-- elite studio craft with a real, on-location working-scene authenticity;
+- elite studio craft on a premium material stage (not a real venue, not a flat backdrop);
 - dish-specific cinematic or editorial art direction;
 - professional advertising lighting;
 - realistic material rendering;
@@ -212,11 +229,12 @@ The final image should feel like:
 - deep but readable shadows;
 - accurate texture;
 - believable multi-layer environmental depth (four-layer spatial stage, never a flat backdrop);
-- semantically relevant restaurant/retail/lifestyle atmosphere matching the food's own temperament;
+- a premium material-stage atmosphere matching the food's own temperament, built from stone, ceramic, wood, metal and fabric — never from storefront/restaurant/street structures;
+- mouth-watering appetite rendering: glossy, moist, crisp, freshly plated;
 - high-end campaign photography at industrial, repeatable production quality;
 - 4K visual quality.
 
-The viewer must believe this is the **same individual serving or product from the uploaded source**, professionally re-photographed by an elite commercial photography studio in an environment that genuinely belongs to this specific dish.
+The viewer must believe this is the **same individual serving or product from the uploaded source**, professionally re-photographed by an elite commercial photography studio on a premium stage designed specifically for this dish.
 
 The perceived quality increase must come from photography, lighting, composition, environment, depth, material rendering, color grading and semantic art direction — **not from changing the product itself**.
 
@@ -253,7 +271,9 @@ Strictly avoid:
 - cuisine-inappropriate generic background;
 - flat backdrop / seamless background paper feel / subject pasted against a wall;
 - two-layer sharpness flatness (sharp subject + uniformly blurred background with no depth progression);
+- real venue structures: storefront, restaurant interior, street, doors, windows, dining area, counter service;
 - repetitive dark-wood amber-light template;
+- dry, dull, matte-dead food rendering (no gloss, no moisture, no appetite cues);
 - plastic/waxy food texture;
 - fake wet gloss;
 - CGI or 3D-render appearance;

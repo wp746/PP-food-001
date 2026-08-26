@@ -1,12 +1,12 @@
 ---
 name: universal-food-commercial-photography
 description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving exact food identity, ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity.
-version: 5.2.1
+version: 5.3.0
 ---
 
-# Universal Food Commercial Photography V5.2.1
+# Universal Food Commercial Photography V5.3.0
 
-V5.2.1 hotfix: 图像模型在「真实场所」语境下自发补足招牌字 / 人物污染 KV 排版。在 hero-shot-mandate.md §9 增加强负面清单与构图规避策略。
+V5.3.0 方向修订（用户终审驱动）：① 废除「真实场所」背景规则（面馆/展台/档口语境诱发模型补人补字，且与世界级商拍影棚本质相悖），全面转向**高级材质舞台**；② **食材 DNA 锁定升格为 Priority 0 第一原则**——任何背景/氛围/构图以牺牲 DNA 为代价即整图判废；③ 新增**食欲感渲染（Appetite Rendering）**硬规则与 Appetite Score >= 85 验收线：油脂光泽、湿润度、微距质感、「刚做好」状态。
 
 ## Core Principle
 
@@ -256,21 +256,23 @@ desired_mood
 
 读取并强制执行 `references/hero-shot-mandate.md`。要点：
 
-1. **禁止平背景**——背景必须是「空间舞台」而非「背景板」，画面必须读出四层景深（前景 / 中景光池 / 中后景语义道具 / 远景纵深），缺层即 Semantic Critical Failure；
-2. **空间感按食材属性与调性设计**——面食在面馆、蛋糕在明亮展台，环境结构由这道菜的身份推导；
-3. **必须有现场感**——环境要像真实运营中的制作/出品现场，核心作料围铺在盘外台面并虚化，不喧宾夺主；
+1. **食材 DNA 锁定是第一原则（Priority 0）**——任何背景设计、氛围营造、空间构建、构图策略，一律不得以牺牲食材 DNA 为代价；主体身份/几何/器皿/摆盘漂移即整图判废，先锁死食材，再谈背景；
+2. **高级材质舞台，非真实场所**——背景必须是高级商拍级材质舞台：材质（石材/陶/木/金属/织物）、色彩基调、光影层次从食材属性与调性推导；禁止真实经营场所（面馆/店面/档口/市集/餐厅内景）语境——世界级美食大片是在高级舞台上拍的，不是在店里拍的；
+3. **质感密度与身份锚点**——材质层次 + 核心作料围铺在盘外台面并虚化，共同指向这道菜的身份；禁止空旷棚拍板，也禁止无语境通用影棚；
 4. **氛围与食材调性匹配**——冷食冷调零热气、热食暖调允许克制蒸汽，温度错配即失败；
 5. **世界级英雄定妆照调性**——主体是全场唯一英雄：光池聚焦、轮廓光雕刻、低机位纪念碑感；
-6. **工业级商拍质量**——每一张都达到商业投放标准，不是抽卡式偶发好图；
-7. **所有品类强制遵循**——品类只改变语境映射，不改变空间与英雄标准，无豁免类别。
+6. **食欲感渲染**——油脂光泽、湿润度、微距质感、温度可视化、「刚做好」状态；验收问句：观者能否在 3 秒内产生「想吃」的生理反应；
+7. **工业级商拍质量**——每一张都达到商业投放标准，不是抽卡式偶发好图；
+8. **所有品类强制遵循**——品类只改变舞台映射，不改变空间与英雄标准，无豁免类别。
 
 验收新增：
 
 ```text
 Hero Spatial Score >= 85
+Appetite Score >= 85
 ```
 
-平背景 / 两层平面感 / 语境与食物无关 / 作料抢主体 / 温度错配，任一出现按 `hero-shot-mandate.md` §7 的定向方向重试。
+平背景 / 舞台材质与食物调性无关 / 真实场所结构残留 / 作料抢主体 / 温度错配 / 食欲感缺失 / DNA 漂移，任一出现按 `hero-shot-mandate.md` §7 的定向方向重试。
 
 ---
 
@@ -305,7 +307,7 @@ Hero Spatial Score >= 85
 7. Select one scene module
 8. Select semantic route
 9. Select photography mode
-10. Build hero-grade spatial background direction（执行 hero-shot-mandate.md 四层空间 + 品类语境映射）
+10. Build premium material-stage background direction（执行 hero-shot-mandate.md 四层空间 + 品类高级舞台映射，无真实场所语义）
 11. Assemble references/execution-template.md
 12. IMAGE_MODEL receives original reference image + edit instruction
 13. Generate / edit
@@ -332,9 +334,11 @@ Fidelity Score >= 95
 Photography Score >= 85
 Semantic Score >= 85
 Hero Spatial Score >= 85
+Appetite Score >= 85
 No Fidelity Critical Failure
 No Semantic Critical Failure
 No Flat-Background Failure（平背景/空间层次缺失）
+No Appetite Failure（干涩/发暗/无光泽/无食欲信号）
 ```
 
 失败必须按具体错误定向重试，不要随机重抽。

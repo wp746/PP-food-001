@@ -44,14 +44,36 @@ Hero Spatial Score >= 85 才通过
 
 检查项：
 
-1. 四层景深是否齐全（前景 / 中景光池 / 中后景语义道具 / 远景纵深）？
+1. 四层景深是否齐全（前景 / 中景光池 / 中后景材质器物 / 远景纵深）？
 2. 虚化是否连续递进，而非「主体清晰 + 背后一刀切虚」？
 3. 主体是否坐在光池内、被轮廓光雕刻、与背景有亮度或色温分离？
-4. 环境是否有现场感——像一个真实运营中的制作/出品现场？
-5. 温度逻辑是否正确（冷食零热气冷调 / 热食暖调克制蒸汽）？
-6. 工业级商拍质量——主体锐度、材质可信度、光影物理是否达到投放标准？
+4. 环境是否为高级材质舞台——材质、色彩、作料围铺指向这道菜的身份（而非某个场所）？
+5. 背景是否**完全没有**真实场所结构（门头/招牌/街道/店内/就餐区/门窗）？
+6. 温度逻辑是否正确（冷食零热气冷调 / 热食暖调克制蒸汽）？
+7. 工业级商拍质量——主体锐度、材质可信度、光影物理是否达到投放标准？
 
 低于 85 时按 `hero-shot-mandate.md` §7 的定向方向重试，不要随机重抽。
+
+## 1.6 Appetite Score（独立必检项，V5.3 新增）
+
+按 `hero-shot-mandate.md` §8 单独评分，**不并入上述 100 分制**，独立门槛：
+
+```text
+Appetite Score >= 85 才通过
+```
+
+检查项：
+
+1. 油脂光泽——红油/酱汁是否有镜面高光，而不是哑光发死？
+2. 湿润度——汤汁浸润、水珠、酱料包裹感是否可读？
+3. 微距质感——芝麻、辣椒碎、蒜末等细节是否在景深内清晰？
+4. 温度可视化——热食蒸汽 / 冷食冷凝是否正确且克制？
+5. 色彩饱和管理——食物主色是否透亮鲜活（红油红得发光，绿叶不发灰）？
+6. 「刚做好」状态——是否像刚从厨房端出来的下一秒，而不是摆了半小时？
+
+终审判据：**这张图能否让观者在 3 秒内产生「想吃」的生理反应？**
+
+低于 85 时按 `hero-shot-mandate.md` §8 重写食欲渲染指令后定向重试，不要随机重抽。
 
 ## 2. 通过门槛
 
@@ -70,16 +92,18 @@ Hero Spatial Score >= 85 才通过
 
 - 用户明确提供菜名，但背景明显按另一种菜系设计；
 - 用户明确说青花椒/鲜麻类，但画面被处理成红油麻辣模板；
+- **食材 DNA 漂移（最高级失败，V5.3 升格）**：主体身份/几何/器皿/摆盘/物理关系发生任何改变——整图判废，无论其他分数多高；
 - 货架商品被语义路由移到餐厅桌面；
-- 街边小吃被改成不合理的西式豪华餐厅；
 - 冷饮出现热气；
 - 清鲜菜品被强行加入浓烟/暗红火锅氛围；
 - 背景道具进入主菜并造成新增食材；
 - 为呼应菜名而改变主菜配料、摆盘或器皿；
 - 背景仍完全是与大量其他菜通用的无差别模板，且用户已给出明确菜品语义；
 - **平背景 / 背景板**：主体贴墙、无景深分层、无纵深递进，空间层次缺失（Hero Shot Mandate 硬规则）；
-- **空间结构在但语境与食物无关**：四层景深齐全但环境不属于这道菜（如面食出现在画廊式无语境空间）；
-- **作料围铺喧宾夺主**：围铺元素过虚化不足、抢主体、或可被误读为菜里加料。
+- **真实场所污染（V5.3 新增）**：画面出现可识别经营场所结构——门头、招牌、街道、店内就餐区、门窗、柜台服务场景；
+- **空间结构在但材质与食物无关**：四层景深齐全但舞台材质不属于这道菜的调性；
+- **作料围铺喧宾夺主**：围铺元素虚化不足、抢主体、或可被误读为菜里加料；
+- **食欲感缺失（V5.3 新增）**：食物干涩、发暗、无光泽、无湿润度——看起来「不好吃」即为 Critical Failure。
 
 ## 4. 用户信息一致性检查
 
@@ -126,6 +150,8 @@ Semantic QC 不能覆盖主体保真要求。
 Fidelity Score >= 95
 Photography Score >= 85
 Semantic Score >= 85
+Hero Spatial Score >= 85
+Appetite Score >= 85
 No Fidelity Critical Failure
 No Semantic Critical Failure
 ```
@@ -138,13 +164,25 @@ No Semantic Critical Failure
 
 追加：
 
-> The current background reads as a flat backdrop. Rebuild the environment as a real three-dimensional place with four depth layers: defocused foreground dressing, the hero dish inside a light pool, softly blurred semantic props half a meter behind, and the venue receding into layered depth with clean negative space above. Keep the food subject completely unchanged.
+> The current background reads as a flat backdrop. Rebuild the environment as a real three-dimensional place with four depth layers: defocused foreground dressing, the hero dish inside a light pool, softly blurred premium material objects (stoneware, dark wood, matte metal) half a meter behind, and layered premium darkness with clean negative space above. Keep the food subject completely unchanged.
 
-### 空间在但语境错位（V5.2 新增）
+### 真实场所污染（V5.3 新增）
 
 追加：
 
-> The space has depth but does not belong to this dish. Re-route the environment context to match the food's own category, cuisine and temperament (e.g. noodle dish in a live noodle station, cake on a bright patisserie display). Keep the four-layer spatial structure and keep the food subject completely unchanged.
+> The background contains real-venue structures (storefront / signage / street / restaurant interior / doors / windows). Remove all venue semantics from the scene: rebuild the environment purely from premium materials — stone, ceramic, wood, metal, fabric — with no identifiable place. Keep the food subject completely unchanged.
+
+### 食欲感缺失（V5.3 新增）
+
+追加：
+
+> The food renders dry, dull and unappetizing. Re-render the existing appetizing properties (glossy oil sheen, sauce cling, moisture droplets, macro texture legibility, translucent color glow) with stronger rim light and specular control. Do not invent properties that do not exist in the source. Keep the food subject completely unchanged.
+
+### 空间在但语境错位（V5.2 新增，V5.3 修订）
+
+追加：
+
+> The space has depth but does not belong to this dish. Re-route the stage materials to match the food's own category, cuisine and temperament (e.g. cold noodle dish on dark basalt with cool key light and chili-oil dressing). Keep the four-layer spatial structure and keep the food subject completely unchanged.
 
 ### 背景过于通用
 

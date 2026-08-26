@@ -91,13 +91,13 @@ MAY IMPROVE:
 
 Preserve believable glass and cabinet physics.
 
-## RESTAURANT
+## RESTAURANT（V5.3.0 受限模块）
 
-Use when dining-environment identity is meaningful.
+Use ONLY when the source image itself is shot in a dining environment whose identity is meaningful and must be preserved — enhance, don't replace. **Never select this module for newly designed backgrounds**: all new backgrounds are premium material stages (see `hero-shot-mandate.md` §0.2). Even when enhancing a source dining environment, translate it toward material language and strip venue structures (signage, doors, windows, street, people).
 
 MAY IMPROVE:
 
-- ambient warmth or coolness appropriate to venue;
+- ambient warmth or coolness appropriate to the food's temperament;
 - background darkness/brightness as needed;
 - practical lighting;
 - table atmosphere;
@@ -106,14 +106,14 @@ MAY IMPROVE:
 
 Do not invent an extravagant luxury venue unsupported by the source.
 
-## STREET_FOOD
+## STREET_FOOD（V5.3.0 受限模块）
 
-Use for night markets, stalls, food carts and street-side food.
+Use ONLY when the source image itself carries night-market / stall / street-side identity worth preserving. Never select for newly designed backgrounds. When enhancing, translate toward dark charcoal-toned material language (cast-iron grill, matte stone, warm bokeh) and strip venue structures (stalls, carts, street, people).
 
 PRESERVE:
 
 - authentic street-food identity;
-- stall/market context;
+- stall/market context as material memory, not as venue structure;
 - meaningful product-environment relationship.
 
 MAY IMPROVE:
