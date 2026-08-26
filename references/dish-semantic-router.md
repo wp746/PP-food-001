@@ -39,9 +39,11 @@ cooking_method
 temperature_state
 dish_mood_keywords
 semantic_route
+material_stage_direction
 background_semantic_direction
 prop_semantic_direction
 color_semantic_direction
+appetite_rendering_direction
 lighting_character
 photography_mode
 ```
@@ -107,6 +109,8 @@ photography_mode
 - 深灰 / 黑石 / 克制深木
 - 少量暖铜色环境光
 
+食欲信号：汤面镜面反光、花椒油珠悬浮、鱼片边缘微卷水润、酸菜爽脆。
+
 不要把它简单做成红油川菜。
 
 ### SICHUAN_SPICY_RED
@@ -134,6 +138,8 @@ photography_mode
 - 少量金色高光
 - 更强但受控的热气与反差
 
+食欲信号：红油镜面透亮发光、辣椒段油润饱满、肉片油亮挂汁。
+
 ### CANTONESE_LIGHT_FRESH
 
 典型：
@@ -159,6 +165,8 @@ photography_mode
 - 浅木 / 石材
 - 干净高级浅石材质舞台
 
+食欲信号：豉油汁水清亮挂身、鱼肉湿润反光、葱丝挺立、汤体清透。
+
 ### NORTHERN_HEARTY_STAPLE
 
 典型：
@@ -180,8 +188,10 @@ photography_mode
 
 - 自然木 / 石面
 - 暖环境光
-- 真实热气
+- 真实热气（克制）
 - 丰富但不过度戏剧化
+
+食欲信号：面条油润挂汁、汤面浮油光、配菜挺立水灵。
 
 ### JIANGHU_HOTPOT
 
@@ -202,10 +212,12 @@ photography_mode
 
 视觉方向：
 
-- 深色餐饮空间
+- 深色哑光石材舞台 + 铸铁/粗陶/黄铜材质
 - 局部红 / 铜 / 暖金
 - 火锅热气
-- 饭局氛围
+- 暖金 bokeh 纵深
+
+食欲信号：锅底沸点微泡、食材油亮、毛肚黄喉水润挺括、麻酱挂壁。
 
 ### STREET_BBQ_SMOKY
 
@@ -225,10 +237,13 @@ photography_mode
 
 视觉方向：
 
-- 夜间摊位 / 街头暖灯
+- 炭色铸铁 + 粗粝石板哑光舞台
+- 暖灯 bokeh 远景
 - 炭火反光
 - 受控轻烟
 - 更强环境层次
+
+食欲信号：焦糖化边缘油亮、孜然辣椒面微距可见、油滴微滴反光。
 
 ### JAPANESE_MINIMAL_FRESH
 
@@ -253,6 +268,8 @@ photography_mode
 - 克制留白
 - 清晰材质
 
+食欲信号：刺身半透明质感、鱼肉湿润反光、醋米颗粒分明油亮。
+
 ### SEAFOOD_CLEAN_REFINED
 
 典型：
@@ -271,9 +288,11 @@ photography_mode
 视觉方向：
 
 - 干净冷暖平衡
-- 湿润石材 / 清透海洋冷调氛围
+- 湿润石材 / 清透冷调材质舞台
 - 清透高光
-- 禁止泛滥的“蓝色海洋背景”俗套
+- 禁止泛滥的"蓝色海洋背景"俗套
+
+食欲信号：表面湿润水光、柠檬水珠、冰镇冷凝水、贝类汁水。
 
 ### DESSERT_SOFT_ELEGANT
 
@@ -296,6 +315,8 @@ photography_mode
 - 柔光
 - 奶油白大理石 / 柔和织物高级舞台
 
+食欲信号：奶油缎面光泽、慕斯镜面、水果水珠、切面层次湿润。
+
 ### COFFEE_BAKERY_LIFESTYLE
 
 典型：
@@ -314,9 +335,11 @@ photography_mode
 
 视觉方向：
 
-- 咖啡馆自然光
-- 原木 / 水泥 / 现代店内背景
+- 柔和高显色自然光感
+- 原木 / 水泥灰 / 现代材质舞台
 - 轻编辑感
+
+食欲信号：奶泡缎面光泽、crema 琥珀反光、面包脆壳光泽与内瓤湿润。
 
 ### RETAIL_PACKAGED_COMMERCIAL
 
@@ -334,9 +357,11 @@ photography_mode
 
 视觉方向：
 
-- 保留货架 / 柜台语境
+- 保留源图货架 / 柜台语境（特殊品类，见 scene-modules.md RETAIL_SHELF）
 - 优化灯光、排列和主体分离
 - 不把商品移到餐桌棚拍
+
+食欲信号：包装印刷质感锐利、光泽分区控制、产品排列新鲜有序。
 
 ## 5. Photography Mode 语义选择
 
@@ -368,12 +393,16 @@ flavor_profile: 鲜麻、酸香、开胃、热汤
 primary_ingredients: 鱼片、酸菜、青花椒、青椒、热汤
 semantic_route: SICHUAN_FRESH_PEPPER
 dish_mood_keywords: 鲜麻、清辣、热气、川味、精致中带江湖感
-background_semantic_direction: 高级川味鲜麻热汤餐饮环境
-prop_semantic_direction: 青花椒/酸菜相关的克制辅助意象，不改变主菜
+material_stage_direction: 深灰哑光石板台面 + 深釉粗陶 + 克制黄铜，远景暖深暗部 bokeh
+background_semantic_direction: 高级川味鲜麻热汤材质舞台（无场所结构）
+prop_semantic_direction: 青花椒枝、酸菜陶罐、小料碟（盘外、虚化、从属）
 color_semantic_direction: 藤椒绿、酸菜黄绿、汤汁暖金、深灰/深木
+appetite_rendering_direction: 热汤面镜面反光、花椒油珠悬浮、鱼片边缘微卷水润、酸菜爽脆有汁感
 lighting_character: 柔和定向主光 + 热汤背光 + 克制暖色环境光
 photography_mode: CINEMATIC_EDITORIAL 或 DRAMATIC_FOOD_CAMPAIGN
 ```
+
+字段取值来源：`material_stage_direction` / `appetite_rendering_direction` / `prop_semantic_direction` 优先从 `cuisine-style-map.md` 对应品类条目取材，再按源图属性裁剪（剔除源图不存在的属性）。
 
 ## 7. 最终原则
 

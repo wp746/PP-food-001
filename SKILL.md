@@ -1,10 +1,12 @@
 ---
 name: universal-food-commercial-photography
 description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving exact food identity, ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity.
-version: 5.3.0
+version: 5.4.0
 ---
 
-# Universal Food Commercial Photography V5.3.0
+# Universal Food Commercial Photography V5.4.0
+
+V5.4.0 全品类方法论对齐（用户终审 v4 定稿驱动）：把安康蒸面 v4 验证的方法论（DNA 硬锁 → 高级材质舞台 → 四层景深 + 前景围铺 → 食欲感渲染 → 温度光 → 强负面清单）铺满全部美食品类——`cuisine-style-map.md` 16 品类补齐「材质舞台 / 前景围铺 / 食欲感渲染 / DNA 锁定要点」四件套，`dish-semantic-router.md` 路由新增 `material_stage_direction` / `appetite_rendering_direction` 字段并清除场所词残留。出图 prompt 的 APPETITE RENDERING 段必须从对应品类条目取材，不得只写通用套话。
 
 V5.3.0 方向修订（用户终审驱动）：① 废除「真实场所」背景规则（面馆/展台/档口语境诱发模型补人补字，且与世界级商拍影棚本质相悖），全面转向**高级材质舞台**；② **食材 DNA 锁定升格为 Priority 0 第一原则**——任何背景/氛围/构图以牺牲 DNA 为代价即整图判废；③ 新增**食欲感渲染（Appetite Rendering）**硬规则与 Appetite Score >= 85 验收线：油脂光泽、湿润度、微距质感、「刚做好」状态。
 
