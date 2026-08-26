@@ -34,6 +34,25 @@
 
 是否避免了无论什么菜都使用相同的深木桌、暖琥珀灯、陶罐和烟雾？
 
+## 1.5 Hero Spatial Score（独立必检项，V5.2 新增）
+
+按 `hero-shot-mandate.md` 单独评分，**不并入上述 100 分制**，独立门槛：
+
+```text
+Hero Spatial Score >= 85 才通过
+```
+
+检查项：
+
+1. 四层景深是否齐全（前景 / 中景光池 / 中后景语义道具 / 远景纵深）？
+2. 虚化是否连续递进，而非「主体清晰 + 背后一刀切虚」？
+3. 主体是否坐在光池内、被轮廓光雕刻、与背景有亮度或色温分离？
+4. 环境是否有现场感——像一个真实运营中的制作/出品现场？
+5. 温度逻辑是否正确（冷食零热气冷调 / 热食暖调克制蒸汽）？
+6. 工业级商拍质量——主体锐度、材质可信度、光影物理是否达到投放标准？
+
+低于 85 时按 `hero-shot-mandate.md` §7 的定向方向重试，不要随机重抽。
+
 ## 2. 通过门槛
 
 ```text
@@ -57,7 +76,10 @@
 - 清鲜菜品被强行加入浓烟/暗红火锅氛围；
 - 背景道具进入主菜并造成新增食材；
 - 为呼应菜名而改变主菜配料、摆盘或器皿；
-- 背景仍完全是与大量其他菜通用的无差别模板，且用户已给出明确菜品语义。
+- 背景仍完全是与大量其他菜通用的无差别模板，且用户已给出明确菜品语义；
+- **平背景 / 背景板**：主体贴墙、无景深分层、无纵深递进，空间层次缺失（Hero Shot Mandate 硬规则）；
+- **空间结构在但语境与食物无关**：四层景深齐全但环境不属于这道菜（如面食出现在画廊式无语境空间）；
+- **作料围铺喧宾夺主**：围铺元素过虚化不足、抢主体、或可被误读为菜里加料。
 
 ## 4. 用户信息一致性检查
 
@@ -111,6 +133,18 @@ No Semantic Critical Failure
 语义背景做得再准确，只要食物身份、器皿、摆盘或主要食材发生明显漂移，仍然失败。
 
 ## 8. 定向重试
+
+### 平背景 / 空间层次缺失（V5.2 新增）
+
+追加：
+
+> The current background reads as a flat backdrop. Rebuild the environment as a real three-dimensional place with four depth layers: defocused foreground dressing, the hero dish inside a light pool, softly blurred semantic props half a meter behind, and the venue receding into layered depth with clean negative space above. Keep the food subject completely unchanged.
+
+### 空间在但语境错位（V5.2 新增）
+
+追加：
+
+> The space has depth but does not belong to this dish. Re-route the environment context to match the food's own category, cuisine and temperament (e.g. noodle dish in a live noodle station, cake on a bright patisserie display). Keep the four-layer spatial structure and keep the food subject completely unchanged.
 
 ### 背景过于通用
 

@@ -103,6 +103,23 @@ If the original environment has little contextual value and visually harms the s
 
 Any new environment must match the subject's camera angle, perspective, scale, contact plane, depth and lighting direction. Maintain realistic contact shadows and environmental reflections. The subject must never appear pasted into the scene.
 
+## Hero spatial stage treatment (mandatory, see hero-shot-mandate.md)
+
+The environment is a **spatial stage, never a flat backdrop**. Build the scene as a real three-dimensional place with four explicit depth layers:
+
+1. near-camera foreground: heavily defocused scene dressing (scattered core ingredients in raw form, counter edge) framing the hero from below;
+2. midground: the hero dish, tack sharp, sitting inside a clean pool of light that falls off toward the frame edges;
+3. mid-background: softly defocused semantic props and shelf layers about half a meter to one and a half meters behind the subject;
+4. deep background: the venue receding into darkness or depth — layered bokeh light sources, architectural planes, generous clean negative space above the subject reserved for future headline typography.
+
+Defocus must progress continuously across layers. Two-layer "sharp subject + blurred wall" flatness is prohibited.
+
+Treat the subject with hero-portrait lighting: soft directional key at 45 degrees; precise rim light from behind making translucent edges glow and glossy materials glisten; physically correct contact shadow; clear subject-background separation so the viewer's eye locks onto the dish as the single hero.
+
+Core-ingredient dressing (scene styling with this dish's own ingredients and tools) is encouraged for on-location authenticity, but only on the counter OUTSIDE the plate/vessel: never touching the food, never entering the dish, never readable as new ingredients — softly blurred, low contrast, subordinate to the hero.
+
+Temperature logic is non-negotiable: cold dishes are lit cool, clean and crisp with zero steam; hot dishes may use restrained steam and warm volume light.
+
 ## Semantic background treatment
 
 {{SEMANTIC_BACKGROUND_DIRECTION}}
@@ -185,17 +202,18 @@ Maintain realistic:
 
 The final image should feel like:
 
+- a world-class food hero shot — the dish as the monumental single hero of the frame;
 - photorealistic premium commercial food photography;
-- elite studio craft;
+- elite studio craft with a real, on-location working-scene authenticity;
 - dish-specific cinematic or editorial art direction;
 - professional advertising lighting;
 - realistic material rendering;
 - controlled highlights;
 - deep but readable shadows;
 - accurate texture;
-- believable environmental depth;
-- semantically relevant restaurant/retail/lifestyle atmosphere;
-- high-end campaign photography;
+- believable multi-layer environmental depth (four-layer spatial stage, never a flat backdrop);
+- semantically relevant restaurant/retail/lifestyle atmosphere matching the food's own temperament;
+- high-end campaign photography at industrial, repeatable production quality;
 - 4K visual quality.
 
 The viewer must believe this is the **same individual serving or product from the uploaded source**, professionally re-photographed by an elite commercial photography studio in an environment that genuinely belongs to this specific dish.
@@ -233,6 +251,8 @@ Strictly avoid:
 - excessive or physically incorrect steam/smoke;
 - semantic props entering the dish as new ingredients;
 - cuisine-inappropriate generic background;
+- flat backdrop / seamless background paper feel / subject pasted against a wall;
+- two-layer sharpness flatness (sharp subject + uniformly blurred background with no depth progression);
 - repetitive dark-wood amber-light template;
 - plastic/waxy food texture;
 - fake wet gloss;

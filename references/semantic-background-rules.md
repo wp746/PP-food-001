@@ -2,6 +2,8 @@
 
 本文件约束背景、环境、辅助道具、色彩和氛围，使它们与**具体菜品语义**相关，而不是套用统一的“高级美食广告背景”。
 
+> **双重约束（V5.2 起）**：背景必须同时满足两份文件——本文件解决「环境语义是否属于这道菜」；`hero-shot-mandate.md` 解决「环境空间是否达到英雄定妆照标准」。语义正确但空间扁平，或空间华丽但语境错位，均不合格。
+
 ## 核心原则
 
 > **The product is physically preserved; the environment is semantically designed.**

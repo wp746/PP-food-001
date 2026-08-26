@@ -1,10 +1,10 @@
 ---
 name: universal-food-commercial-photography
 description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving exact food identity, ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity.
-version: 5.1.0
+version: 5.2.0
 ---
 
-# Universal Food Commercial Photography V5.1
+# Universal Food Commercial Photography V5.2
 
 ## Core Principle
 
@@ -230,7 +230,9 @@ desired_mood
 
 ---
 
-# 10. Anti-Template Semantic Background
+# 10. Anti-Template & Hero-Grade Spatial Background｜背景硬规则
+
+## 10.1 反模板（原有规则，继续生效）
 
 禁止所有热食统一使用：
 - dark wood
@@ -247,6 +249,26 @@ desired_mood
 > 如果把主体换成完全不同的菜，这个背景仍毫无变化也能用吗？
 
 如果答案是“是”，背景过于模板化，应重做。
+
+## 10.2 Hero Shot Mandate｜英雄定妆照硬规则（V5.2 起新增强制项）
+
+读取并强制执行 `references/hero-shot-mandate.md`。要点：
+
+1. **禁止平背景**——背景必须是「空间舞台」而非「背景板」，画面必须读出四层景深（前景 / 中景光池 / 中后景语义道具 / 远景纵深），缺层即 Semantic Critical Failure；
+2. **空间感按食材属性与调性设计**——面食在面馆、蛋糕在明亮展台，环境结构由这道菜的身份推导；
+3. **必须有现场感**——环境要像真实运营中的制作/出品现场，核心作料围铺在盘外台面并虚化，不喧宾夺主；
+4. **氛围与食材调性匹配**——冷食冷调零热气、热食暖调允许克制蒸汽，温度错配即失败；
+5. **世界级英雄定妆照调性**——主体是全场唯一英雄：光池聚焦、轮廓光雕刻、低机位纪念碑感；
+6. **工业级商拍质量**——每一张都达到商业投放标准，不是抽卡式偶发好图；
+7. **所有品类强制遵循**——品类只改变语境映射，不改变空间与英雄标准，无豁免类别。
+
+验收新增：
+
+```text
+Hero Spatial Score >= 85
+```
+
+平背景 / 两层平面感 / 语境与食物无关 / 作料抢主体 / 温度错配，任一出现按 `hero-shot-mandate.md` §7 的定向方向重试。
 
 ---
 
@@ -281,7 +303,7 @@ desired_mood
 7. Select one scene module
 8. Select semantic route
 9. Select photography mode
-10. Build semantic background direction
+10. Build hero-grade spatial background direction（执行 hero-shot-mandate.md 四层空间 + 品类语境映射）
 11. Assemble references/execution-template.md
 12. IMAGE_MODEL receives original reference image + edit instruction
 13. Generate / edit
@@ -307,8 +329,10 @@ desired_mood
 Fidelity Score >= 95
 Photography Score >= 85
 Semantic Score >= 85
+Hero Spatial Score >= 85
 No Fidelity Critical Failure
 No Semantic Critical Failure
+No Flat-Background Failure（平背景/空间层次缺失）
 ```
 
 失败必须按具体错误定向重试，不要随机重抽。
