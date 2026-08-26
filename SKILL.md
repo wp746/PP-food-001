@@ -1,10 +1,12 @@
 ---
 name: universal-food-commercial-photography
 description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving exact food identity, ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity.
-version: 5.2.0
+version: 5.2.1
 ---
 
-# Universal Food Commercial Photography V5.2
+# Universal Food Commercial Photography V5.2.1
+
+V5.2.1 hotfix: 图像模型在「真实场所」语境下自发补足招牌字 / 人物污染 KV 排版。在 hero-shot-mandate.md §9 增加强负面清单与构图规避策略。
 
 ## Core Principle
 

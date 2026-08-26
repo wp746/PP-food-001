@@ -113,7 +113,68 @@ Critical Failure（任一即重试，重试方向见下）：
 - 平背景 / 两层平面感 / 背景板 → 重试方向：重建四层空间结构；
 - 空间层次在但语境与食物无关 → 重试方向：按品类语境映射重路由；
 - 作料围铺抢了主体 → 重试方向：加大虚化、降低对比、减少元素；
-- 温度错配（冷食冒热气等）→ 重试方向：按温度对比表重设灯光。
+- 温度错配（冷食冒热气等）→ 重试方向：按温度对比表重设灯光；
+- **画面出现招牌字 / 中文字 / 任何文字水印** → 重试方向：把镜头指向纯墙不指向门口，墙面装饰物只能是无字画框、空牌匾（见 §9）；
+- **画面出现人物（厨师 / 路人 / 手 / 半身像 / 全身像）** → 重试方向：同 §9，构图策略改为向墙不看门、降低行人街景出现概率。
+
+---
+
+## 9. Stage A 强负面清单（图像模型自由发挥风险镇压）
+
+本节是针对 `gpt-image-2`（以及同类「真实性补足型」图像生成模型）的**实战经验沉淀**。模型面对「真实场所」语境的本能行为会自动补足画面：补招牌字、补顾客人物、补品牌 logo、补菜单。这些补足在 art direction 上属于**模型自发合成、未经签发的杜撰**，会污染 Stage B 排版（与主标题冲突、抢主角戏）。
+
+### 9.1 强负面前置清单（写入每个 prompt 的最后一节）
+
+每次 Stage A 出图 prompt 必须显式包含以下强负面词条（写在大写、重复多次、加 bold 也是有效增强，但不如显式句式有效）：
+
+```text
+ABSOLUTELY NO TEXT ANYWHERE IN THE FRAME:
+NO signboards, NO signage, NO storefront letters, NO menu boards,
+NO price tags, NO paper labels, NO handwritten notes,
+NO Chinese characters, NO Latin letters, NO numbers,
+NO logos, NO watermarks, NO brand marks,
+NO text on wall, NO text on decoration, NO text on packaging,
+NO text on lamp shades, NO text on plates, NO text on banners.
+
+ABSOLUTELY NO HUMAN PRESENCE ANYWHERE IN THE FRAME:
+NO chef, NO cook, NO customer, NO pedestrian, NO human figures,
+NO human face, NO head, NO arm, NO hand, NO fingers,
+NO silhouette, NO partial body, NO shadow of a person,
+NO mannequins, NO dummies, NO humanoid statues.
+
+THE FRAME MUST BE TOTALLY FREE OF HUMAN PRESENCE AND TEXTUAL CONTENT.
+```
+
+### 9.2 构图策略性规避（如果强负面清单仍不够压住模型）
+
+经验上，**正面负面清单在「真实场所」语境下并不完全可靠**。需要让构图本身排除触发条件：
+
+| 触发场景 | 模型倾向 | 构图规避策略 |
+|---|---|---|
+| 「门头面馆」 | 加招牌字、加行人 | 镜头不指向门头，**镜头从顾客座位视角水平扫向对面墙**，墙是收边不出现门 |
+| 「早市街头」 | 加顾客、加文字招牌 | 改用「露台 / 屋檐下」单一视角，背景收边为墙+檐，不出现街道 |
+| 「档口明档」 | 加厨师半身像、加菜单立牌 | 改为「托盘特写」——商品照等级，背景只出现木质托盘+无字纸 |
+| 「食堂餐桌」 | 加抢镜顾客 | 镜头**贴近桌面俯拍**，看不到背景房间，只看桌面与盘子 |
+
+本质：**让镜头画面里没有"门"、"街道"、"人物可能存在"的空间**——触发条件缺失，模型就不会补人/补字。
+
+### 9.3 兜底：生成后第一道检验（写入验证脚本）
+
+生成后第一步不是看构图，是过这两道硬闸：
+
+```text
+1. 用 OCR 思路扫整张图：有任何可见文字吗？有 → 重生成。
+2. 检视远景失焦区：有人形/人影/人肩/人手吗？有 → 重生成。
+```
+
+OCR 检查在模型驱动下可做（`mcp__image_gen__read_image` 或同类），但更可靠的方案是**生成时用 inpainting 二阶段精修**——Stage A 出图 → 检测是否含文字/人物 → 含则用 inpainting 局部抹除 → 重出（这超出本文件约束，待 Stage A v2.0 引入）。
+
+### 9.4 版本
+
+本节为 V5.2.1 紧急补丁，由安康蒸面 Stage A v1 / v2 实战踩坑沉淀：
+- v1：招牌字 + 白帽厨师半身像
+- v2：招牌字挪位 + 远处两位黑衣路人
+- v3：构图改为向墙不看门，墙面装饰只能为空画框 / 空牌匾，**完全压制**
 
 ## 8. 一句话标准
 
