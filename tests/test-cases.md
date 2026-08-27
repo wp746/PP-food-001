@@ -1,344 +1,76 @@
-# Universal Food Fidelity + Semantic Background Baseline Tests
-
-Use a diverse fixed test set. The purpose is to detect product drift **and** generic-background drift, not merely judge beauty.
-
-For every case record:
-
-- source photo;
-- explicit dish information from the user, if any;
-- inferred dish semantics and confidence, if required;
-- selected food module(s);
-- selected scene module;
-- semantic route;
-- photography mode;
-- fidelity score;
-- photography score;
-- semantic score;
-- Critical Failures;
-- retry type if needed.
-
-## Test 01 — Hot noodle soup, white ceramic bowl, ordinary table
-
-Expected:
-
-- noodles, toppings, broth and white bowl remain substantially unchanged;
-- background/light improve strongly;
-- subtle realistic steam allowed.
-
-FAIL examples:
-
-- bowl replaced;
-- noodle width changes;
-- extra meat added;
-- toppings reorganized.
-
-## Test 02 — Handheld burger, street background
-
-Expected:
-
-- exact layer structure and hand grip remain;
-- street/lifestyle background may become cleaner and more cinematic.
-
-FAIL:
-
-- converted to tabletop;
-- bacon/egg/second patty invented;
-- burger stack rebuilt.
-
-## Test 03 — Handheld milk tea / iced drink in plastic cup
-
-Expected:
-
-- same plastic cup, straw, liquid color, inclusions and grip;
-- condensation/material clarity may improve.
-
-FAIL:
-
-- plastic cup -> glass;
-- different straw;
-- new fruit/foam toppings;
-- steam added.
-
-## Test 04 — Strawberry cream cake in display case
-
-Expected:
-
-- cake geometry, layer count and strawberry count/placement remain;
-- case lighting/glass reflections improve;
-- background should feel like bakery/dessert retail, not a dark hot-food restaurant.
-
-FAIL:
-
-- extra berries/chocolate/gold leaf;
-- cake layers redesigned;
-- display context removed;
-- dark wood + amber hot-food template.
-
-## Test 05 — Packaged chips on supermarket shelf
-
-Expected:
-
-- same package identity and retail context;
-- improved local lighting, shelf organization and separation.
-
-FAIL:
-
-- package redesigned;
-- random logo/text invented;
-- product moved to wood tabletop.
-
-## Test 06 — Night-market skewers / BBQ
-
-Expected:
-
-- skewer count relationship, meat geometry and sequence remain;
-- practical night light and restrained smoke may improve atmosphere;
-- semantic environment should remain street-food/night-market.
-
-FAIL:
-
-- more skewers added;
-- meat chunks enlarged;
-- heavy fake smoke obscures product;
-- converted to luxury fine dining.
-
-## Test 07 — Sashimi / sliced fish platter
-
-Expected:
-
-- visible slice count relationship, thickness and arrangement remain;
-- moisture/material/restaurant lighting improve;
-- environment should be clean, restrained and Japanese/minimal if context supports it.
-
-FAIL:
-
-- lobster/caviar/gold leaf added;
-- slices become thicker/more numerous;
-- new luxury plate used;
-- generic spicy-food dark amber background.
-
-## Test 08 — Fruit salad / fresh salad
-
-Expected:
-
-- fresh, clean, natural commercial treatment;
-- fruit/vegetable identity and cuts remain;
-- no steam;
-- natural/editorial semantic environment.
-
-FAIL:
-
-- dramatic dark hot-food treatment;
-- ingredients substituted;
-- artificial wet gloss.
-
-## Test 09 — Ice cream
-
-Expected:
-
-- scoop count, colors/flavors, cup/cone and arrangement remain;
-- texture/cold feel improve;
-- soft dessert/lifestyle environment.
-
-FAIL:
-
-- flavors/colors change;
-- fruit garnish added;
-- scoop count changes;
-- steam or hot-food visual language.
-
-## Test 10 — Cropped bowl/plate
-
-Expected:
-
-- missing edge reconstructed as natural continuation of the same vessel;
-- food structure not redesigned.
-
-FAIL:
-
-- a new bowl/plate appears;
-- new ingredients are invented in outpainted area.
-
-## Test 11 — Fried chicken / fried snack
-
-Expected:
-
-- piece geometry/count relationship and coating remain;
-- crisp texture/readability improve.
-
-FAIL:
-
-- larger/more regular pieces;
-- greasy plastic highlights;
-- extreme orange saturation.
-
-## Test 12 — Coffee in café
-
-Expected:
-
-- same cup, liquid level and visible foam/crema;
-- café context may become more refined;
-- subtle steam only if hot and supported;
-- NATURAL_EDITORIAL or restrained CINEMATIC_EDITORIAL.
-
-FAIL:
-
-- cup replaced;
-- latte art invented when absent;
-- dramatic dark restaurant background replacing meaningful café context.
-
-## Test 13 — Takeaway food in paper box
-
-Expected:
-
-- box identity, food-box relationship and visible food layout remain;
-- lighting/background may improve.
-
-FAIL:
-
-- moved to ceramic plate;
-- food re-plated;
-- box material changed.
-
-## Test 14 — Food held by chopsticks/fork
-
-Expected:
-
-- same lifted food and utensil contact relationship;
-- main plate/bowl remains coherent;
-- background/light improve.
-
-FAIL:
-
-- different food is lifted;
-- contact geometry impossible;
-- utensil shape malformed.
-
-## Test 15 — Bakery item on tray
-
-Expected:
-
-- pastry shape/layers and tray identity remain;
-- texture and bakery lighting improve;
-- bakery/café semantics remain appropriate.
-
-FAIL:
-
-- pastry decoration added;
-- tray replaced;
-- flaky structure exaggerated into a different pastry.
-
-# V5 Semantic Background Tests
-
-## Test 16 — 用户明确：青花椒酸菜鱼
-
-Source characteristics:
-
-- fish slices;
-- green chili rings;
-- green Sichuan pepper / fresh pepper cluster;
-- pale yellow hot broth;
-- red serving vessel.
-
-User explicitly says:
-
-`dish_name = 青花椒酸菜鱼`
-
-Expected semantic route:
-
-`SICHUAN_FRESH_PEPPER`
-
-Expected:
-
-- fish slices, green pepper, pepper cluster, broth and red vessel remain highly faithful;
-- background communicates fresh-pepper Sichuan character through restrained green/yellow-green accents, refined Sichuan restaurant context and controlled warm heat atmosphere;
-- dark gray stone or restrained Chinese dining surface may be used;
-- subtle pepper/pickle semantic props may exist only in distant background;
-- food remains the hero.
-
-FAIL:
-
-- becomes red-oil Sichuan fish;
-- new pickled vegetables or pepper are added to the dish;
-- vessel replaced;
-- generic black-and-gold Western restaurant;
-- identical dark-wood amber background used for unrelated noodle/soup tests.
-
-## Test 17 — 用户明确：粤式清蒸鱼
-
-Expected:
-
-- bright, clean, restrained Chinese dining environment;
-- natural/editorial light;
-- no heavy smoke or dark red spicy atmosphere.
-
-FAIL:
-
-- hotpot-style background;
-- aggressive rim light and smoke;
-- red spicy visual language.
-
-## Test 18 — 用户明确：草莓奶油蛋糕
-
-Expected:
-
-- same strawberry count/placement and cake geometry;
-- soft dessert/café semantic environment;
-- milk-white, strawberry-red and neutral supporting palette.
-
-FAIL:
-
-- dark Sichuan restaurant treatment;
-- extra strawberries, gold leaf or chocolate added.
-
-## Test 19 — 用户未提供菜名，识别置信度中等
-
-Example: visually ambiguous fish soup.
-
-Expected:
-
-- use category-level `hot fish soup / Chinese fish dish` semantic environment;
-- avoid overly specific regional props;
-- preserve food exactly.
-
-FAIL:
-
-- assert a specific cuisine and aggressively decorate the environment from an uncertain guess;
-- add ingredients consistent with the guess.
-
-## Test 20 — 同场景不同菜品反模板测试
-
-Use four tabletop images:
-
-1. 青花椒酸菜鱼
-2. 牛肉面
-3. 寿司
-4. 草莓蛋糕
-
-PASS:
-
-- all four maintain comparable commercial photography quality;
-- all four preserve their source food;
-- backgrounds differ meaningfully in color, lighting character, materials and semantic context.
-
-FAIL:
-
-- all four become dark wood + amber practical lights + ceramic jar + bokeh.
-
-## Acceptance matrix
-
-| Product fidelity | Photography upgrade | Semantic relevance | Result |
-|---|---|---|---|
-| High | High | High | **V5 Target** |
-| High | High | Low | Failure: generic/template background |
-| High | Low | High | Incomplete: weak photography upgrade |
-| Low | High | High | Failure: AI reinterpretation |
-| Low | Low | Low | Failure |
-
-Final V5 pass requires:
-
-- **Fidelity >=95**
-- **Photography >=85**
-- **Semantic >=85**
-- no Fidelity Critical Failure
-- no Semantic Critical Failure
+# PP-food-001 Regression Tests
+
+这些测试只保留会影响稳定生产的关键失败模式。
+
+## Test 01｜Food DNA first
+PASS：原图产品身份、主要食材、几何、器皿/包装、摆盘和物理关系保持。
+FAIL：为了高级感加减食材、换器皿、重摆盘或把产品重做成另一份。
+
+## Test 02｜默认 9:16
+输入：横图、方图、竖图各一张。
+PASS：最终均为 9:16，关键产品完整，靠画布延展/背景重构适配。
+FAIL：拉伸、压扁、裁掉关键产品区域或重做产品来适配竖版。
+
+## Test 03｜A 默认路由
+输入：用户只上传美食图，未给 A/B，也无商业信息。
+PASS：执行 Stage A 商拍。
+
+## Test 04｜显式 A 优先
+输入：用户说 A，同时附带产品名或店铺信息。
+PASS：只执行 Stage A，不自动进入 KV。
+
+## Test 05｜显式 B 必须先 A
+输入：用户说 B。
+PASS：原图 → Stage A → Fidelity QC → Stage A PASS 图 → Stage B。
+FAIL：直接拿原始随手拍做 KV。
+
+## Test 06｜商业信息自动 B
+输入：用户未说 A/B，但给出产品名、店铺、标题、地址、价格、核心食材、卖点、新品等明显商业信息。
+PASS：判定为 B，但仍先完整执行 Stage A。
+
+## Test 07｜当前任务隔离
+输入：上一任务为“泡菜米线”，下一任务是其他食品。
+PASS：新任务不继承“米线/泡菜/酸萝卜”等旧事实。
+FAIL：历史品牌、食材、口味或 Slogan 混入当前任务。
+
+## Test 08｜饮品容器锁定
+PASS：塑料杯仍是塑料杯，吸管、液体颜色、冰块/配料和握持关系保持。
+FAIL：塑料杯变玻璃杯、加新水果/奶盖或错误蒸汽。
+
+## Test 09｜烘焙产品锁定
+PASS：面包/贝果/糕点形状、开口、表皮颜色、阵列关系和托盘身份保持。
+FAIL：为了更精致改变烘焙造型或新增装饰。
+
+## Test 10｜包装食品锁定
+PASS：包装 Logo、文字、形状、材质和比例保持。
+FAIL：重画包装或改成堂食摆盘。
+
+## Test 11｜温度语义
+PASS：冷食无热蒸汽；热食仅有物理合理、克制的蒸汽。
+FAIL：冷饮冒热气，或热菜被浓烟遮挡。
+
+## Test 12｜反模板背景
+输入：宽面、蛋糕、咖啡、烧烤。
+PASS：四者背景材质、色彩、光线和摄影情绪明显不同且符合品类。
+FAIL：全部变成深木 + 暖灯 + 陶罐 + 重散景。
+
+## Test 13｜Hero Food
+PASS：产品是第一视觉锚点；前中后景和光影服务产品。
+FAIL：背景道具或作料比产品更抢眼。
+
+## Test 14｜Fidelity hard gate
+通过条件：
+
+```text
+Food Fidelity >=95
+Vessel Fidelity >=98
+Photography >=85
+Semantic >=85
+Hero Spatial >=85
+Appetite >=85
+NO CRITICAL FAILURE
+```
+
+## Test 15｜定向重试
+PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Photography / Background / Temperature / 9:16 Composition 分类修正。
+FAIL：每次随机整张重抽，导致已正确区域再次漂移。
