@@ -1,369 +1,291 @@
 ---
 name: universal-food-commercial-photography
-description: Use when editing a user-provided food photo into premium commercial or cinematic food photography while preserving exact food identity, ingredients, geometry, plating, vessel, packaging and physical relationships at high fidelity.
-version: 5.4.0
+description: Use when turning a user-provided food photo into a high-fidelity premium commercial food image while preserving the exact product, ingredient geometry, vessel/packaging, plating and physical relationships.
+version: 5.5.0
 ---
 
-# Universal Food Commercial Photography V5.4.0
-
-V5.4.0 全品类方法论对齐（用户终审 v4 定稿驱动）：把安康蒸面 v4 验证的方法论（DNA 硬锁 → 高级材质舞台 → 四层景深 + 前景围铺 → 食欲感渲染 → 温度光 → 强负面清单）铺满全部美食品类——`cuisine-style-map.md` 16 品类补齐「材质舞台 / 前景围铺 / 食欲感渲染 / DNA 锁定要点」四件套，`dish-semantic-router.md` 路由新增 `material_stage_direction` / `appetite_rendering_direction` 字段并清除场所词残留。出图 prompt 的 APPETITE RENDERING 段必须从对应品类条目取材，不得只写通用套话。
-
-V5.3.0 方向修订（用户终审驱动）：① 废除「真实场所」背景规则（面馆/展台/档口语境诱发模型补人补字，且与世界级商拍影棚本质相悖），全面转向**高级材质舞台**；② **食材 DNA 锁定升格为 Priority 0 第一原则**——任何背景/氛围/构图以牺牲 DNA 为代价即整图判废；③ 新增**食欲感渲染（Appetite Rendering）**硬规则与 Appetite Score >= 85 验收线：油脂光泽、湿润度、微距质感、「刚做好」状态。
+# PP-food-001 V5.5.0
 
 ## Core Principle
 
-> **Preserve the product. Upgrade the photography. Design the environment from the dish semantics.**
+> **Source truth first. Lock the product. Upgrade only the photography and environment.**
 
-把用户真实美食随手拍升级成电影级 / 商业广告级摄影，同时保持原食物、主要食材、食材几何、摆盘、器皿、包装和物理关系高度稳定。
+本 Skill 是 Stage A / Commercial Re-photography Engine。它把真实随手拍升级成电影级商业摄影，但不能为了“更高级”重做食物本体。
+
+默认输出：
+
+```text
+DEFAULT_ASPECT_RATIO = 9:16
+```
+
+无论用户上传横图还是竖图，默认最终构图均为 9:16。优先使用画布延展、背景重构和镜头重组完成竖版构图；不得通过拉伸、挤压、裁掉关键产品区域或重做食物来适配比例。
 
 ---
 
-# 0. FIRST-RUN SETUP GATE｜首次安装先配置运行环境
+# 0. Runtime Gate
 
-首次安装、首次加载，或当前运行环境是否就绪未知时，**禁止直接进入生产**。
+首次加载或运行环境状态未知时，先读取 `HANDOFF.md`，进入 `SETUP_GATE`。只确认缺失的视觉理解能力、参考图编辑能力、凭据连接与图片传递能力。
 
-必须先读取根目录 `HANDOFF.md`，进入：
+仓库只保存通用能力约定；**不得把任何具体供应商名、模型服务 URL、API Key、聚合平台配置写入 Skill 文件。** 凭据应由宿主 Secret / Environment / Connection 管理。
 
-```text
-RUNTIME_STATE = SETUP_GATE
-```
-
-向用户确认以下配置，只询问缺失项：
-
-1. `VISION_MODEL`：用于识图、Food DNA/Fidelity Manifest、路由和生成后 QC；
-2. `IMAGE_MODEL`：用于参考图编辑 / image-to-image / 最终商拍生成；
-3. `API_BASE_URL`：模型服务或聚合平台地址；
-4. API Key/Credential 已写入 Secret / Environment / Connection，而不是明文长期放在普通对话；
-5. IMAGE_MODEL 确实支持上传参考图；
-6. 生成结果可以继续被智能体读取/传递。
-
-如果宿主默认模型没有视觉能力，**不得自行猜测用户图片内容**。必须调用已配置的 `VISION_MODEL`。
-
-配置完成后必须告诉用户：
-
-> **PP-food-001 已准备就绪。回复“启动”进入生产模式。**
-
-状态切换：
-
-```text
-SETUP_GATE
-→ READY_WAITING_FOR_START
-→ 用户回复“启动”
-→ PRODUCTION
-```
-
-进入 `PRODUCTION` 后，用户只需自然语言交流，不再反复询问模型配置，除非连接失效。
+进入 `PRODUCTION` 后，不再反复询问配置，除非连接失效。
 
 ---
 
-# 1. Runtime Model Roles｜模型角色分工
+# 1. A / B Intent Router｜双 Skill 入口规则
+
+优先级从高到低：
+
+```text
+1. 用户明确说 A → Stage A 商拍，交付商拍图
+2. 用户明确说 B → 必须先完整完成 Stage A，再进入 PP-food-KV-001 Stage B
+3. 用户未说 A/B，但给出明显 KV 商业信息 → 视为 B
+4. 其他情况 → 默认 A
+```
+
+可触发自动 B 的商业信息包括：产品/菜品名、店铺/品牌信息、主标题、副标题、地址、电话、价格、核心食材、卖点、新品/活动信息等。
+
+**显式 A 优先于自动 B。**
+
+任何 B 请求都必须执行：
+
+```text
+原始参考图
+→ Stage A
+→ Stage A Fidelity QC
+→ Stage A PASS 图
+→ Stage B
+```
+
+不得跳过 Stage A 直接用原始随手拍做激进 KV。
+
+---
+
+# 2. Current Job Isolation｜任务隔离
+
+每一张新上传图建立独立 `CURRENT_JOB_FACTS`。
+
+当前任务只允许使用：
+- 当前上传图片的可见事实；
+- 当前消息中用户明确提供的信息；
+- 当前任务已经验证的中间产物。
+
+上一任务的品牌名、菜名、食材、口味、地址、Slogan、场景设定默认全部失效，除非用户明确说“沿用上一张/继续上一品牌/还是刚才那个产品”。
+
+历史经验只能迁移**方法**，不能迁移当前任务事实。
+
+---
+
+# 3. Runtime Roles
 
 ## VISION_MODEL
-
 负责：
-- 读取用户上传图片；
+- 读取原图；
 - 建立 Fidelity Manifest；
-- 判断 food category / scene / dish semantics；
-- 路由置信度；
-- Fidelity QC；
-- Semantic QC。
+- 判断 food category / dish semantics / temperature；
+- 生成前路由；
+- Fidelity QC / Semantic QC / Hero QC。
+
+如果宿主默认模型不能识图，不得猜图。
 
 ## IMAGE_MODEL
-
 负责：
-- 接收用户原始参考图；
-- 高保真参考图编辑；
-- 锁食物、食材、器皿、包装、摆盘与物理关系；
-- 升级灯光、背景、环境、景深、材质和调色。
+- 接收原始参考图；
+- 执行高保真 reference-image editing；
+- 保持 Food DNA；
+- 升级构图、灯光、背景、景深、材质、调色与摄影完成度。
 
-**会根据参考图出图 ≠ 能替代完整视觉分析与 QC。**
+图片模型能吃参考图，不等于可以跳过视觉分析与后置 QC。
 
 ---
 
-# 2. Source Truth｜源图事实优先
-
-源图中的可见事实高于：
-- 菜品惯例；
-- 模型审美偏好；
-- 高级餐饮刻板印象；
-- 为了“更好看”而追加的食材或器皿。
+# 4. Source Truth + Fidelity Targets
 
 > **Source pixels override assumptions.**
 
-未知或不可见区域只允许 `Minimum Plausible Continuation / 最小合理延展`。
+未知区域只允许 `Minimum Plausible Continuation`。
 
----
-
-# 3. Perceptual Fidelity Targets
-
-以下为感知验收目标，不是像素数学保证：
-
-- Food identity fidelity: **>=95%**
-- Ingredient geometry fidelity: **>=95%**
-- Vessel/container identity fidelity: **>=98%**
-- Plating fidelity: **>=95%**
-- Physical relationship fidelity: **>=95%**
-
-冲突时优先级：
-
-1. Food identity
-2. Major ingredient identity
-3. Ingredient geometry
-4. Vessel / packaging identity
-5. Physical relationships
-6. Plating topology
-7. Material realism
-8. Food color
-9. Composition
-10. Lighting
-11. Semantic background
-12. Props
-13. Atmosphere
-
-绝不能为了 9–13 牺牲 1–6。
-
----
-
-# 4. Preservation Invariants
-
-必须锁定：
-- 食物类别和主食材；
-- 清晰可见的重要辅料；
-- 烹饪状态和份量感；
-- 食材形状、切法、厚度、朝向、堆叠、分布与主要数量关系；
-- 器皿/包装类型、材质、颜色、形状、花纹与比例；
-- 摆盘拓扑；
-- 手持、筷子/刀叉/勺子接触、货架、托盘、展示柜等物理关系。
-
-禁止：
-- 为了高级感让鱼片更大、肉更多、面更粗、虾更显眼；
-- 白瓷换黑陶、塑料杯换玻璃杯、原包装重设计；
-- 为了好看重摆盘；
-- 添加不存在的高级配料。
-
----
-
-# 5. Region Edit Budget
-
-## Region A — Subject Core
-食物、主要食材、器皿/包装、直接接触关系。
-
-修改预算：**极低**。
-
-## Region B — Subject Support
-手、餐具、托盘、近桌面、直接货架区域。
-
-修改预算：**低到中等**。
-
-## Region C — Environment
-背景、远桌面、墙面、无关杂物、环境灯、远处人群和弱化道具。
-
-修改预算：**高**。
-
-主要创意发生在 Region C。
-
----
-
-# 6. Image Edit Prompt Hard Lock｜图片提示词首段硬锁
-
-每次调用 IMAGE_MODEL 时，最终编辑指令前部必须明确包含同等强度的约束：
-
-> **以用户上传的参考图为唯一产品真相。严格锁定原始食物主体、主要食材身份与几何、器皿/包装、摆盘拓扑和物理关系。不得为了“更高级”重做、替换、增减或重新摆放主体食材。主要创意只发生在灯光、环境、背景、景深、调色和摄影品质层。**
-
-不能只写“参考原图”或“保持一致”而没有具体锁定对象。
-
----
-
-# 7. User Dish Information Priority
-
-如果用户明确提供：
+感知验收目标：
 
 ```text
-dish_name
-cuisine_type
-flavor_profile
-main_highlights
-desired_mood
+Food Identity >=95
+Ingredient Geometry >=95
+Vessel / Container Identity >=98
+Plating Topology >=95
+Physical Relationship Fidelity >=95
+Photography >=85
+Semantic Relevance >=85
+Hero Spatial Score >=85
+Appetite Score >=85
 ```
 
-这些信息优先用于**背景语义设计**，但不允许据此改变源图食材结构。
+冲突优先级：
 
-如果用户没提供菜名，读取：
+```text
+Food Identity
+> Major Ingredient Identity
+> Ingredient Geometry
+> Vessel / Packaging
+> Physical Relationships
+> Plating Topology
+> Sauce / Oil / Broth State
+> Visible Count Relationship
+> Material Realism
+> Color
+> Composition
+> Lighting
+> Background
+> Props
+> Atmosphere
+```
+
+后面的设计项绝不能牺牲前面的产品身份项。
+
+---
+
+# 5. Preservation Invariants
+
+必须锁定：
+- 食物类别、主食材和清晰可见的重要辅料；
+- 食材形状、切法、厚度、方向、卷曲、堆叠、层级、分布和主要数量关系；
+- 器皿/包装类型、材质、颜色、形状、边缘、花纹、比例；
+- 摆盘拓扑；
+- 酱汁、红油、汤体、奶油、冰块等可见状态；
+- 手持、餐具接触、托盘/货架/容器等物理关系。
+
+禁止：
+- 增加/删除/替换主要食材；
+- 为了食欲感把肉变多、面变粗、鱼片变大、装饰变豪华；
+- 换器皿、重画包装、重摆盘；
+- 添加原图没有的高级配料；
+- 把产品改成同品类但另一份“更标准”的产品。
+
+读取 `references/fidelity-manifest.md` 与 `references/fidelity-qc.md`。
+
+---
+
+# 6. Region Edit Budget
+
+```text
+Region A — Subject Core: 极低自由度
+Region B — Subject Support: 低到中等自由度
+Region C — Environment: 高自由度
+```
+
+主要创意发生在 Region C。若 Region C 的设计需要牺牲 Region A，必须降低创意强度，而不是改产品。
+
+---
+
+# 7. IMAGE_MODEL Hard Lock
+
+最终 Stage A 编辑提示词前部必须包含同等强度约束：
+
+> **以用户上传的参考图为唯一产品真相。严格锁定原始食物主体、主要食材身份与几何、器皿/包装、摆盘拓扑、酱汁/红油/汤体状态和物理关系。不得为了“更高级”重做、替换、增减或重新摆放主体。主要创意只发生在画布延展、构图、灯光、环境、背景、景深、调色和摄影品质层。**
+
+只写“参考原图/保持一致”不合格。
+
+---
+
+# 8. Category-Semantic Hero Stage
+
+Stage A 是**高级材质舞台上的产品英雄定妆照**，不是把所有食品塞进同一真实门店模板。
+
+必须：
+- 先识别当前食品属性与品类；
+- 从食品自身颜色、温度、材质、烹饪方式和语义推导背景；
+- 建立前景 / Hero / 中背景 / 深背景四层空间；
+- Hero Food 是唯一锐利主角；
+- 可以在主体外部使用少量有依据的品类语义道具，但必须虚化、低对比、不得暗示产品本体新增食材；
+- 冷食不得出现热蒸汽；热食蒸汽必须克制且物理合理；
+- 食欲感来自真实湿润度、油脂/汁水高光、脆/软/冷/热材质，而不是塑料高光和过饱和。
+
+反模板测试：如果换成完全不同食品，背景几乎无需变化，则重新路由。
+
+强制读取：
+- `references/hero-shot-mandate.md`
 - `references/dish-semantic-router.md`
 - `references/cuisine-style-map.md`
 - `references/semantic-background-rules.md`
 
-置信度：
-- `>=0.85`：可采用具体菜品级语义背景；
-- `0.60–0.84`：只采用品类级语义背景；
-- `<0.60`：保守类别级商业环境。
-
-自动猜菜只服务于背景、色彩、道具、环境和摄影情绪，不用于增删食材。
+需要时再读取 `food-modules.md` / `scene-modules.md`。避免一次加载全部参考文档造成指令噪声。
 
 ---
 
-# 8. Food / Scene Routing
+# 9. Photography Mode
 
-读取：
-- `references/food-modules.md`
-- `references/scene-modules.md`
-
-通常只加载：
-- 1 个 primary food/material module；
-- 0–2 个 secondary modules；
-- 1 个 primary scene module。
-
-场景解决“食物在哪里”；菜品语义解决“这个环境应该是什么气质”。
-
----
-
-# 9. Photography Modes
-
-选择一个：
-
-### NATURAL_EDITORIAL
-适合：清鲜、轻食、日料、蛋糕、烘焙、咖啡、水果、沙拉。
-
-### CINEMATIC_EDITORIAL
-默认。适合多数中餐、堂食、热菜、主食。
-
-### DRAMATIC_FOOD_CAMPAIGN
-适合：火锅、烧烤、红油麻辣、夜市和强刺激热菜。
-
-**Cinematic does not mean dark.** 主体保真在任何模式下都不能放松。
-
----
-
-# 10. Anti-Template & Hero-Grade Spatial Background｜背景硬规则
-
-## 10.1 反模板（原有规则，继续生效）
-
-禁止所有热食统一使用：
-- dark wood
-- warm amber
-- generic ceramic props
-- heavy bokeh
-- dark restaurant
-- excessive steam
-
-不同菜品必须有真实语义差异。
-
-每次生成前问：
-
-> 如果把主体换成完全不同的菜，这个背景仍毫无变化也能用吗？
-
-如果答案是“是”，背景过于模板化，应重做。
-
-## 10.2 Hero Shot Mandate｜英雄定妆照硬规则（V5.2 起新增强制项）
-
-读取并强制执行 `references/hero-shot-mandate.md`。要点：
-
-1. **食材 DNA 锁定是第一原则（Priority 0）**——任何背景设计、氛围营造、空间构建、构图策略，一律不得以牺牲食材 DNA 为代价；主体身份/几何/器皿/摆盘漂移即整图判废，先锁死食材，再谈背景；
-2. **高级材质舞台，非真实场所**——背景必须是高级商拍级材质舞台：材质（石材/陶/木/金属/织物）、色彩基调、光影层次从食材属性与调性推导；禁止真实经营场所（面馆/店面/档口/市集/餐厅内景）语境——世界级美食大片是在高级舞台上拍的，不是在店里拍的；
-3. **质感密度与身份锚点**——材质层次 + 核心作料围铺在盘外台面并虚化，共同指向这道菜的身份；禁止空旷棚拍板，也禁止无语境通用影棚；
-4. **氛围与食材调性匹配**——冷食冷调零热气、热食暖调允许克制蒸汽，温度错配即失败；
-5. **世界级英雄定妆照调性**——主体是全场唯一英雄：光池聚焦、轮廓光雕刻、低机位纪念碑感；
-6. **食欲感渲染**——油脂光泽、湿润度、微距质感、温度可视化、「刚做好」状态；验收问句：观者能否在 3 秒内产生「想吃」的生理反应；
-7. **工业级商拍质量**——每一张都达到商业投放标准，不是抽卡式偶发好图；
-8. **所有品类强制遵循**——品类只改变舞台映射，不改变空间与英雄标准，无豁免类别。
-
-验收新增：
+只选一个主模式：
 
 ```text
-Hero Spatial Score >= 85
-Appetite Score >= 85
+NATURAL_EDITORIAL
+CINEMATIC_EDITORIAL
+DRAMATIC_FOOD_CAMPAIGN
 ```
 
-平背景 / 舞台材质与食物调性无关 / 真实场所结构残留 / 作料抢主体 / 温度错配 / 食欲感缺失 / DNA 漂移，任一出现按 `hero-shot-mandate.md` §7 的定向方向重试。
+品类决定模式，不得默认所有图都是深色电影感。`Cinematic does not mean dark.`
 
 ---
 
-# 11. Physical Realism
+# 10. QC + Targeted Retry
 
-保持：
-- gravity
-- liquid behavior
-- steam/smoke origin
-- condensation
-- contact shadows
-- environmental reflections
-- utensil/hand contact
-- perspective
-- scale
+Critical Fail 直接判废：
+- 产品变成另一道菜/另一份产品；
+- 主食材增删替换；
+- 主要几何明显改变；
+- 器皿/包装改变；
+- 重摆盘；
+- 物理关系改变；
+- 为适配 9:16 重做或畸变产品。
 
-热食才允许克制蒸汽；冷饮禁止热气；飞舞食材默认禁用。
-
----
-
-# 12. Production Workflow
-
-在 `PRODUCTION` 状态固定执行：
+通过条件：
 
 ```text
-1. User uploads source image
-2. VISION_MODEL reads the source image
-3. Read explicit user dish information
-4. Build Fidelity Manifest
-5. Resolve dish semantics / confidence
-6. Select food module(s)
-7. Select one scene module
-8. Select semantic route
-9. Select photography mode
-10. Build premium material-stage background direction（执行 hero-shot-mandate.md 四层空间 + 品类高级舞台映射，无真实场所语义）
-11. Assemble references/execution-template.md
-12. IMAGE_MODEL receives original reference image + edit instruction
-13. Generate / edit
-14. VISION_MODEL runs Fidelity QC
-15. VISION_MODEL runs Semantic QC
-16. Targeted retry when required
+Fidelity >=95
+Vessel Fidelity >=98
+Photography >=85
+Semantic >=85
+Hero Spatial >=85
+Appetite >=85
+NO CRITICAL FAILURE
 ```
 
-如果宿主智能体无法把用户图片传给 IMAGE_MODEL，或无法让 VISION_MODEL读取图片，不得宣称生产环境就绪。
+失败只做定向重试：
+- Ingredient Drift
+- Vessel Drift
+- Plating Drift
+- Physical Relationship Drift
+- Weak Photography
+- Generic Background
+- Temperature / Steam Error
+- Excessive Gloss / Smoke
+- 9:16 Composition Error
+
+连续失败时逐步降低主体变换自由度，最终进入 `Ultra-Conservative Subject Mode`。宁可背景克制，也不要牺牲产品忠实度。
+
+读取 `references/retry-policy.md`。
 
 ---
 
-# 13. Quality Control
-
-读取：
-- `references/fidelity-qc.md`
-- `references/semantic-qc.md`
-- `references/retry-policy.md`
-
-最终通过条件：
+# 11. Production Workflow
 
 ```text
-Fidelity Score >= 95
-Photography Score >= 85
-Semantic Score >= 85
-Hero Spatial Score >= 85
-Appetite Score >= 85
-No Fidelity Critical Failure
-No Semantic Critical Failure
-No Flat-Background Failure（平背景/空间层次缺失）
-No Appetite Failure（干涩/发暗/无光泽/无食欲信号）
+User image
+→ Intent Router (A/B)
+→ VISION_MODEL Food DNA
+→ Fidelity Manifest
+→ 9:16 composition plan
+→ category-semantic hero-stage route
+→ IMAGE_MODEL(original reference + Stage A hard lock)
+→ Stage A image
+→ Fidelity + Photography + Semantic + Hero QC
+→ targeted retry if needed
+→ A: deliver Stage A
+→ B: pass the exact Stage A output to PP-food-KV-001
 ```
 
-失败必须按具体错误定向重试，不要随机重抽。
+用户只需要自然语言；不要向用户暴露内部 JSON、Prompt、评分表或路由名。
 
 ---
 
-# 14. PP-food-KV-001 Integration
+# Final Rule
 
-如果同时安装 `PP-food-KV-001`：
-
-- 本 Skill = **Stage A / High-Fidelity Commercial Re-photography Engine**；
-- KV Skill = Stage B；
-- **Stage A 输出必须作为 Stage B 的输入参考图**；
-- 一次完成 VISION_MODEL / IMAGE_MODEL / API 配置即可供两个 Skill 共用。
-
-不要绕过 Stage A 直接从随手拍做激进 KV，除非用户明确接受更低的保真稳定性。
-
----
-
-# Final Command
-
-> **The source food is the real product, not creative raw material.**
->
-> **Change the photography, not the product.**
->
-> **If runtime readiness is unknown: read HANDOFF.md, configure first, wait for “启动”, then produce.**
+> **产品事实永远比视觉创意重要。A 默认出商拍；B 也必须先把 A 做对。所有输出默认 9:16。**
