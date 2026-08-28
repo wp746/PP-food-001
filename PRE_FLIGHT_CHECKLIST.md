@@ -26,11 +26,20 @@ PRODUCTION_GATE = BLOCKED
 
 ## B. Bootstrap Proof
 
-必须准确确认：默认 9:16、默认 A、显式 A 覆盖自动 B、B 必经 Stage A、Food/Geometry/Plating/Physical >=95、Vessel >=98、Hero/Appetite >=85，以及视觉张力与 Fidelity 冲突时降低设计激进度。
+必须准确确认：默认 9:16、默认 A、显式 A 覆盖自动 B、B 必经 Stage A、Food/Geometry/Plating/Physical >=95、Vessel >=98、Hero/Appetite >=85，以及：
+
+```text
+HERO_STAGE_OVERRIDES_GENERIC_VENUE_CONTEXT = TRUE
+CONTROLLED_HERO_REFRAME_ALLOWED = TRUE
+SOURCE_CAMERA_COORDINATES_ARE_FOOD_DNA = FALSE
+MULTI_PRODUCT_HERO_HIERARCHY_REQUIRED = TRUE when applicable
+```
+
+视觉张力与 Fidelity 冲突时降低危险设计动作，不降低 Fidelity；但不得因为“保真”退化成普通店内展示照。
 
 ## C. Declared Runtime Capabilities
 
-静态检查以下能力是否**已配置/可路由**：
+静态检查以下能力是否已配置/可路由：
 
 ```text
 VISION_MODEL_IMAGE_INPUT = PASS / MISSING / UNKNOWN
@@ -55,20 +64,20 @@ RUNTIME_CAPABILITIES_DECLARED = BLOCKED
 PRODUCTION_GATE = BLOCKED
 ```
 
-**不得因为 schema 声明支持就直接写 `RUNTIME_CAPABILITIES_VERIFIED = PASS`。**
+不得因为 schema 声明支持就直接写 `RUNTIME_CAPABILITIES_VERIFIED = PASS`。
 
 ## D. Verified Runtime Profile Check
 
-检查宿主私有持久状态，不在仓库中寻找真实 profile 值。
+检查宿主私有持久状态。
 
-若存在：
+若：
 
 ```text
 RUNTIME_PROFILE_VERIFIED = TRUE
 RUNTIME_PROFILE_FINGERPRINT_MATCH = TRUE
 ```
 
-且 profile scope 覆盖当前所需链路，则：
+且 scope 覆盖当前链路，则：
 
 ```text
 RUNTIME_CAPABILITIES_VERIFIED = PASS
@@ -82,7 +91,7 @@ RUNTIME_CAPABILITIES_VERIFIED = PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
 ```
 
-这不是配置缺失；只表示当前配置尚无真实端到端证据。
+这不是配置缺失，只表示当前配置尚无真实端到端证据。
 
 ## E. Security Check
 
@@ -91,8 +100,6 @@ PRIVATE_PROVIDER_CONFIG_IN_REPO = FALSE
 API_KEY_EXPOSED_IN_NORMAL_CHAT = FALSE
 RUNTIME_PROFILE_STORED_OUTSIDE_REPO = TRUE
 ```
-
-若发现真实 Key / 私有 URL / profile 运行值被写入仓库，停止生产并先清理。
 
 ## F. Ready Decision
 
@@ -104,7 +111,7 @@ RUNTIME_CAPABILITIES_DECLARED = PASS
 PRODUCTION_GATE = PASS
 ```
 
-即可输出 READY，但必须同时报告 evidence level：
+即可：
 
 ```text
 READY
@@ -114,13 +121,13 @@ RUNTIME_CAPABILITIES_VERIFIED = PASS / PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE / FALSE
 ```
 
-如果 `VERIFIED = PENDING`，禁止声称“已 smoke tested / 已端到端验证”。等待用户说“启动”。
+如果 `VERIFIED = PENDING`，禁止声称已 smoke tested / 已端到端验证。
 
 ## G. First Live Verification
 
-若 `FIRST_LIVE_VERIFICATION_REQUIRED = TRUE`，不额外生成测试图。用户启动后的第一笔真实任务兼任验证。
+若 `FIRST_LIVE_VERIFICATION_REQUIRED = TRUE`，不要额外生成测试图。用户启动后的第一笔真实任务兼任验证。
 
-在首次真实任务最终交付前必须实际确认：
+最终交付前实际确认：
 
 ```text
 LIVE_VISION_READ = PASS
@@ -134,17 +141,7 @@ LIVE_OUTPUT_READBACK = PASS
 LIVE_STAGE_A_TO_STAGE_B_PASS_THROUGH = PASS
 ```
 
-成功后：
-
-```text
-RUNTIME_CAPABILITIES_VERIFIED = PASS
-RUNTIME_PROFILE_VERIFIED = TRUE
-FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
-```
-
-并把非秘密 fingerprint 与验证 scope 保存到宿主私有持久状态。
-
-失败则不交付假结果，执行 Recovery。
+成功后更新私有 Runtime Profile；失败则 Recovery。
 
 ## H. Production Gate Per Job
 
@@ -158,6 +155,26 @@ EXECUTION_CONTRACT = PASS
 SOURCE_REFERENCE = CURRENT_USER_IMAGE
 ASPECT_RATIO = 9:16
 LOCK_TARGETS = EXPLICIT
+
+SCENE_CONTEXT_SPLIT = PASS
+DIRECT_SUPPORT_TO_LOCK = RESOLVED
+GENERIC_VENUE_CONTEXT_TO_TRANSLATE = RESOLVED
+
+HERO_REFRAME_PLAN = PASS
+MULTI_PRODUCT_HERO_PLAN = PASS / NOT_APPLICABLE
+HERO_STAGE_PLAN = PASS
+L1_PLAN = EXPLICIT
+L2_HERO_LIGHT_POOL_PLAN = EXPLICIT
+L3_MATERIAL_DEPTH_PLAN = EXPLICIT
+L4_DEEP_RECESSION_PLAN = EXPLICIT_WITH_2_OR_MORE_DEPTH_CUES
+```
+
+如果当前主体是面包本体，还必须：
+
+```text
+BAKERY_BREAD_ROUTE = LOADED
+SELECTED_STAGE_A_ROUTE = BAKERY_BREAD_HERO
+COFFEE_LIFESTYLE_DEFAULT = OFF
 ```
 
 如果用户请求 B，还必须确认：
@@ -169,11 +186,23 @@ STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 
 缺任何一项 → 不生成，先修复缺失项。
 
-## I. Profile Invalidation / Recovery
+## I. Post-Generation Hero Gate
 
-以下任一发生：配置 fingerprint 变化、Credential 失效、读图失败、reference edit 失败、输出不可读、Stage A→B 传递失败。
+VISION_MODEL QC 必须明确判断：
 
-必须：
+```text
+HERO_SPATIAL_CRITICAL_FAILURE = NONE
+GENERIC_DISPLAY_CASE_LOOK = FALSE unless identity-critical
+TWO_LAYER_FLATNESS = FALSE
+FAKE_L4 = FALSE
+MULTI_PRODUCT_INVENTORY_LOOK = FALSE when applicable
+```
+
+否则即使 Food Fidelity 高，也不得交付；按 `semantic-qc.md` 定向重试。
+
+## J. Profile Invalidation / Recovery
+
+配置 fingerprint 变化、Credential 失效、读图失败、reference edit 失败、输出不可读、Stage A→B 传递失败时：
 
 ```text
 RUNTIME_PROFILE_VERIFIED = FALSE
@@ -182,4 +211,4 @@ RUNTIME_STATE = SETUP_GATE
 PRODUCTION_GATE = BLOCKED
 ```
 
-上下文压缩、版本变化或 P0 规则无法准确复述时也重新 BOOTSTRAP / Pre-flight，不凭旧摘要继续。
+上下文压缩、版本变化或 P0 规则无法准确复述时也重新 BOOTSTRAP / Pre-flight。
