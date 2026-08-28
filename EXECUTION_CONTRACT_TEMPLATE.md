@@ -29,8 +29,35 @@ VISIBLE_FACTS =
 - sauce / oil / broth / cream / ice / crust state:
 - physical contacts / supports:
 
+SURFACE_STATE_LOCK =
+- base color / gradient:
+- browning level:
+- char level:
+- cooking doneness:
+- gloss / matte level:
+- moisture level:
+- sauce / oil coverage:
+- crust / skin state:
+- crack / scoring state:
+- cream / frosting / powder state if applicable:
+- condensation / frost / translucency if applicable:
+- rule: REVEAL_EXISTING_PROPERTY_ONLY
+
+TOPOLOGY_COMPLETION_PLAN =
+- applicable: YES / NO
+- completion confidence: HIGH / MEDIUM / LOW
+- cropped / incomplete target:
+- identity to continue:
+- geometry / cut / scale to continue:
+- orientation / layer / overlap to continue:
+- density / count relationship to continue:
+- source surface state to continue:
+- direct support / container continuation:
+- unsupported content forbidden:
+- LOW confidence => ENVIRONMENT_EXTENSION_ONLY
+
 REGION_BUDGET =
-- Region A Subject Core: VERY_LOW
+- Region A Subject Core + Surface State: VERY_LOW
 - Region B Direct Support: LOW
 - Region C Generic Environment: HIGH
 
@@ -40,6 +67,7 @@ LOCK_TARGETS =
 - Vessel / Container >=98
 - Plating / Arrangement >=95
 - Physical Relationship >=95
+- Source Surface / Material State = LOCKED
 
 CATEGORY_SEMANTICS =
 - food_category:
@@ -79,25 +107,29 @@ HERO_STAGE_PLAN =
 
 CREATIVE_SCOPE =
 - canvas extension / 9:16 composition
+- topology-preserving completion when evidence supports it
 - controlled Hero Reframe
 - professional lighting
 - four-layer depth / subject separation
 - category-semantic material stage
 - background translation
-- color grading
-- realistic appetite rendering
+- color grading around source-true food color
+- realistic appetite readability, not appetite mutation
 
 FORBIDDEN =
 - add/remove/replace major ingredients
 - change identity-defining geometry
+- change browning / char / doneness / gloss / moisture / sauce coverage / crust state beyond source
+- exaggerate cracks / scoring / burst openings
 - replace vessel/package/direct support without permission
 - redesign package text/logo
 - re-plate/re-stack/move product units
+- use completion as permission to beautify or invent food
 - change count / overlap order
 - change meaningful physical relationships
-- invent unsupported heat/steam/gloss
+- invent unsupported heat/steam/gloss/condensation/garnish
 - adapt 9:16 by distorting or rebuilding product
-- preserve a generic venue merely because it exists in the source
+- preserve a generic venue merely because it exists in source
 - treat exact source camera coordinates as Food DNA
 - create extreme unsupported low-angle / wide-angle views
 - give every product unit equal visual weight when multi-product Hero hierarchy is possible
@@ -113,13 +145,15 @@ TARGETED_RETRY_ONLY = TRUE
 
 ```text
 1. Subject / Direct-Support Lock
-2. Scene Context Split
-3. Category Route
-4. Hero Reframe Plan
-5. Multi-Product Hero Plan
-6. Four-Layer Hero Stage
-7. Appetite / Lighting / Color
-8. Strict Negatives
+2. Surface / Material State Lock
+3. Topology Completion Plan
+4. Scene Context Split
+5. Category Route
+6. Hero Reframe Plan
+7. Multi-Product Hero Plan
+8. Four-Layer Hero Stage
+9. Appetite / Lighting / Color
+10. Strict Negatives
 ```
 
 不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt。
@@ -127,6 +161,10 @@ TARGETED_RETRY_ONLY = TRUE
 `source camera coordinates` 不属于默认锁定项；锁定的是产品视图几何、排列、直接承载和可信透视。
 
 `generic venue context` 不属于默认锁定项；除非 identity-critical，否则转译为品类原生高级材质舞台。
+
+`appetite rendering` 不得提高源产品属性强度；只允许让源图已有属性在更好的摄影下更易读。
+
+`topology completion` 只允许延续同一份产品，不提供重新摆盘或重新烹饪权限。
 
 ## B Handoff Fields
 
