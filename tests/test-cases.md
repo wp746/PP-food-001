@@ -8,8 +8,8 @@ FAIL：为了高级感加减食材、换器皿、重摆盘或把产品重做成�
 
 ## Test 02｜默认 9:16
 输入：横图、方图、竖图各一张。
-PASS：最终均为 9:16，关键产品完整，靠画布延展/背景重构/受控 Hero Reframe 适配。
-FAIL：拉伸、压扁、裁掉关键产品区域或重做产品来适配竖版。
+PASS：最终均为严格 9:16 竖版，关键产品完整，靠画布延展/背景重构/受控 Hero Reframe 适配。
+FAIL：拉伸、压扁、裁掉关键产品区域、重做产品适配竖版，或最终交付任何非 9:16 成片。
 
 ## Test 03｜A 默认路由
 输入：用户只上传美食图，未给 A/B，也无明显 KV 商业信息。
@@ -49,6 +49,7 @@ CREATIVE_SCOPE
 FORBIDDEN
 HERO_REFRAME_PLAN
 MULTI_PRODUCT_HERO_PLAN
+BACKGROUND_ARCHITECTURE_PLAN
 ```
 
 FAIL：未建立当前任务合同就直接调用 IMAGE_MODEL。
@@ -92,6 +93,7 @@ Photography >=85
 Semantic >=85
 Hero Spatial >=85
 Appetite >=85
+OUTPUT_ASPECT_RATIO = 9:16
 NO CRITICAL FAILURE
 ```
 
@@ -100,7 +102,7 @@ PASS：降低背景、构图或摄影激进度，保留产品真相。
 FAIL：为了“真正高级”牺牲 Food DNA。
 
 ## Test 18｜定向重试
-PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Surface State / Photography / Background / Temperature / Integration / Hero Reframe / Multi-Product Hierarchy / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
+PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Surface State / Photography / Background / Temperature / Integration / Hero Reframe / Multi-Product Hierarchy / Background Architecture / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
 FAIL：每次随机整张重抽，导致已正确区域再次漂移。
 
 ## Test 19｜Fail Closed
@@ -123,7 +125,7 @@ FAIL：所有单体视觉权重完全相同而继续像库存陈列；或为了�
 
 ## Test 23｜Bakery Bread 独立路由
 输入：贝果、碱水面包、恰巴塔、欧包等“面包为主体”的烘焙产品。
-PASS：进入 `BAKERY_BREAD_HERO` 路由，以原图已有脆壳/裂口/内瓤/烘焙色为视觉核心；背景由石材、烘焙金属、纸/布等克制材质和真正四层纵深构成；摄影可到 CINEMATIC_EDITORIAL / PREMIUM_BAKERY_CAMPAIGN。
+PASS：进入 `BAKERY_BREAD_HERO` 路由，以原图已有脆壳/裂口/内瓤/烘焙色为视觉核心；背景由品类原生材质建筑舞台与真正四层纵深构成；摄影可到 CINEMATIC_EDITORIAL / PREMIUM_BAKERY_CAMPAIGN。
 FAIL：因为“烘焙”与咖啡同组而默认加入咖啡豆、手冲壶、咖啡馆 Lifestyle 皮肤，或只形成原木+亚麻+黄铜夹子的通用烘焙模板。
 
 ## Test 24｜Hero Spatial Anti-False-Pass
@@ -155,4 +157,34 @@ FAIL：借“补全”新增原图没有证据的食材种类、改变主料结�
 PASS：只有在可见证据足以支持自然延续时才补全主体；低置信度区域优先用环境延展、裁切策略或保守遮挡解决。
 FAIL：看不见也无法推断的产品区域被模型自由创造。
 
-以上 Test 25–28 **适用于所有食品品类**，包括面食、米食、肉类、卤味、烧烤、海鲜、烘焙、甜品、水果、饮品、火锅、包装食品等。
+## Test 29｜9:16 Final Delivery Hard Gate
+输入：任意 Stage A 请求，源图比例任意。
+PASS：IMAGE_MODEL 最终输出画布必须为严格竖版 `width:height = 9:16`；若第一次模型输出不是 9:16，系统不得交付，必须通过 outpaint / canvas correction / targeted retry 修正到 9:16，同时继续锁住产品。
+FAIL：输出 16:9、4:3、1:1、接近 9:16 但不准确，或因为源图横向就沿用横构图。
+
+```text
+OUTPUT_ASPECT_RATIO_EXACT = 9:16
+NON_9_16_DELIVERY = CRITICAL_FAILURE
+```
+
+## Test 30｜Background Architecture > Prop Styling
+输入：任意需要高级 Hero Stage 的食品，尤其是开放展示柜、桌面、普通门店环境来源图。
+PASS：即使删除全部辅助道具，背景仍能依靠**材质平面、空间体块、前后遮挡、台面高差、光影切面、反射/吸光差异和深度递进**成立；道具只占辅助角色，且可为零。
+FAIL：高级感主要依赖亚麻布、夹子、咖啡杯、陶罐、麦穗、香料碟等“道具包”；去掉道具后只剩普通木柜、虚墙或空背景。
+
+必须建立：
+
+```text
+BACKGROUND_ARCHITECTURE_PLAN
+- primary_material_planes: 2-3
+- near/mid/deep spatial masses
+- height/depth variation
+- light-cut / shadow architecture
+- reflection vs absorption relationship
+- category-derived color/material logic
+- props: OPTIONAL, subordinate
+```
+
+如果背景第一读感是“布置了几个高级道具”，而不是“为该食品专门设计的商业摄影舞台”，则 FAIL。
+
+以上 Test 25–30 **适用于所有食品品类**，包括面食、米食、肉类、卤味、烧烤、海鲜、烘焙、甜品、水果、饮品、火锅、包装食品等。
