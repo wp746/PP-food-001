@@ -1,249 +1,200 @@
 # Bakery Bread Hero Route
 
-本文件是 Stage A 面包类产品的**品类专属覆盖规则**。
-
-当当前产品的主体身份是面包，而不是咖啡饮品、蛋糕甜品或包装零售商品时，必须优先使用本文件：
+面包主体强制使用：
 
 ```text
 SELECTED_STAGE_A_ROUTE = BAKERY_BREAD_HERO
-```
-
-本路由覆盖 `cuisine-style-map.md` 中旧的“咖啡 / 烘焙”混合语义。**不要因为产品来自面包店/咖啡店，就自动调用咖啡豆、手冲壶、咖啡馆 Lifestyle 或通用原木+亚麻+黄铜皮肤。**
-
-同时本文件受 `surface-state-lock.md` 最高约束：
-
-```text
 SOURCE_BREAD_SURFACE_STATE > BAKERY_APPETITE_STYLING
+BACKGROUND_ARCHITECTURE > BAKERY_PROPS
 ```
 
-## 1. Trigger
+本路由覆盖旧“咖啡 / 烘焙”混合语义。不要因为产品来自面包店/咖啡店，就自动调用咖啡豆、手冲壶、亚麻布、黄铜夹子、麦穗或咖啡馆 Lifestyle。
 
-典型触发：
-- 贝果 / 碱水贝果 / Pretzel-style bread；
-- 恰巴塔 / Ciabatta；
-- 欧包 / 酸种 / Sourdough；
-- 法棍 / 硬欧；
-- 普通餐包 / 手作面包；
-- 以“面包本体”为第一视觉主体的现烤烘焙产品。
+---
 
-若产品主体是咖啡/茶饮 → 走咖啡饮品路线。
+## 1. Product Truth / Surface Lock
 
-若主体是蛋糕、慕斯、奶油甜品 → 走甜品路线。
-
-若主体是密封包装零售食品 → 走包装/零售路线。
-
-## 2. Product Truth / DNA + Surface Lock
-
-面包类高风险漂移点：
+必须锁定：
 - 单体外轮廓；
 - 圆环/长条/块状几何；
-- 割包、爆口、裂纹、白色开口的位置与比例；
-- **源图实际表皮深浅与烘烤色**；
-- **源图实际焦化程度**；
-- **源图实际表面光泽/哑光等级**；
-- 内瓤可见范围与组织；
+- 割包/爆口/裂纹/白色开口位置、宽度、比例；
+- 源图真实表皮深浅与烘烤色；
+- 源图真实焦化程度；
+- 源图真实光泽/哑光等级；
+- 内瓤可见范围；
 - 多产品数量、重叠、阵列关系；
-- 托盘/木箱/烘焙纸等直接承载关系。
+- 木箱/托盘/烘焙纸等直接承载关系。
 
-不得把不规则手作面包“标准化”成更完美、更对称的另一批产品。
+不得把手作面包标准化成更完美的另一批产品，也不得为了“更香、更脆、更高级”加深烘烤色、焦化、油亮或裂纹。
 
-不得为了“更香、更脆、更高级”把原图表皮做得更深、更焦、更红、更亮、更厚壳。
+---
 
-正确目标：
+## 2. Bread Hero Material Language
 
-> **同样的烘烤状态，被更好的灯光准确拍出来。**
-
-## 3. Hero Material Language
-
-面包的高级感来自：
+面包高级感来自：
 
 ```text
-SOURCE-TRUE CRUST / CRACK / CRUMB / BAKING HEAT MEMORY
+SOURCE-TRUE CRUST
++ CRACK / SCORING
++ CRUMB
++ BAKING MATERIAL MEMORY
++ ARCHITECTURAL DEPTH
 ```
 
-而不是咖啡馆道具，也不是把面包本身重新烤深。
+不是咖啡馆道具。
 
-### Primary material stage
+### Primary materials
+根据产品选择 2–3 种主材质并让它们形成**空间平面/体块**：
+- warm grey honed limestone / travertine；
+- fine warm-grey stone；
+- smoked / bronzed baking steel；
+- dark neutral baking metal；
+- restrained parchment only when useful；
+- original wood tray only when it is true direct support.
 
-根据面包本身选 2–3 种主材质，不要全堆：
-- warm honed limestone / travertine；
-- warm grey fine stone；
-- dark or bronzed baking steel；
-- smoked neutral metal；
-- restrained parchment / baking paper；
-- low-contrast linen only when compositionally useful；
-- original wood tray when it is the true direct support.
+### Color logic
+环境围绕源图真实面包颜色设计：
+- source crust brown / amber；
+- source pale split / crumb；
+- warm-neutral grey；
+- restrained bronze / smoked-metal highlight；
+- off-white only as controlled relief.
 
-### Material color logic
+禁止统一橙棕滤镜。
 
-环境色由**源图真实面包颜色**提取：
-- source crust brown / amber level；
-- source crumb / pale split tone；
-- warm neutral grey；
-- muted bronze / baking-metal highlights；
-- restrained off-white.
+---
 
-禁止为了舞台配色把面包统一染成更深橙棕。
+## 3. Bakery Background Architecture — mandatory
+
+面包 Hero 背景必须先设计建筑关系，再考虑道具。
+
+```text
+BAKERY_BACKGROUND_ARCHITECTURE =
+- primary material planes: 2-3
+- hero support plane
+- raised / offset mid-depth slab or panel
+- deeper recessed plane / shadow void
+- height variation
+- perspective/occlusion relationship
+- light-cut / grazing-light structure
+- reflective-vs-absorptive material contrast
+- clean vertical negative space for KV
+- props optional
+```
+
+### 对碱水 / Bagel-like browned bread
+推荐结构方向：
+- 保留原木箱/托盘作为 direct support；
+- 外部环境转成 warm-grey honed stone + smoked/bronzed baking-metal 的层叠空间；
+- L3 可使用明显后退的暖灰石材台阶/斜板或烘焙金属平面；
+- L4 使用第二深度平面 + 凹入暗区/更深金属或石材体块，形成至少两个后退线索；
+- 通过狭长 grazing light / shadow edge 切出空间；
+- 上方留干净负空间，不做一堵暖棕虚墙。
+
+**默认不要出现：**
+- 亚麻布；
+- 黄铜夹子；
+- 麦穗；
+- 咖啡器具；
+- 陶罐；
+- “烘焙图库”小道具组合。
+
+除非当前构图确实需要且视觉权重极低。
+
+### Anti-prop-kit test
+
+> 如果删掉所有道具，背景是否仍然像专门为这批面包设计的高预算商业摄影舞台？
+
+如果不是 → FAIL。
+
+---
 
 ## 4. Subtype Art Direction
 
-### A. 碱水 / Pretzel / Bagel-like browned bread
-
-视觉核心：
-- **严格匹配源图已有的焦糖/琥珀深浅，不自动加深**；
-- 用受控高光沿圆弧滑动，揭示而非制造光泽；
-- 白色爆口/裂纹保持源图位置、宽度、比例和自然程度；
-- 圆环或扭结几何形成节奏，但不重新塑形。
-
-推荐舞台：
-- warm grey honed stone；
-- smoked / bronzed baking metal；
-- 少量纸/布柔化硬材质；
-- 深处多层中性暖灰与烘焙棕光影退进。
+### A. 碱水 / Pretzel / Bagel-like
+视觉核心：源图真实焦糖/琥珀深浅、白色裂口、圆环几何和现有表皮光泽。
 
 灯光：
 - 45° large soft key；
-- rear-side rim 精准勾白色裂口和圆弧；
-- controlled specular line revealing the **existing** crust finish；
-- product light pool 明显强于背景。
+- rear-side rim 勾白色裂口与圆弧；
+- controlled specular line 只揭示已有壳面；
+- Hero light pool 明显强于背景。
 
-避免：
-- 咖啡豆、手冲壶、咖啡杯默认入场；
-- 木墙 + 亚麻布 + 黄铜夹子三件套；
-- 平面暖棕墙；
-- 过量面粉把碱水表皮做成欧包；
-- 强行蒸汽；
-- 把源图中度烘烤做成深焦黑亮壳；
-- 把自然裂纹夸张成全新爆口。
+禁止：深烤化、黑亮壳、裂纹夸大、假蒸汽。
 
 ### B. 恰巴塔 / 欧包 / 酸种 / 法棍
+突出源图已有脆壳、裂纹/割口、手作不规则几何；若有切面，只揭示真实气孔，不重做更漂亮的孔洞。
 
-视觉核心：
-- 源图已有脆壳纹理；
-- 源图已有裂纹/割口；
-- 手作不规则几何；
-- 若源图可见切面，则强调真实气孔/内瓤，不得重新生成更“漂亮”的孔洞。
-
-推荐舞台：
-- limestone / travertine；
-- dark baking steel；
-- parchment；
-- restrained flour memory only when semantically safe and kept outside product.
-
-灯光：侧后方向光雕刻源图已有壳纹与裂口，背景更克制、更建筑化，不做咖啡馆 Lifestyle。
+背景偏 limestone / travertine + baking steel 的建筑化关系，非咖啡馆 Lifestyle。
 
 ### C. 柔软餐包 / 奶香面包
+可用更明亮浅暖石材与柔和低反差平面，但仍要有 L1/L2/L3/L4，不得退化成浅色背景板。
 
-视觉核心：
-- 源图已有柔软体积；
-- 源图真实烘烤顶部渐变；
-- 源图真实轻薄光泽；
-- 软与暖。
+---
 
-舞台可更明亮：浅暖石材 + 柔和织物 + 烘焙金属细节，但仍必须有四层空间，不得退化成浅色背景板。
-
-## 5. Multi-Product Hero Plan
-
-面包常以整盘/整箱出现。
-
-必须建立：
+## 5. Multi-Product Hero
 
 ```text
 PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER
 SUPPORTING_PRODUCT_FIELD
 ```
 
-规则：
-- 不移动产品；
-- 不减少数量；
-- 不重排；
-- 不复制；
-- 从原图已经存在的前景单体/小簇中选 Hero；
-- 用 light pool、rim、局部锐度、对比、景深建立主次；
-- 后方阵列逐级退入景深，但身份仍可读。
+不移动、不减少、不复制、不重排；只用 light pool、rim、局部锐度、对比、DOF 建立主次。
 
-如果所有面包视觉权重一样，画面首先读成“库存陈列”，Hero FAIL。
+所有单体等权、首先读成库存陈列 → FAIL。
+
+---
 
 ## 6. Four-Layer Bakery Stage
 
 ### L1
-近相机的托盘边缘、烘焙纸边、低对比工具边缘等，重虚化，形成空间入口。
+近相机的托盘边缘/舞台边缘/抽象材质片，重虚化；不强制放道具。
 
 ### L2
-面包 Hero。最锐、最亮、最具**源图真实材质可读性**，处于 light pool。
+面包 Hero，最锐、最亮、源图真实材质可读。
 
 ### L3
-明显后退的烘焙金属、石材、纸/布或兼容器物，中虚化；必须和 L2、L4 都能看出距离差。
+明显后退的石材/烘焙金属材质平面或体块，中虚化。
 
 ### L4
-至少两个可感知的后退材质/光影平面，进入更深的暖灰/烘焙棕中性空间并保留干净负空间。
+至少两个更深的材质/光影线索 + 负空间。
 
-**单一棕色虚墙、单块灰背景、一团 bokeh 不算 L4。**
+单一棕色虚墙、单块灰板、一团 bokeh 都不算 L4。
+
+---
 
 ## 7. Photography Mode
 
-面包主体默认为：
+默认：
 
 ```text
 CINEMATIC_EDITORIAL
 ```
 
-当原图为多产品阵列、需要更强广告英雄感时：
+多产品广告英雄阵列：
 
 ```text
 PREMIUM_BAKERY_CAMPAIGN
 ```
 
-`NATURAL_EDITORIAL` 只在产品本身轻盈、明亮、生活方式语义明显且仍能满足 Hero Spatial >=85 时使用。
+“更电影”只允许来自光、空间、镜头和材质，不允许来自更深烤色。
 
-“更电影”不等于“更深烤色”。
+---
 
-## 8. Appetite Signals
-
-只提高**摄影可读性**，不提高属性强度：
-- source-matched crust sheen；
-- source-matched shell highlight；
-- source-matched scoring / crack relief；
-- real crumb contrast；
-- fresh-baked softness only where visible；
-- slight baking warmth in **light**, not in product color and not fake steam.
-
-面包食欲核心：
-
-> **让原本的壳、裂口、内里更好看见，而不是把壳重新烤一遍。**
-
-避免：
-- 塑料亮膜；
-- 油刷感过重；
-- 表皮统一镜面；
-- 烘烤色加深；
-- 焦化加重；
-- 裂纹夸大；
-- 凭空出现黄油、糖粉、芝麻、奶油、坚果等。
-
-## 9. Anti-Template / Anti-Mutation Check
-
-生成前必须问：
-
-1. 如果把当前面包换成咖啡，这套舞台是否几乎不用改？如果是 → FAIL。
-2. 如果去掉面包，只剩“原木 + 亚麻 + 黄铜夹子”，是否仍像通用烘焙图库？如果是 → FAIL。
-3. 舞台是否明确在服务当前面包的**源图真实壳色、裂口、几何和烘焙状态**？如果否 → 重路由。
-4. 输出面包是否比源图更深、更焦、更亮、更爆口？如果是 → Surface State FAIL。
-
-## 10. Acceptance
-
-除全局 Stage A 门槛外，面包 Hero 必须满足：
+## 8. Acceptance
 
 ```text
+OUTPUT_ASPECT_RATIO_EXACT = 9:16
 BAKERY_BREAD_ROUTE = PASS
 SOURCE_BREAD_SURFACE_STATE = PASS
+BACKGROUND_ARCHITECTURE = PASS
+PROP_KIT_DEPENDENCY = FALSE
 COFFEE_LIFESTYLE_CONTAMINATION = FALSE
 MULTI_PRODUCT_HERO_HIERARCHY = PASS when applicable
 FOUR_LAYER_BAKERY_STAGE = PASS
-PRIMARY_CRUST_LIGHTING = PASS
 GENERIC_DISPLAY_CASE_LOOK = FALSE
 ```
 
 目标：
 
-> **同一份、同一烘烤状态的真实面包被世界级商业摄影团队重新拍摄，而不是把普通展示柜照片加暖光，也不是重新生成一批烤得更深的面包。**
+> **同一份、同一烘烤状态的真实面包，被世界级商业摄影团队放入为其专门设计的材质建筑舞台中重新拍摄。**
