@@ -26,27 +26,11 @@ PRODUCTION_GATE = BLOCKED
 
 ## B. Bootstrap Proof
 
-必须准确确认：
+必须准确确认：默认 9:16、默认 A、显式 A 覆盖自动 B、B 必经 Stage A、Food/Geometry/Plating/Physical >=95、Vessel >=98、Hero/Appetite >=85，以及视觉张力与 Fidelity 冲突时降低设计激进度。
 
-```text
-DEFAULT_ASPECT_RATIO = 9:16
-DEFAULT_MODE = A
-EXPLICIT_A_OVERRIDES_AUTO_B = TRUE
-B_REQUIRES_STAGE_A_PASS = TRUE
-Food Identity >=95
-Ingredient Geometry >=95
-Vessel / Container >=98
-Plating >=95
-Physical Relationship >=95
-Hero Spatial >=85
-Appetite >=85
-```
+## C. Declared Runtime Capabilities
 
-以及：视觉张力与产品保真冲突时降低设计激进度，不降低 Fidelity。
-
-## C. Runtime Capabilities
-
-仅确认状态，不在普通对话回显完整密钥：
+静态检查以下能力是否**已配置/可路由**：
 
 ```text
 VISION_MODEL_IMAGE_INPUT = PASS / MISSING / UNKNOWN
@@ -58,29 +42,111 @@ IMAGE_MODEL_OUTPUT_TO_AGENT = PASS / MISSING / UNKNOWN
 STAGE_A_OUTPUT_CAN_FEED_STAGE_B = PASS / MISSING / UNKNOWN
 ```
 
-只有全部 PASS 才允许 READY。
+全部 PASS：
 
-## D. Security Check
+```text
+RUNTIME_CAPABILITIES_DECLARED = PASS
+```
+
+任一 MISSING/UNKNOWN：
+
+```text
+RUNTIME_CAPABILITIES_DECLARED = BLOCKED
+PRODUCTION_GATE = BLOCKED
+```
+
+**不得因为 schema 声明支持就直接写 `RUNTIME_CAPABILITIES_VERIFIED = PASS`。**
+
+## D. Verified Runtime Profile Check
+
+检查宿主私有持久状态，不在仓库中寻找真实 profile 值。
+
+若存在：
+
+```text
+RUNTIME_PROFILE_VERIFIED = TRUE
+RUNTIME_PROFILE_FINGERPRINT_MATCH = TRUE
+```
+
+且 profile scope 覆盖当前所需链路，则：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PASS
+FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
+```
+
+否则：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
+```
+
+这不是配置缺失；只表示当前配置尚无真实端到端证据。
+
+## E. Security Check
 
 ```text
 PRIVATE_PROVIDER_CONFIG_IN_REPO = FALSE
 API_KEY_EXPOSED_IN_NORMAL_CHAT = FALSE
+RUNTIME_PROFILE_STORED_OUTSIDE_REPO = TRUE
 ```
 
-若发现真实 Key / 私有 URL 被写入仓库，停止生产并先清理凭据。
+若发现真实 Key / 私有 URL / profile 运行值被写入仓库，停止生产并先清理。
 
-## E. Ready Output
+## F. Ready Decision
 
-全部通过后输出：
+满足：
+
+```text
+BOOTSTRAP_READ = PASS
+RUNTIME_CAPABILITIES_DECLARED = PASS
+PRODUCTION_GATE = PASS
+```
+
+即可输出 READY，但必须同时报告 evidence level：
 
 ```text
 READY
 RUNTIME_STATE = READY_WAITING_FOR_START
+RUNTIME_CAPABILITIES_DECLARED = PASS
+RUNTIME_CAPABILITIES_VERIFIED = PASS / PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE / FALSE
 ```
 
-然后等待用户说“启动”。
+如果 `VERIFIED = PENDING`，禁止声称“已 smoke tested / 已端到端验证”。等待用户说“启动”。
 
-## F. Production Gate Per Job
+## G. First Live Verification
+
+若 `FIRST_LIVE_VERIFICATION_REQUIRED = TRUE`，不额外生成测试图。用户启动后的第一笔真实任务兼任验证。
+
+在首次真实任务最终交付前必须实际确认：
+
+```text
+LIVE_VISION_READ = PASS
+LIVE_REFERENCE_EDIT = PASS
+LIVE_OUTPUT_READBACK = PASS
+```
+
+若当前任务为 B，还必须：
+
+```text
+LIVE_STAGE_A_TO_STAGE_B_PASS_THROUGH = PASS
+```
+
+成功后：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PASS
+RUNTIME_PROFILE_VERIFIED = TRUE
+FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
+```
+
+并把非秘密 fingerprint 与验证 scope 保存到宿主私有持久状态。
+
+失败则不交付假结果，执行 Recovery。
+
+## H. Production Gate Per Job
 
 每个任务调用 IMAGE_MODEL 前必须确认：
 
@@ -103,12 +169,17 @@ STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 
 缺任何一项 → 不生成，先修复缺失项。
 
-## G. Recovery
+## I. Profile Invalidation / Recovery
 
-连接失效、上下文压缩、版本变化或 P0 规则无法准确复述：
+以下任一发生：配置 fingerprint 变化、Credential 失效、读图失败、reference edit 失败、输出不可读、Stage A→B 传递失败。
+
+必须：
 
 ```text
+RUNTIME_PROFILE_VERIFIED = FALSE
+RUNTIME_CAPABILITIES_VERIFIED = PENDING / BLOCKED
 RUNTIME_STATE = SETUP_GATE
+PRODUCTION_GATE = BLOCKED
 ```
 
-重新 BOOTSTRAP / Pre-flight，不凭旧摘要继续。
+上下文压缩、版本变化或 P0 规则无法准确复述时也重新 BOOTSTRAP / Pre-flight，不凭旧摘要继续。
