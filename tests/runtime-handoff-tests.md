@@ -7,12 +7,25 @@ PASS：优先读取 `BOOTSTRAP.md`，按 Mandatory Read Order 完成加载。
 FAIL：只看 `SKILL.md` 摘要、凭经验挑几个 references 后直接生产。
 
 ## R02｜Cold-Start Core 不得选择性跳过
-PASS：`REQUIRED_READ_SET.md` 中 `COLD_START_ALWAYS_LOAD` 全部读取完成，并通过读取证明。
-FAIL：因为“看起来不相关”自行跳过 fidelity / hero / retry 中任一核心必读项。
+PASS：`REQUIRED_READ_SET.md` 中 `COLD_START_ALWAYS_LOAD` 全部读取完成，并通过读取证明，包括：
+- fidelity manifest / QC；
+- `surface-state-lock.md`；
+- hero mandate；
+- retry policy。
+
+FAIL：因为“看起来不相关”自行跳过任一核心必读项。
 
 ## R03｜读取证明不是一句“已读完”
-PASS：Pre-flight 能准确返回：当前 VERSION、默认 9:16、A/B 路由、五项 Fidelity 阈值、Hero/Appetite 阈值、B 必经 A、定向重试原则。
-FAIL：只能泛化总结“高保真商拍”，无法复述硬门槛。
+PASS：Pre-flight 能准确返回：当前 VERSION、默认 9:16、A/B 路由、五项 Fidelity 阈值、Hero/Appetite 阈值、B 必经 A、定向重试原则，以及：
+
+```text
+SOURCE_SURFACE_STATE > APPETITE_ENHANCEMENT
+TOPOLOGY_PRESERVING_COMPLETION_ONLY = TRUE
+```
+
+并能解释：食欲感增强只能提升摄影可读性，不能把原产品火候/熟度/焦化/光泽/湿润等属性推强；装盘没拍全只能延续同一份产品拓扑。
+
+FAIL：只能泛化总结“高保真商拍”，无法复述这些硬门槛。
 
 ## R04｜Mandatory Read 未完成则 Fail Closed
 PASS：任一必读项缺失、不可访问或无法确认时 `PRODUCTION_GATE = BLOCKED`。
@@ -50,18 +63,16 @@ RUNTIME_CAPABILITIES_VERIFIED = PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
 ```
 
-这里的 `PRODUCTION_GATE = PASS` 只表示“配置足以开始真实生产验证”，不等于端到端链路已经验证。
-
 ## R07｜首次真实生产调用兼任一次性验证
 当 `FIRST_LIVE_VERIFICATION_REQUIRED = TRUE` 时，不额外生成无业务价值的测试图。
 
-用户启动后的第一笔真实 A/B 任务必须用实际链路验证：
+第一笔真实 A/B 任务必须用实际链路验证：
 - VISION_MODEL 能真实读取当前用户图；
 - IMAGE_MODEL 能真实接收 reference image 并返回结果；
 - VISION_MODEL / Agent 能真实读取生成结果；
 - 若任务为 B，Stage A PASS 图能真实传给 Stage B。
 
-在该任务最终交付前，以上实际链路必须成功。成功后才可写：
+成功后才可写：
 
 ```text
 RUNTIME_CAPABILITIES_VERIFIED = PASS
@@ -70,7 +81,7 @@ FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
 ```
 
 ## R08｜已验证 Runtime Profile 可跨会话复用
-已验证 profile 必须保存在**宿主私有、本地/持久状态**，不得提交仓库。
+已验证 profile 必须保存在宿主私有、本地/持久状态，不得提交仓库。
 
 如果当前非秘密配置指纹与已验证 profile 一致：
 
@@ -89,19 +100,15 @@ Fingerprint 可由非秘密运行身份生成，例如：模型标识、连接�
 禁止把 API Key / Token / 完整私有 URL / 用户凭据写入 profile fingerprint 或仓库。
 
 ## R10｜配置变化必须使旧验证失效
-以下任一变化导致 fingerprint 不匹配时：
+视觉模型、图片模型、参考图编辑路由、Stage A→B pass-through 路由或连接身份变化导致 fingerprint 不匹配时：
 
 ```text
 RUNTIME_CAPABILITIES_VERIFIED = PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
 ```
 
-包括视觉模型、图片模型、参考图编辑路由、Stage A→B pass-through 路由或连接身份发生变化。
-
 ## R11｜真实调用失败立即使 Profile 失效
-任何已验证 profile 在实际生产中出现以下失败：读图失败、reference edit 失败、凭据失效、输出不可读、A→B 传递失败。
-
-必须：
+读图、reference edit、凭据、输出读取或 A→B 传递失败时：
 
 ```text
 RUNTIME_PROFILE_VERIFIED = FALSE
@@ -109,11 +116,8 @@ RUNTIME_STATE = SETUP_GATE
 PRODUCTION_GATE = BLOCKED
 ```
 
-不得继续复用旧 PASS。
-
 ## R12｜不允许猜图
-宿主默认 LLM 无视觉能力时，上传图必须交给 VISION_MODEL。
-不得根据文件名、用户一句话或常识自行猜 Food DNA。
+宿主默认 LLM 无视觉能力时，上传图必须交给 VISION_MODEL。不得根据文件名、用户一句话或常识自行猜 Food DNA / Surface State。
 
 ## R13｜仓库不得保存私有运行配置
 PASS：仓库只声明能力变量和接口要求。
@@ -126,7 +130,18 @@ PASS：配置与 Pre-flight 均通过后输出 READY 状态，并准确标注 ca
 用户“启动”后进入 `PRODUCTION`。除非连接失效、fingerprint 变化或 profile 失效，不得每张图都重新询问模型名、URL、Key。
 
 ## R16｜每个任务必须完成 Job Reads + Execution Contract
-PASS：每个 A 任务读取 `A_JOB_ALWAYS_LOAD` 与当前品类规则，再根据 `EXECUTION_CONTRACT_TEMPLATE.md` 建立当前任务合同。
+PASS：每个 A 任务读取 `A_JOB_ALWAYS_LOAD` 与当前品类规则，并建立：
+
+```text
+SURFACE_STATE_MANIFEST
+TOPOLOGY_COMPLETION_PLAN
+HERO_REFRAME_PLAN
+MULTI_PRODUCT_HERO_PLAN
+EXECUTION_CONTRACT
+```
+
+其中不适用项必须明确 `NOT_APPLICABLE`，不能省略。
+
 FAIL：冷启动读完后长期不刷新任务规则，或直接把整仓库交给图片模型自由解释。
 
 ## R17｜显式 B 必经 Stage A
