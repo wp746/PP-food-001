@@ -7,6 +7,8 @@
 ```text
 JOB_MODE = A | B_UPSTREAM_STAGE_A
 ASPECT_RATIO = 9:16
+OUTPUT_ASPECT_RATIO_EXACT = 9:16
+NON_9_16_DELIVERY = CRITICAL_FAILURE
 
 CURRENT_JOB_FACTS =
 - user_visible_facts:
@@ -82,8 +84,25 @@ SCENE_CONTEXT_SPLIT =
 - GENERIC_VENUE_CONTEXT_TO_TRANSLATE:
 - IDENTITY_CRITICAL_CONTEXT_TO_PRESERVE:
 
+BACKGROUND_ARCHITECTURE_PLAN =
+- category_material_logic:
+- food-derived_color_logic:
+- primary_material_planes: 2-3
+- L1_near_spatial_mass:
+- L3_mid_spatial_mass:
+- L4_deep_spatial_masses: >=2 depth cues
+- height_variation:
+- depth_variation:
+- occlusion_relationship:
+- light_cut_and_shadow_architecture:
+- reflective_vs_absorptive_material_relationship:
+- negative_space_zone:
+- props_required?: YES / NO
+- if props: subordinate role only
+
 HERO_REFRAME_PLAN =
 - source camera is accidental snapshot?: YES / NO
+- strict portrait canvas = 9:16
 - crop / canvas extension:
 - focal-length feel:
 - allowed camera-height / pitch adjustment:
@@ -106,17 +125,18 @@ HERO_STAGE_PLAN =
 - rim / subject-background separation:
 
 CREATIVE_SCOPE =
-- canvas extension / 9:16 composition
+- strict 9:16 portrait canvas extension / composition
 - topology-preserving completion when evidence supports it
 - controlled Hero Reframe
 - professional lighting
 - four-layer depth / subject separation
-- category-semantic material stage
+- category-native background architecture
 - background translation
 - color grading around source-true food color
 - realistic appetite readability, not appetite mutation
 
 FORBIDDEN =
+- deliver any non-9:16 Stage A final image
 - add/remove/replace major ingredients
 - change identity-defining geometry
 - change browning / char / doneness / gloss / moisture / sauce coverage / crust state beyond source
@@ -130,6 +150,7 @@ FORBIDDEN =
 - invent unsupported heat/steam/gloss/condensation/garnish
 - adapt 9:16 by distorting or rebuilding product
 - preserve a generic venue merely because it exists in source
+- create a premium look primarily from linen / tongs / cups / pottery / wheat / spice bowls / bokeh props
 - treat exact source camera coordinates as Food DNA
 - create extreme unsupported low-angle / wide-angle views
 - give every product unit equal visual weight when multi-product Hero hierarchy is possible
@@ -144,16 +165,18 @@ TARGETED_RETRY_ONLY = TRUE
 最终图像编辑指令必须从本合同编译，顺序固定：
 
 ```text
-1. Subject / Direct-Support Lock
-2. Surface / Material State Lock
-3. Topology Completion Plan
-4. Scene Context Split
-5. Category Route
-6. Hero Reframe Plan
-7. Multi-Product Hero Plan
-8. Four-Layer Hero Stage
-9. Appetite / Lighting / Color
-10. Strict Negatives
+1. Exact 9:16 Output Contract
+2. Subject / Direct-Support Lock
+3. Surface / Material State Lock
+4. Topology Completion Plan
+5. Scene Context Split
+6. Category Route
+7. Background Architecture Plan
+8. Hero Reframe Plan
+9. Multi-Product Hero Plan
+10. Four-Layer Hero Stage
+11. Appetite / Lighting / Color
+12. Strict Negatives
 ```
 
 不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt。
@@ -162,9 +185,13 @@ TARGETED_RETRY_ONLY = TRUE
 
 `generic venue context` 不属于默认锁定项；除非 identity-critical，否则转译为品类原生高级材质舞台。
 
+`background architecture` 必须先于 props 设计；删除 props 后背景仍必须成立。
+
 `appetite rendering` 不得提高源产品属性强度；只允许让源图已有属性在更好的摄影下更易读。
 
 `topology completion` 只允许延续同一份产品，不提供重新摆盘或重新烹饪权限。
+
+若第一次 IMAGE_MODEL 返回非 9:16，不得交付，必须针对画布比例进行修正后重新 QC。
 
 ## B Handoff Fields
 
@@ -173,6 +200,7 @@ TARGETED_RETRY_ONLY = TRUE
 ```text
 STAGE_A_PASS_IMAGE = <current job output reference>
 STAGE_A_QC = PASS
+STAGE_A_ASPECT_RATIO = 9:16
 HANDOFF_TO_STAGE_B = ALLOWED
 ```
 
