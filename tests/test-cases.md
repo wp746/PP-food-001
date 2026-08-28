@@ -8,7 +8,7 @@ FAIL：为了高级感加减食材、换器皿、重摆盘或把产品重做成�
 
 ## Test 02｜默认 9:16
 输入：横图、方图、竖图各一张。
-PASS：最终均为 9:16，关键产品完整，靠画布延展/背景重构/镜头重组适配。
+PASS：最终均为 9:16，关键产品完整，靠画布延展/背景重构/受控 Hero Reframe 适配。
 FAIL：拉伸、压扁、裁掉关键产品区域或重做产品来适配竖版。
 
 ## Test 03｜A 默认路由
@@ -45,6 +45,8 @@ VISIBLE_FACTS
 LOCK_TARGETS
 CREATIVE_SCOPE
 FORBIDDEN
+HERO_REFRAME_PLAN
+MULTI_PRODUCT_HERO_PLAN
 ```
 
 FAIL：未建立当前任务合同就直接调用 IMAGE_MODEL。
@@ -96,8 +98,39 @@ PASS：降低背景、构图或摄影激进度，保留产品真相。
 FAIL：为了“真正高级”牺牲 Food DNA。
 
 ## Test 18｜定向重试
-PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Photography / Background / Temperature / Integration / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
+PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Photography / Background / Temperature / Integration / Hero Reframe / Multi-Product Hierarchy / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
 FAIL：每次随机整张重抽，导致已正确区域再次漂移。
 
 ## Test 19｜Fail Closed
 任何 Mandatory Read、Pre-flight 能力或当前任务 Contract 无法确认时，不得调用 IMAGE_MODEL。
+
+## Test 20｜Display Case 不得绑死 Hero Stage
+输入：开放式面包/甜点陈列在普通展示柜或木托盘中，展示柜本身没有品牌、包装、手持或物理身份价值。
+PASS：锁定产品、原托盘/直接承载关系和产品排列；允许把柜体、墙面、门店环境转译成品类专属高级材质 Hero Stage。
+FAIL：因为命中 `DISPLAY_CASE` 就机械保留普通柜体/墙面，最后只是“更干净的店内展示照”。
+
+## Test 21｜Controlled Hero Reframe
+PASS：允许改变画布、裁切、焦段、机位高度/俯仰的轻到中度调整，只要产品可见面比例、几何、排列、接触平面和透视关系仍可信；目标是让主体进入英雄机位。
+FAIL A：把“锁产品”误读成“必须锁死源图相机坐标”，导致只能原角度修图。
+FAIL B：为了 Hero 感使用极端低机位/广角，生成源图未支持的新侧面、变形或数量漂移。
+
+## Test 22｜多产品 Hero Hierarchy
+输入：一盘/一箱多个同类食品。
+PASS：数量、位置、排列不变；从原图已存在的前景单体或小簇中选 `PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER`，只通过光池、局部锐度、对比、rim light 和景深建立主次，其余成为 `SUPPORTING_PRODUCT_FIELD`。
+FAIL：所有单体视觉权重完全相同而继续像库存陈列；或为了主次关系移动、删除、复制、重排产品。
+
+## Test 23｜Bakery Bread 独立路由
+输入：贝果、碱水面包、恰巴塔、欧包等“面包为主体”的烘焙产品。
+PASS：进入 `BAKERY_BREAD_HERO` 路由，以脆壳/裂口/内瓤/烘焙色为视觉核心；背景由石材、烘焙金属、纸/布等克制材质和真正四层纵深构成；摄影可到 CINEMATIC_EDITORIAL / PREMIUM_BAKERY_CAMPAIGN。
+FAIL：因为“烘焙”与咖啡同组而默认加入咖啡豆、手冲壶、咖啡馆 Lifestyle 皮肤，或只形成原木+亚麻+黄铜夹子的通用烘焙模板。
+
+## Test 24｜Hero Spatial Anti-False-Pass
+以下任一项存在，`Hero Spatial Score` 不得 >=85：
+- 没有可见 L1 近景空间入口；
+- L4 只是单一虚墙/渐变/一团 bokeh，没有至少两个可分辨的后退材质/光影层；
+- 产品没有明确 light pool 或 rim separation；
+- 多产品场景没有主 Hero 层级，整体仍读成库存/展示陈列；
+- 普通门店/展示柜语境在无身份必要时被机械保留，画面仍首先读成“店里拍的”；
+- 加几个亚麻布/夹子/石块就被误判为世界级材质舞台。
+
+PASS：L1/L2/L3/L4 都有可观察证据，虚实连续递进，产品具有纪念碑式视觉权重，背景材料与当前食品属性有不可替换的语义关系。
