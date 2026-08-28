@@ -52,6 +52,8 @@ TEMPERATURE_LOGIC = RESOLVED
 MATERIAL_STAGE_DIRECTION = RESOLVED
 SEMANTIC_QC_RULE = LOADED
 EXECUTION_TEMPLATE = LOADED
+HERO_REFRAME_PLAN = CREATED
+MULTI_PRODUCT_HERO_PLAN = CREATED_OR_NOT_APPLICABLE
 ```
 
 ## CATEGORY_CONDITIONAL_LOAD｜按当前食品加载
@@ -66,6 +68,22 @@ references/cuisine-style-map.md
 
 只使用当前品类/菜系对应条目，不把整份长文档的所有菜品语义注入当前 Contract。
 
+### Bakery Bread Override
+
+如果当前主体是**面包本体**（例如贝果/碱水面包/恰巴塔/欧包/酸种/法棍/餐包等），必须额外读取：
+
+```text
+references/bakery-bread-route.md
+```
+
+并设置：
+
+```text
+SELECTED_STAGE_A_ROUTE = BAKERY_BREAD_HERO
+```
+
+该文件覆盖 `cuisine-style-map.md` 中旧的“咖啡 / 烘焙”混合段。面包主体不得因为拍摄地点是面包店/咖啡店而自动继承咖啡豆、手冲壶、咖啡馆 Lifestyle 或通用原木+亚麻+黄铜皮肤。
+
 ### Food material module
 
 需要更细的材质表现时读取：
@@ -78,10 +96,17 @@ references/food-modules.md
 
 ### Scene / Support module
 
-确有物理呈现/原场景关系需要时读取：
+只要当前图存在桌面、托盘、展示柜、手持、货架、原场景承载关系，必须读取：
 
 ```text
 references/scene-modules.md
+```
+
+它负责区分：
+
+```text
+DIRECT_SUPPORT = LOCK
+GENERIC_VENUE_CONTEXT = TRANSLATE_OR_REPLACE
 ```
 
 其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage 规则。
@@ -96,5 +121,7 @@ A_JOB_ALWAYS_LOAD
 当前 CATEGORY_CONDITIONAL_LOAD
 EXECUTION_CONTRACT_TEMPLATE.md
 ```
+
+面包类额外刷新 `bakery-bread-route.md`。
 
 上下文压缩后如果无法证明 Cold-Start Core 仍在活跃上下文，重新执行 BOOTSTRAP。
