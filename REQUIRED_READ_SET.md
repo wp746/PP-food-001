@@ -2,18 +2,18 @@
 
 目标：**不漏读关键规则，也不把所有菜品语义一次性灌进冷启动上下文。**
 
-## COLD_START_ALWAYS_LOAD｜冷启动核心必读
+## COLD_START_ALWAYS_LOAD｜冷启动核心 reference 必读
 
 ```text
 references/fidelity-manifest.md
 references/fidelity-qc.md
 references/hero-shot-mandate.md
 references/retry-policy.md
-tests/runtime-handoff-tests.md
-tests/test-cases.md
 ```
 
-这些文件与任何具体菜品无关，负责产品保真、Hero 标准、重试和运行门禁。
+这些文件与任何具体菜品无关，负责产品保真、Hero 标准和重试。
+
+两份 tests 由 `BOOTSTRAP.md` 单独读取，不在这里重复列出。
 
 不得用摘要或“大概知道”代替正文。
 
@@ -25,7 +25,7 @@ tests/test-cases.md
 2. `fidelity-qc.md`：Critical Failure 是否覆盖数字评分？最终 Fidelity/Photography 门槛是什么？
 3. `hero-shot-mandate.md`：Priority 0 是什么？高级材质舞台、四层空间、Hero/Appetite 阈值分别是什么？
 4. `retry-policy.md`：Attempt 1/2/3 如何逐级收紧？为什么禁止随机整张重抽？
-5. 两份 tests：9:16、A/B、Execution Contract、Fail Closed、Current Job Isolation 的回归要求是什么？
+5. Bootstrap 单独读取的两份 tests：9:16、A/B、Execution Contract、Fail Closed、Current Job Isolation 的回归要求是什么？
 
 答不准任何一项 → 重读对应文件。
 
@@ -40,7 +40,7 @@ references/dish-semantic-router.md
 references/semantic-background-rules.md
 ```
 
-但只把**当前任务需要的规则**编译进 Execution Contract，不把文档中的其他菜品示例写入 Prompt。
+只把**当前任务需要的规则**编译进 Execution Contract，不把文档中的其他菜品示例写入 Prompt。
 
 ### A-Job Proof
 
