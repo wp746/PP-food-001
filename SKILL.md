@@ -1,10 +1,10 @@
 ---
 name: universal-food-commercial-photography
-description: High-fidelity 9:16 world-class food commercial re-photography with exact product/surface-state preservation and category-native material-architecture Hero stages.
-version: 6.2.0
+description: High-fidelity 9:16 world-class food commercial re-photography with exact product/surface-state preservation and product-derived material-architecture Hero stages.
+version: 6.2.1
 ---
 
-# PP-food-001 V6.2.0
+# PP-food-001 V6.2.1
 
 ## Mandatory Entry
 
@@ -27,6 +27,8 @@ CURRENT USER IMAGE
 → Topology Completion Plan
 → Scene Context Split
 → Category Route
+→ Product Derivation Evidence
+→ Background Big Idea
 → Background Architecture Plan
 → Hero Reframe / Multi-Product Hero Plan
 → Execution Contract
@@ -36,7 +38,7 @@ CURRENT USER IMAGE
 → Stage A PASS image
 ```
 
-## V6.2 P0 Output Rule — Exact 9:16
+## P0 Output Rule — Exact 9:16
 
 ```text
 DEFAULT_ASPECT_RATIO = 9:16
@@ -50,9 +52,9 @@ NON_9_16_DELIVERY = CRITICAL_FAILURE
 
 9:16 适配不能通过拉伸、裁坏产品或重做产品实现。
 
-## V6.2 Background Architecture
+## Product-Derived Background Architecture
 
-本版本修正“Food DNA 锁住，但背景仍像普通店内/烘焙图库”的问题。
+本版本进一步收紧“Food DNA 锁住，但背景仍像普通店内/烘焙图库”的问题。
 
 ```text
 PRODUCT_DERIVED_STAGE > GENERIC_PREMIUM_STYLE
@@ -149,6 +151,8 @@ Output Aspect Ratio = EXACT 9:16
 Food Fidelity >=95
 Vessel Fidelity >=98
 Source Surface State = PASS
+Product Derivation Evidence >=3
+Background Big Idea = PASS
 Background Architecture = PASS
 Photography >=85
 Semantic >=85
@@ -157,7 +161,7 @@ Appetite >=85
 No Critical Failure
 ```
 
-Mandatory Read、Pre-flight、Execution Contract、Surface State、Completion Plan、Background Architecture、Hero plans 任一无法确认：
+Mandatory Read、Pre-flight、Execution Contract、Surface State、Completion Plan、Background Big Idea、Background Architecture、Hero plans 任一无法确认：
 
 ```text
 PRODUCTION_GATE = BLOCKED
