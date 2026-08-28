@@ -14,21 +14,25 @@ Any one of these is an automatic FAIL:
 - package redesigned;
 - plating significantly rearranged;
 - handheld relationship changed;
-- shelf/display context incorrectly removed;
+- shelf/display context incorrectly removed when identity-critical;
 - food becomes physically implausible;
 - container visibly warped or replaced;
-- generated output no longer reads as the same specific serving/product.
+- generated output no longer reads as the same specific serving/product;
+- **surface/material state drift**: browning, char, doneness, gloss, moisture, sauce/oil coverage, crust/skin, crack/scoring, cream/frosting, condensation/frost or translucency changed beyond normal photographic rendering;
+- **appetite mutation**: a mild source property was made materially stronger only to appear more appetizing/premium;
+- **completion invention**: cropped/hidden product areas were filled with unsupported ingredients, different geometry, re-plating, standardized shapes or a different cooking/surface state.
 
 ## Fidelity score (100)
 
 Score conservatively:
 
-- Food identity: 25
-- Ingredient geometry: 20
+- Food identity: 20
+- Ingredient / product geometry: 18
+- Surface / material state: 12
 - Container / package identity: 15
-- Plating topology: 15
-- Physical relationships: 10
-- Ingredient completeness: 10
+- Plating / arrangement topology: 15
+- Physical relationships: 8
+- Ingredient completeness / topology-preserving completion: 7
 - Food color identity: 5
 
 ### Interpretation
@@ -50,8 +54,25 @@ Can each major visible source ingredient be mapped to the output without obvious
 ### Geometry
 Do identity-defining food shapes, cuts, widths, thicknesses, counts and layer relationships remain substantially stable?
 
-### Plating
-Does the source topology remain intact, including central/peripheral placement, topping clusters, sauce/broth coverage and pile/layer structure?
+### Surface / material state
+Does the output preserve the same source-level browning, char, doneness, gloss/matte balance, moisture, sauce/oil coverage, crust/skin structure, cracking/scoring and color gradient?
+
+Ask specifically:
+
+> Is the property merely better photographed, or has the property itself become stronger?
+
+If stronger → FAIL / retry.
+
+### Plating / arrangement
+Does the source topology remain intact, including central/peripheral placement, topping clusters, sauce/broth coverage, pile/layer structure and repeated-unit overlap?
+
+### Completion
+If the original was cropped or incomplete in-frame:
+- was only the same serving/product naturally continued?
+- did the continuation preserve ingredient identity, geometry, density, overlap, surface state and support relationship?
+- was low-confidence unknown content left un-invented?
+
+If not → FAIL.
 
 ### Vessel / package
 Is it clearly the same vessel/package identity, material, geometry, color and scale?
@@ -62,7 +83,7 @@ Are hands, utensils, shelf, display case, tray, package and contact surfaces sti
 ## Photography score (100)
 
 - Lighting quality: 20
-- Material realism: 20
+- Material readability without mutation: 20
 - Subject separation: 15
 - Composition: 15
 - Background/environment quality: 10
@@ -76,7 +97,7 @@ Are hands, utensils, shelf, display case, tray, package and contact surfaces sti
 - 85–89: commercially acceptable
 - <85: photographic upgrade insufficient
 
-## Artifact check
+## Artifact / mutation check
 
 Reject/retry for:
 
@@ -91,12 +112,16 @@ Reject/retry for:
 - incorrect steam/smoke origin;
 - excessive fake steam;
 - plastic/waxy texture;
-- CGI/3D-render look;
 - extreme HDR;
 - generic orange cast;
 - inconsistent perspective;
 - missing contact shadows;
-- subject visibly pasted into background.
+- subject visibly pasted into background;
+- source-light browning rendered as dark char;
+- source-moderate gloss rendered as lacquer/mirror finish;
+- source-natural cracks exaggerated into a different structure;
+- added wetness, oil, sauce, sugar, powder, seeds, garnish or condensation unsupported by source;
+- completion region that looks more idealized or more cooked than the visible source.
 
 ## Acceptance rule
 
@@ -114,6 +139,8 @@ A beautiful image with low food fidelity is a failure.
 
 A faithful image with no meaningful photographic improvement is incomplete.
 
+A more appetizing image achieved by changing the product's cooking/surface state is also a failure.
+
 Target:
 
-> HIGH FIDELITY × HIGH PHOTOGRAPHIC UPGRADE
+> HIGH FIDELITY × HIGH PHOTOGRAPHIC UPGRADE × SOURCE-TRUE SURFACE STATE
