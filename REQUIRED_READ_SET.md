@@ -1,74 +1,100 @@
 # PP-food-001 Required Read Set
 
-本文件把“必须读”和“按任务读”分开，避免智能体自己判断后漏读，也避免每次把整个仓库塞进上下文造成噪声。
+目标：**不漏读关键规则，也不把所有菜品语义一次性灌进冷启动上下文。**
 
-## ALWAYS_LOAD｜冷启动必须完整读取
+## COLD_START_ALWAYS_LOAD｜冷启动核心必读
 
 ```text
 references/fidelity-manifest.md
 references/fidelity-qc.md
 references/hero-shot-mandate.md
 references/retry-policy.md
-references/semantic-background-rules.md
-references/semantic-qc.md
-references/dish-semantic-router.md
-references/execution-template.md
 tests/runtime-handoff-tests.md
 tests/test-cases.md
 ```
 
-不得用“已摘要”“大概知道”代替正文读取。
+这些文件与任何具体菜品无关，负责产品保真、Hero 标准、重试和运行门禁。
 
-## READ-PROOF CHECKPOINTS
+不得用摘要或“大概知道”代替正文。
 
-读完 ALWAYS_LOAD 后必须能回答：
+## COLD-START READ-PROOF
 
-1. `fidelity-manifest.md`：Region A/B/C 的自由度分别是什么？
+必须能回答：
+
+1. `fidelity-manifest.md`：Region A/B/C 自由度分别是什么？
 2. `fidelity-qc.md`：Critical Failure 是否覆盖数字评分？最终 Fidelity/Photography 门槛是什么？
-3. `hero-shot-mandate.md`：Priority 0 是什么？为什么默认高级材质舞台而非真实经营场所？四层空间是什么？Hero/Appetite 阈值是多少？
+3. `hero-shot-mandate.md`：Priority 0 是什么？高级材质舞台、四层空间、Hero/Appetite 阈值分别是什么？
 4. `retry-policy.md`：Attempt 1/2/3 如何逐级收紧？为什么禁止随机整张重抽？
-5. `semantic-background-rules.md`：如何避免通用背景与温度错配？
-6. `semantic-qc.md`：语义相关性如何判 FAIL？
-7. `dish-semantic-router.md`：低/中/高置信度如何影响路由激进度？
-8. `execution-template.md`：最终 IMAGE_MODEL 指令必须先锁什么、后开放什么？
-9. 两份 tests：默认 9:16、A/B、Fail Closed、Execution Contract 的回归要求是什么？
+5. 两份 tests：9:16、A/B、Execution Contract、Fail Closed、Current Job Isolation 的回归要求是什么？
 
-无法回答任何一项 → 重新读取对应文件。
+答不准任何一项 → 重读对应文件。
 
-## CONDITIONAL_LOAD｜每个任务按需读取
+## A_JOB_ALWAYS_LOAD｜每个 Stage A 任务必读
 
-### 品类/菜系舞台映射
+拿到当前用户图片并完成初步视觉识别后，每个 A 任务必须读取：
 
-识别当前食品后，必须读取 `references/cuisine-style-map.md` 中对应品类/菜系条目；不要无差别加载整份长文档到每个任务上下文。
+```text
+references/execution-template.md
+references/semantic-qc.md
+references/dish-semantic-router.md
+references/semantic-background-rules.md
+```
+
+但只把**当前任务需要的规则**编译进 Execution Contract，不把文档中的其他菜品示例写入 Prompt。
+
+### A-Job Proof
+
+进入 IMAGE_MODEL 前必须确认：
+
+```text
+CURRENT_SEMANTIC_ROUTE = RESOLVED_OR_CONSERVATIVE_FALLBACK
+TEMPERATURE_LOGIC = RESOLVED
+MATERIAL_STAGE_DIRECTION = RESOLVED
+SEMANTIC_QC_RULE = LOADED
+EXECUTION_TEMPLATE = LOADED
+```
+
+## CATEGORY_CONDITIONAL_LOAD｜按当前食品加载
+
+### Cuisine / Category Material Stage
+
+识别当前品类后，读取：
+
+```text
+references/cuisine-style-map.md
+```
+
+只使用当前品类/菜系对应条目，不把整份长文档的所有菜品语义注入当前 Contract。
 
 ### Food material module
 
-需要具体材质表现时读取：
+需要更细的材质表现时读取：
 
 ```text
 references/food-modules.md
 ```
 
-只加载与当前主体直接相关的 1 个主模块 + 必要的少量辅模块。
+只选 1 个主模块 + 必要的少量辅模块。
 
-### Scene / support module
+### Scene / Support module
 
-需要场景支撑模块时读取：
+确有物理呈现/原场景关系需要时读取：
 
 ```text
 references/scene-modules.md
 ```
 
-其内容不得覆盖 `RUNTIME_MANIFEST.md` 的“高级材质舞台、非默认真实经营场所”P0 规则。
+其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage 规则。
 
-## Production Rule
+## Production Refresh
 
-冷启动读完 ALWAYS_LOAD 后，后续每个新任务至少刷新：
+每个新任务至少刷新：
 
 ```text
 RUNTIME_MANIFEST.md
-当前品类对应的 CONDITIONAL section
+A_JOB_ALWAYS_LOAD
+当前 CATEGORY_CONDITIONAL_LOAD
 EXECUTION_CONTRACT_TEMPLATE.md
 ```
 
-如果上下文压缩导致 ALWAYS_LOAD 的关键规则无法证明仍在活跃上下文，重新执行 BOOTSTRAP。
+上下文压缩后如果无法证明 Cold-Start Core 仍在活跃上下文，重新执行 BOOTSTRAP。
