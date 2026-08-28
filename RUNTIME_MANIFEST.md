@@ -42,10 +42,7 @@ B_CAN_SKIP_STAGE_A = FALSE
 
 每张新上传图创建新的 `CURRENT_JOB_FACTS`。
 
-当前任务只允许使用：
-- 当前图可见事实；
-- 当前用户明确提供的信息；
-- 当前任务已验证的中间产物。
+当前任务只允许使用：当前图可见事实、当前用户明确提供的信息、当前任务已验证的中间产物。
 
 除非用户明确要求沿用，上一任务的品牌、产品名、食材、口味、地址、电话、Slogan、文案和场景事实全部失效。
 
@@ -101,7 +98,7 @@ REDUCE_FIDELITY = NEVER
 
 ## P6. Subject Lock
 
-必须锁定：产品身份、主辅食材、几何、数量关系、器皿/包装、摆盘拓扑、酱汁/红油/汤体/奶油/冰块状态、手持/餐具/托盘等物理关系。
+必须锁定：产品身份、主辅食材、几何、数量关系、器皿/包装、摆盘拓扑、酱汁/油/汤体/奶油/冰块状态、手持/餐具/托盘等物理关系。
 
 禁止：加减/替换主要食材、换器皿、重画包装、重摆盘、把产品标准化成“另一份更漂亮的同类食品”。
 
@@ -137,7 +134,38 @@ CURRENT_STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 
 最多逐级收紧到 Attempt 3 Ultra-Conservative Subject Mode。宁可降低摄影戏剧性，也不允许产品漂移。
 
-## P10. Fail Closed
+## P10. Capability Evidence + Runtime Profile
+
+**Declared capability 与 Verified capability 必须分开。**
+
+静态 schema、宿主能力说明、连接存在只能证明：
+
+```text
+RUNTIME_CAPABILITIES_DECLARED = PASS
+```
+
+只有真实调用链成功，或存在与当前非秘密配置 fingerprint 匹配的已验证 Runtime Profile，才能证明：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PASS
+```
+
+若静态配置完整但没有匹配 profile：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
+```
+
+允许进入 READY，但不得声称“已经 smoke tested / 已端到端验证”。
+
+第一次真实业务调用兼任验证，不额外生成无业务价值测试图。验证成功后可把 profile 保存在宿主私有持久状态；fingerprint 不变时跨会话复用。
+
+Fingerprint 只允许使用非秘密运行身份；不得包含 API Key、Token、完整私有 URL 或用户凭据。
+
+配置 identity 变化或真实调用失败 → profile 立即失效。
+
+## P11. Fail Closed
 
 以下任一项无法确认时：
 
@@ -147,6 +175,7 @@ PRODUCTION_GATE = BLOCKED
 
 - Mandatory Read 未完成；
 - Pre-flight 未通过；
+- `RUNTIME_CAPABILITIES_DECLARED != PASS`；
 - VISION_MODEL 不能读图；
 - IMAGE_MODEL 不支持参考图编辑；
 - Credential 未就绪；
@@ -154,20 +183,17 @@ PRODUCTION_GATE = BLOCKED
 - 当前 Execution Contract 未建立；
 - 规则文件存在未解决冲突。
 
-禁止“先出一张试试看”。
+`RUNTIME_CAPABILITIES_VERIFIED = PENDING` 本身不是配置缺失；它表示首次真实任务需要在最终交付前完成 live verification。
 
-## P11. Repository Security Boundary
+禁止“先出一张无业务价值测试图再说”。
 
-仓库只保存通用能力约定和变量名，不保存：
-- 具体供应商名；
-- 私有聚合平台名；
-- 实际 API Base URL；
-- API Key；
-- 私有凭据或账户信息。
+## P12. Repository Security Boundary
 
-运行值只存在宿主 Secret / Environment / Connection。
+仓库只保存通用能力约定和变量名，不保存：具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有凭据、Runtime Profile 的真实运行值。
 
-## P12. Runtime State
+运行值只存在宿主 Secret / Environment / Connection / 私有持久状态。
+
+## P13. Runtime State
 
 ```text
 SETUP_GATE
@@ -176,4 +202,12 @@ SETUP_GATE
 → PRODUCTION
 ```
 
-连接失效或能力变为 UNKNOWN 时，退回 SETUP_GATE，只修复缺失项。
+READY 时必须准确报告：
+
+```text
+RUNTIME_CAPABILITIES_DECLARED = PASS
+RUNTIME_CAPABILITIES_VERIFIED = PASS / PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE / FALSE
+```
+
+连接失效、profile fingerprint 不匹配或能力变为 UNKNOWN/MISSING 时，退回 SETUP_GATE，只修复缺失项。
