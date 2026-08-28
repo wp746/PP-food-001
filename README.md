@@ -1,75 +1,67 @@
 # PP-food-001
 
-Stage A 高保真美食商业摄影 Skill。把用户随手拍升级成 9:16 电影级 / 商业广告级 Hero Shot，同时严格锁定 Food DNA。
+高保真美食商业摄影 Stage A Skill。
 
-当前版本：**5.5.0**
+当前版本：**6.0.0**
 
-## 默认行为
+## 目标
+
+把用户真实随手拍升级成 9:16 电影级/商业级 Food Hero，同时锁定真实产品身份、主要食材几何、器皿/包装、摆盘和物理关系。
+
+## V6.0 的重点
+
+V6.0 不再依赖“智能体自觉把所有文件读全”。新增跨智能体 fail-closed runtime protocol：
 
 ```text
-A = Stage A 商拍
-B = 先完成 Stage A，再交给 PP-food-KV-001 做 Stage B
-未说 A/B 且无明显商业信息 = 默认 A
-未说 A/B 但提供产品名、店铺、标题、地址、价格、卖点等 KV 商业信息 = 自动 B
-DEFAULT_ASPECT_RATIO = 9:16
+AGENTS.md
+→ BOOTSTRAP.md
+→ RUNTIME_MANIFEST.md
+→ REQUIRED_READ_SET.md
+→ PRE_FLIGHT_CHECKLIST.md
+→ EXECUTION_CONTRACT_TEMPLATE.md
+→ Stage A
+→ QC / targeted retry
 ```
 
-显式 A 优先于自动 B。任何 B 都不得跳过 Stage A。
+核心变化：
+- P0 规则只在 `RUNTIME_MANIFEST.md` 定义一次；
+- 冷启动必须完成 Mandatory Read 与读取证明；
+- 漏读 / 能力未知 / Contract 缺失时禁止生产；
+- 每个新任务先编译短 Execution Contract，再调用图片模型；
+- 上下文压缩后无法证明 P0 规则仍在时重新 Bootstrap；
+- Codex 可通过根目录 `AGENTS.md` 自动进入 Bootstrap；
+- 仓库不保存任何具体聚合平台、URL、Key 或私有模型配置。
 
-## 核心原则
+## 用户入口
 
-> **Source truth first. Lock the product. Upgrade only the photography and environment.**
+生产状态下：
+- `A` → 只做 Stage A 商拍；
+- `B` → 仍先做 Stage A，PASS 后再交给 KV Skill；
+- 未说 A/B 且无明显商业信息 → 默认 A；
+- 未说 A/B 但给出明显 KV 商业信息 → 自动 B，但仍先 A。
 
-必须锁定：产品身份、主食材、食材几何、器皿/包装、摆盘拓扑、酱汁/红油/汤体状态、物理关系与主要数量关系。
+具体硬规则以 `RUNTIME_MANIFEST.md` 为准。
 
-目标：
+## 与 KV Skill 联动
+
+推荐同时安装：
 
 ```text
-Food Identity >=95
-Ingredient Geometry >=95
-Vessel / Container >=98
-Plating >=95
-Physical Relationship >=95
-Photography >=85
-Semantic Relevance >=85
-Hero Spatial >=85
-Appetite >=85
+wp746/wp746-PP-food-KV-001
 ```
 
-## 9:16 规则
-
-无论原图横竖，默认输出 9:16。通过画布延展、背景重构和镜头重组适配；禁止拉伸、压扁、裁掉关键产品区或为了竖版重做产品。
-
-## 商拍方法
-
-Stage A 的创意主要发生在背景、灯光、景深、材质与调色。背景必须由当前食品属性和品类语义推导，避免所有食品套同一深木/暖灯模板。
-
-高级商拍使用材质舞台和四层景深：前景弱虚化 → Hero Food → 中背景 → 深背景。产品始终是唯一视觉英雄。
-
-## 双 Skill 链路
+完整链路：
 
 ```text
-原图
-→ VISION_MODEL / Food DNA
+原始图
 → PP-food-001 Stage A
 → Stage A QC
-→ A: 交付商拍图
-→ B: Stage A PASS 图作为唯一 Stage B 参考图
-→ PP-food-KV-001
+→ Stage A PASS 图
+→ PP-food-KV-001 Stage B
 ```
 
-## 运行环境
+Stage B 不得回退原始随手拍。
 
-首次安装读取 `HANDOFF.md`。仓库只保存通用能力约定；不要把具体供应商、模型服务 URL、API Key 或聚合平台配置写进 Skill。凭据由宿主 Secret / Environment / Connection 管理。
+## 首次安装
 
-## 关键参考
-
-- `references/fidelity-manifest.md`
-- `references/fidelity-qc.md`
-- `references/hero-shot-mandate.md`
-- `references/dish-semantic-router.md`
-- `references/cuisine-style-map.md`
-- `references/semantic-background-rules.md`
-- `references/retry-policy.md`
-
-详细执行以 `SKILL.md` 为准。
+从 `BOOTSTRAP.md` 开始。运行模型和 Credential 按 `HANDOFF.md` 配置，全部通过后等待用户说“启动”。
