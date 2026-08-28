@@ -7,7 +7,6 @@ The manifest converts the vague target “>=95% fidelity” into explicit source
 ## 1. Subject identity
 
 Record:
-
 - `primary_food_subject`
 - `food_category`
 - `food_subtype`
@@ -19,21 +18,12 @@ Record:
 Classify visible ingredients.
 
 ### Level A — Critical ingredients
-
 Identity-defining components. Any addition, removal, substitution or major shape change is a Critical Failure.
 
-Examples: noodles, fish slices, burger patty, main meat, cake body, sushi fish, pizza's dominant toppings.
-
 ### Level B — Structural secondary ingredients
-
-Visible supporting ingredients that materially affect the source layout.
-
-Examples: greens, pickles, cheese, sauce, cream, peppers, bean sprouts.
-
-Preserve when visibly identifiable. Do not add or remove them for aesthetics.
+Visible supporting ingredients that materially affect the source layout. Preserve when visibly identifiable. Do not add or remove them for aesthetics.
 
 ### Level C — Micro details
-
 Small fragments such as sesame seeds, chili seeds, crumbs or micro oil droplets. Minor pixel-level variation is acceptable, but absence must not become abundance.
 
 Suggested internal structure:
@@ -58,7 +48,6 @@ micro_details:
 ## 3. Geometry manifest
 
 For identity-defining components record:
-
 - shape
 - cut
 - thickness
@@ -72,22 +61,47 @@ For identity-defining components record:
 - relative scale
 - approximate visible count relationship
 
-Example:
-
-```text
-fish slices:
-- thin slices
-- approximately five dominant visible pieces
-- overlapping fan-like distribution
-- green peppers concentrated near top/center
-```
-
 Do not convert this topology into thicker pieces, more pieces, chunks or a new arrangement.
 
-## 4. Vessel / package manifest
+## 4. Surface / material state manifest
+
+Record source-supported surface state separately from geometry. This is a hard lock, not an appetite suggestion.
+
+Use only relevant fields:
+
+```text
+base_color_and_gradient
+browning_level
+char_level
+cooking_doneness
+surface_gloss_level
+surface_matte_level
+moisture_level
+sauce_oil_coverage
+crust_skin_state
+crack_scoring_state
+cream_frosting_state
+sugar_powder_state
+condensation_frost_state
+translucency
+freshness_cues
+```
+
+Rule:
+
+> Improve how clearly the source state is photographed; do not increase the state itself.
+
+Examples of identity drift:
+- light browning becoming dark char;
+- mild gloss becoming lacquered/mirror-like;
+- natural cracks becoming exaggerated burst-open scoring;
+- original doneness changing;
+- sauce/oil coverage becoming thicker or more abundant;
+- natural moisture becoming artificial heavy wetness.
+
+## 5. Vessel / package manifest
 
 Record:
-
 - `container_type`
 - `material`
 - `color`
@@ -100,10 +114,9 @@ Record:
 
 Lighting/reflection may change. Identity may not.
 
-## 5. Plating topology
+## 6. Plating / arrangement topology
 
 Record:
-
 - dominant center ingredient(s)
 - top/bottom relationships
 - peripheral ingredients
@@ -111,11 +124,13 @@ Record:
 - topping clusters
 - pile direction
 - layer order
+- repeated-unit arrangement
+- overlap order
+- density pattern
 
-## 6. Physical relationship manifest
+## 7. Physical relationship manifest
 
 If handheld:
-
 - hand side
 - grip type
 - visible contact points
@@ -123,52 +138,81 @@ If handheld:
 - hand/product scale
 
 If utensil-held:
-
 - utensil type
 - contact location
 - lifted food identity
 - direction
 
 If shelf/display:
-
 - product position
-- shelf/display relationship
-- key neighboring context
+- direct tray/board/liner relationship
+- identity-critical display context, if any
 
 If package:
-
 - open/closed state
 - food-package relationship
 - package orientation
 
 If tabletop/counter:
-
 - contact plane
 - vessel orientation
 - contact shadow expectations
 
-## 7. Visible vs hidden content
+## 8. Visible / occluded / unknown / completion confidence
 
 Explicitly distinguish:
-
 - visible and locked information;
 - partially occluded information;
+- cropped-but-continuable information;
 - unknown information.
+
+For any source edge that may require outpainting/completion, assign:
+
+```text
+completion_confidence = HIGH | MEDIUM | LOW
+```
+
+### HIGH
+Visible evidence strongly defines the same serving/product continuation.
+
+### MEDIUM
+Some continuation is supported, but only minimal conservative completion is allowed.
+
+### LOW
+Do not invent product content. Prefer environment extension, crop adjustment, or natural occlusion.
 
 Rule:
 
 > Unknown ≠ permission to invent.
 
-When unseen regions need extension, infer only the minimum plausible continuation supported by visible evidence.
+## 9. Topology-Preserving Completion manifest
 
-## 8. Region edit budget
+When product/plating is cropped or not fully photographed, record what may safely continue:
 
-Classify:
+```text
+completion_target:
+known_identity_to_continue:
+known_geometry_to_continue:
+known_orientation_to_continue:
+known_layer_overlap_to_continue:
+known_density_to_continue:
+known_surface_state_to_continue:
+known_container_support_to_continue:
+forbidden_new_content:
+```
+
+Core command:
+
+> Complete the same serving; do not design a better serving.
+
+The completion may extend the same food/plating topology, but cannot re-plate, standardize, beautify or introduce unsupported ingredients.
+
+## 10. Region edit budget
 
 ### Region A — Subject Core
-Food + major ingredients + vessel/package + contact areas.
+Food + major ingredients + vessel/package + surface/material state + contact areas.
 
-Edit freedom: very low.
+Edit freedom: **very low**.
 
 ### Region B — Subject Support
 Hands, utensils, tray, immediate support plane, direct shelf zone.
@@ -180,10 +224,9 @@ Background, distant surface, wall, unrelated clutter, secondary props, distant p
 
 Edit freedom: high.
 
-## 9. Original scene and photography defects
+## 11. Original scene and photography defects
 
 Record one primary scene:
-
 - TABLETOP
 - HANDHELD
 - RETAIL_SHELF
@@ -195,7 +238,6 @@ Record one primary scene:
 - OTHER
 
 Record actual photographic defects, e.g.:
-
 - flat lighting
 - cluttered background
 - poor crop
