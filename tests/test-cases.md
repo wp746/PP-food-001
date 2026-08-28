@@ -43,6 +43,8 @@ CURRENT_JOB_FACTS
 SOURCE_PRODUCT
 VISIBLE_FACTS
 LOCK_TARGETS
+SURFACE_STATE_LOCK
+TOPOLOGY_COMPLETION_PLAN
 CREATIVE_SCOPE
 FORBIDDEN
 HERO_REFRAME_PLAN
@@ -52,7 +54,7 @@ MULTI_PRODUCT_HERO_PLAN
 FAIL：未建立当前任务合同就直接调用 IMAGE_MODEL。
 
 ## Test 09｜IMAGE_MODEL 首段硬锁
-PASS：明确锁定食物身份、主要食材几何、器皿/包装、摆盘拓扑、酱汁/油/汤体状态和物理关系。
+PASS：明确锁定食物身份、主要食材几何、器皿/包装、摆盘拓扑、酱汁/油/汤体状态、表面状态和物理关系。
 FAIL：只有“参考原图做高级商拍”“保持一致”之类弱约束。
 
 ## Test 10｜Container / Package Lock
@@ -98,7 +100,7 @@ PASS：降低背景、构图或摄影激进度，保留产品真相。
 FAIL：为了“真正高级”牺牲 Food DNA。
 
 ## Test 18｜定向重试
-PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Photography / Background / Temperature / Integration / Hero Reframe / Multi-Product Hierarchy / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
+PASS：按 Ingredient / Vessel / Plating / Physical Relationship / Surface State / Photography / Background / Temperature / Integration / Hero Reframe / Multi-Product Hierarchy / 9:16 Composition 分类修正；最多逐级收紧到 Ultra-Conservative Subject Mode。
 FAIL：每次随机整张重抽，导致已正确区域再次漂移。
 
 ## Test 19｜Fail Closed
@@ -121,7 +123,7 @@ FAIL：所有单体视觉权重完全相同而继续像库存陈列；或为了�
 
 ## Test 23｜Bakery Bread 独立路由
 输入：贝果、碱水面包、恰巴塔、欧包等“面包为主体”的烘焙产品。
-PASS：进入 `BAKERY_BREAD_HERO` 路由，以脆壳/裂口/内瓤/烘焙色为视觉核心；背景由石材、烘焙金属、纸/布等克制材质和真正四层纵深构成；摄影可到 CINEMATIC_EDITORIAL / PREMIUM_BAKERY_CAMPAIGN。
+PASS：进入 `BAKERY_BREAD_HERO` 路由，以原图已有脆壳/裂口/内瓤/烘焙色为视觉核心；背景由石材、烘焙金属、纸/布等克制材质和真正四层纵深构成；摄影可到 CINEMATIC_EDITORIAL / PREMIUM_BAKERY_CAMPAIGN。
 FAIL：因为“烘焙”与咖啡同组而默认加入咖啡豆、手冲壶、咖啡馆 Lifestyle 皮肤，或只形成原木+亚麻+黄铜夹子的通用烘焙模板。
 
 ## Test 24｜Hero Spatial Anti-False-Pass
@@ -134,3 +136,23 @@ FAIL：因为“烘焙”与咖啡同组而默认加入咖啡豆、手冲壶、�
 - 加几个亚麻布/夹子/石块就被误判为世界级材质舞台。
 
 PASS：L1/L2/L3/L4 都有可观察证据，虚实连续递进，产品具有纪念碑式视觉权重，背景材料与当前食品属性有不可替换的语义关系。
+
+## Test 25｜Surface / Material State Lock
+输入：任意食品原图，其表面已经存在明确的烘烤深浅、焦化程度、湿润度、油亮度、酱汁覆盖、糖霜/奶油状态、冰霜/冷凝、脆壳/皮肤、炭化、熟度或颜色梯度。
+PASS：商拍只通过更好的曝光、显色、局部对比、镜面高光控制、微纹理解析和真实光线，把**原图已经存在的表面状态看得更清楚、更诱人**；基础颜色、烘烤/焦化程度、熟度、湿润度等级和表皮结构不发生身份性变化。
+FAIL：为了食欲感把表皮烤得更黑、更焦、更红、更油、更湿、更脆、更有糖壳，或把原来哑光食品做成镜面亮膜；输出看起来像另一批火候/熟度不同的产品。
+
+## Test 26｜Appetite Enhancement ≠ Material Mutation
+PASS：`Appetite Score` 提升来自摄影读取能力：light placement、specular control、micro-contrast、texture legibility、color accuracy、freshness cues；不是重新烹饪或重画产品。
+FAIL：把“增强食欲”解释成“增强属性本身”，例如把轻微焦糖色变成深焦、少量油光变成油刷感、自然裂纹变成夸张爆口、普通汁水变成大量滴汁。
+
+## Test 27｜Topology-Preserving Completion
+输入：用户原图因裁切、取景或装盘边缘没有拍全，能从可见部分高置信度判断同一份食品/器皿/摆盘的自然延续。
+PASS：允许为 9:16 扩图或完整呈现而补全被画面边缘截断的**同一份产品/同一器皿/同一摆盘拓扑**；只做 Minimum Plausible Continuation，延续已知食材身份、切法、尺度、方向、层级、酱汁状态、数量密度和承载关系。
+FAIL：借“补全”新增原图没有证据的食材种类、改变主料结构、重新摆盘、把不规则堆叠改成规则造型、增加豪华配料，或把补全部分做成比原图更高级的另一份产品。
+
+## Test 28｜Completion Confidence Gate
+PASS：只有在可见证据足以支持自然延续时才补全主体；低置信度区域优先用环境延展、裁切策略或保守遮挡解决。
+FAIL：看不见也无法推断的产品区域被模型自由创造。
+
+以上 Test 25–28 **适用于所有食品品类**，包括面食、米食、肉类、卤味、烧烤、海鲜、烘焙、甜品、水果、饮品、火锅、包装食品等。
