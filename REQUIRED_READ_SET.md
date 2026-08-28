@@ -7,11 +7,12 @@
 ```text
 references/fidelity-manifest.md
 references/fidelity-qc.md
+references/surface-state-lock.md
 references/hero-shot-mandate.md
 references/retry-policy.md
 ```
 
-这些文件与任何具体菜品无关，负责产品保真、Hero 标准和重试。
+这些文件与任何具体菜品无关，负责产品保真、表面状态、拓扑延续、Hero 标准和重试。
 
 两份 tests 由 `BOOTSTRAP.md` 单独读取，不在这里重复列出。
 
@@ -23,9 +24,10 @@ references/retry-policy.md
 
 1. `fidelity-manifest.md`：Region A/B/C 自由度分别是什么？
 2. `fidelity-qc.md`：Critical Failure 是否覆盖数字评分？最终 Fidelity/Photography 门槛是什么？
-3. `hero-shot-mandate.md`：Priority 0 是什么？高级材质舞台、四层空间、Hero/Appetite 阈值分别是什么？
-4. `retry-policy.md`：Attempt 1/2/3 如何逐级收紧？为什么禁止随机整张重抽？
-5. Bootstrap 单独读取的两份 tests：9:16、A/B、Execution Contract、Fail Closed、Current Job Isolation 的回归要求是什么？
+3. `surface-state-lock.md`：为什么“更有食欲”不能改变烘烤/熟度/焦化/油亮/湿润等级？什么条件下允许 Topology-Preserving Completion？
+4. `hero-shot-mandate.md`：Priority 0 是什么？高级材质舞台、四层空间、Hero/Appetite 阈值分别是什么？
+5. `retry-policy.md`：Attempt 1/2/3 如何逐级收紧？为什么禁止随机整张重抽？
+6. Bootstrap 单独读取的两份 tests：9:16、A/B、Execution Contract、Fail Closed、Current Job Isolation、Surface State 与 Completion 的回归要求是什么？
 
 答不准任何一项 → 重读对应文件。
 
@@ -50,6 +52,8 @@ references/semantic-background-rules.md
 CURRENT_SEMANTIC_ROUTE = RESOLVED_OR_CONSERVATIVE_FALLBACK
 TEMPERATURE_LOGIC = RESOLVED
 MATERIAL_STAGE_DIRECTION = RESOLVED
+SURFACE_STATE_MANIFEST = CREATED
+TOPOLOGY_COMPLETION_PLAN = CREATED_OR_NOT_APPLICABLE
 SEMANTIC_QC_RULE = LOADED
 EXECUTION_TEMPLATE = LOADED
 HERO_REFRAME_PLAN = CREATED
@@ -67,6 +71,8 @@ references/cuisine-style-map.md
 ```
 
 只使用当前品类/菜系对应条目，不把整份长文档的所有菜品语义注入当前 Contract。
+
+任何品类的“食欲感渲染”条目都受 `surface-state-lock.md` 约束：**只能揭示源图已有属性，不能把属性强度推高。**
 
 ### Bakery Bread Override
 
@@ -92,7 +98,7 @@ SELECTED_STAGE_A_ROUTE = BAKERY_BREAD_HERO
 references/food-modules.md
 ```
 
-只选 1 个主模块 + 必要的少量辅模块。
+只选 1 个主模块 + 必要的少量辅模块。所有材质模块同样受 Surface State Lock 约束。
 
 ### Scene / Support module
 
@@ -109,7 +115,7 @@ DIRECT_SUPPORT = LOCK
 GENERIC_VENUE_CONTEXT = TRANSLATE_OR_REPLACE
 ```
 
-其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage 规则。
+其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage 与 Surface State 规则。
 
 ## Production Refresh
 
@@ -117,6 +123,7 @@ GENERIC_VENUE_CONTEXT = TRANSLATE_OR_REPLACE
 
 ```text
 RUNTIME_MANIFEST.md
+COLD_START surface-state-lock.md rule
 A_JOB_ALWAYS_LOAD
 当前 CATEGORY_CONDITIONAL_LOAD
 EXECUTION_CONTRACT_TEMPLATE.md
