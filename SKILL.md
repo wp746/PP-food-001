@@ -1,10 +1,10 @@
 ---
 name: universal-food-commercial-photography
-description: Use when turning a user-provided food photo into a high-fidelity premium commercial food image while preserving the exact product, ingredient geometry, vessel/packaging, plating and physical relationships.
-version: 6.0.1
+description: Use when turning a user-provided food photo into a high-fidelity world-class commercial Food Hero image while preserving exact product truth and rebuilding only the photography, stage, light and spatial hierarchy.
+version: 6.1.0
 ---
 
-# PP-food-001 V6.0.1
+# PP-food-001 V6.1.0
 
 ## Mandatory Entry
 
@@ -23,37 +23,62 @@ READ BOOTSTRAP.md
 
 ## Role
 
-本 Skill 是 **Stage A / Commercial Re-photography Engine**：
+本 Skill 是 **Stage A / World-Class Commercial Re-photography Engine**：
 
 ```text
 CURRENT USER IMAGE
 → VISION_MODEL analysis
 → CURRENT_JOB_FACTS / Fidelity Manifest
+→ Scene Context Split
+→ Category Route
+→ Hero Reframe / Multi-Product Hero Plan
 → Stage A Execution Contract
 → IMAGE_MODEL reference-image edit
-→ Stage A QC
+→ Stage A Fidelity + Semantic + Hero + Appetite QC
 → targeted retry if needed
 → Stage A PASS image
 ```
 
-它只允许升级摄影与环境，不允许为了“高级感”重做真实产品。
+核心原则：
+
+> **锁产品，不锁偶然的随手拍相机和普通门店背景。**
+
+产品、直接承载、排列和物理关系必须高保真；普通柜体、墙面、门店背景和偶然相机坐标不能以“保真”为理由压掉 Hero Stage。
+
+## V6.1 Hero-Stage Stabilization
+
+本版本修正跨 Agent 中“Food DNA 对，但商拍仍像普通展示照”的问题：
+
+```text
+Food DNA / Direct Support
+> World-Class Hero Stage
+> Category Semantic Translation
+> Generic Venue Appearance
+```
+
+新增硬行为：
+- generic `DISPLAY_CASE` 只锁产品与直接托盘/承载，不默认锁整个柜体/墙面；
+- `CONTROLLED_HERO_REFRAME_ALLOWED = TRUE`，锁产品视图几何，不锁源相机坐标；
+- 多产品场景必须建立 `PRIMARY_HERO_UNIT / CLUSTER + SUPPORTING_PRODUCT_FIELD`，只用光学手段做层级；
+- L4 必须有至少两个可感知的后退材质/光影线索，单一虚墙/渐变/bokeh 不算四层空间；
+- 面包主体强制加载 `references/bakery-bread-route.md`，不再默认继承咖啡 Lifestyle 皮肤；
+- 高保真但仍像店内库存/展示照，Hero Spatial QC 必须判 FAIL 并定向重试。
 
 ## Runtime Protocol
 
 必须使用：
+- `BOOTSTRAP.md` — 冷启动与恢复；
+- `RUNTIME_MANIFEST.md` — P0；
+- `REQUIRED_READ_SET.md` — Cold Start / A Job / Category 条件加载；
+- `PRE_FLIGHT_CHECKLIST.md` — READY 与每任务生产门禁；
+- `EXECUTION_CONTRACT_TEMPLATE.md` — 当前任务短合同；
+- `HANDOFF.md` — 模型能力、凭据与 Runtime Profile。
 
-- `BOOTSTRAP.md` — 冷启动与恢复流程；
-- `RUNTIME_MANIFEST.md` — 9:16、A/B、Food Fidelity、Hero、Capability Evidence、Fail-Closed 等 P0 规则；
-- `REQUIRED_READ_SET.md` — `COLD_START_ALWAYS_LOAD / A_JOB_ALWAYS_LOAD / CATEGORY_CONDITIONAL_LOAD`；
-- `PRE_FLIGHT_CHECKLIST.md` — READY、Declared/Verified capability evidence 与生产门禁；
-- `EXECUTION_CONTRACT_TEMPLATE.md` — 每个当前任务的短合同；
-- `HANDOFF.md` — 模型能力、凭据与 Runtime Profile 交接。
-
-生产时不要把整仓库 Markdown 原样拼进图片 Prompt。先读取规则，再把当前任务编译成 `EXECUTION_CONTRACT`，最后从合同生成短而明确的 IMAGE_MODEL 指令。
+生产时不要把整仓库 Markdown 原样拼进图片 Prompt。先读取规则，再编译当前 `EXECUTION_CONTRACT`，最后生成短而明确的 IMAGE_MODEL 指令。
 
 ## Capability Evidence Rule
 
-READY 不等于端到端已验证。必须区分：
+READY 不等于端到端已验证：
 
 ```text
 RUNTIME_CAPABILITIES_DECLARED = PASS / BLOCKED
@@ -61,29 +86,37 @@ RUNTIME_CAPABILITIES_VERIFIED = PASS / PENDING / BLOCKED
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE / FALSE
 ```
 
-若当前配置没有匹配的 verified Runtime Profile，第一笔真实业务调用兼任验证；不要额外生成无业务价值测试图。配置 fingerprint 不变时可跨会话复用已验证 profile。
+若当前配置没有匹配的 verified Runtime Profile，第一笔真实业务调用兼任验证；不要额外生成无业务价值测试图。
 
 ## A / B Relationship
 
-A/B 具体优先级以 `RUNTIME_MANIFEST.md` 为唯一真相。
+A/B 优先级以 `RUNTIME_MANIFEST.md` 为唯一真相。
 
-Stage A 的职责始终相同：锁产品 → 商拍 → QC。
+Stage A 始终执行：锁产品 → 世界级商拍 Hero → QC。
 
-当当前意图为 B 时，本 Skill 仍必须先完成 Stage A；只有当前任务 Stage A PASS 图才能交给 `PP-food-KV-001`。
+当前意图为 B 时，必须先完成 Stage A；只有当前任务 Stage A PASS 图才能交给 `PP-food-KV-001`。
 
 ## Detailed Methods
 
 不要自行挑文件。按 `REQUIRED_READ_SET.md` 执行。
 
-核心详细规则仍保留在 `references/`：Fidelity Manifest / QC、Hero Shot Mandate、Dish Semantic Router、Semantic Background / QC、Cuisine / Food / Scene Modules、Execution Template、Targeted Retry。
+核心详细规则：
+- Fidelity Manifest / QC；
+- Hero Shot Mandate；
+- Semantic Router / Background / QC；
+- Scene Modules；
+- Cuisine / Food Modules；
+- `bakery-bread-route.md`；
+- Execution Template；
+- Targeted Retry。
 
-这些 references 解释“怎么做”；`RUNTIME_MANIFEST.md` 决定“什么绝不能违反”。
+References 解释“怎么做”；`RUNTIME_MANIFEST.md` 决定“什么绝不能违反”。
 
 ## Acceptance
 
-必须执行 `tests/runtime-handoff-tests.md` 和 `tests/test-cases.md` 的行为约束。
+必须执行 `tests/runtime-handoff-tests.md` 和 `tests/test-cases.md`。
 
-Mandatory Read、Pre-flight、Execution Contract 或 declared runtime ability 任一无法确认：
+Mandatory Read、Pre-flight、Execution Contract、Hero plans 或 declared runtime ability 任一无法确认：
 
 ```text
 PRODUCTION_GATE = BLOCKED
