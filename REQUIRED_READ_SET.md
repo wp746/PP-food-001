@@ -40,6 +40,7 @@ references/execution-template.md
 references/semantic-qc.md
 references/dish-semantic-router.md
 references/semantic-background-rules.md
+references/hero-background-architecture.md
 ```
 
 只把**当前任务需要的规则**编译进 Execution Contract，不把文档中的其他菜品示例写入 Prompt。
@@ -54,11 +55,14 @@ TEMPERATURE_LOGIC = RESOLVED
 MATERIAL_STAGE_DIRECTION = RESOLVED
 SURFACE_STATE_MANIFEST = CREATED
 TOPOLOGY_COMPLETION_PLAN = CREATED_OR_NOT_APPLICABLE
+BACKGROUND_ARCHITECTURE_PLAN = CREATED
 SEMANTIC_QC_RULE = LOADED
 EXECUTION_TEMPLATE = LOADED
 HERO_REFRAME_PLAN = CREATED
 MULTI_PRODUCT_HERO_PLAN = CREATED_OR_NOT_APPLICABLE
 ```
+
+`BACKGROUND_ARCHITECTURE_PLAN` 必须描述材质平面、近/中/深体块、台面高差、光影切面和反射/吸光关系；只列“布、夹子、陶器、麦穗”等道具视为未创建。
 
 ## CATEGORY_CONDITIONAL_LOAD｜按当前食品加载
 
@@ -115,7 +119,7 @@ DIRECT_SUPPORT = LOCK
 GENERIC_VENUE_CONTEXT = TRANSLATE_OR_REPLACE
 ```
 
-其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage 与 Surface State 规则。
+其内容不得覆盖 `RUNTIME_MANIFEST.md` 的 P0 Hero Stage、Surface State 与 Background Architecture 规则。
 
 ## Production Refresh
 
