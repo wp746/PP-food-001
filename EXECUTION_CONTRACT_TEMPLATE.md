@@ -84,6 +84,18 @@ SCENE_CONTEXT_SPLIT =
 - GENERIC_VENUE_CONTEXT_TO_TRANSLATE:
 - IDENTITY_CRITICAL_CONTEXT_TO_PRESERVE:
 
+PRODUCT_DERIVATION_EVIDENCE =
+- geometry evidence:
+- surface/material evidence:
+- color evidence:
+- temperature/process evidence:
+- category temperament evidence:
+- minimum supporting evidence count >=3
+
+BACKGROUND_BIG_IDEA =
+- one clear spatial/material/light concept derived from current product:
+- why another food category would require a different stage:
+
 BACKGROUND_ARCHITECTURE_PLAN =
 - category_material_logic:
 - food-derived_color_logic:
@@ -99,6 +111,7 @@ BACKGROUND_ARCHITECTURE_PLAN =
 - negative_space_zone:
 - props_required?: YES / NO
 - if props: subordinate role only
+- prop_dependency_for_premium_look: FALSE
 
 HERO_REFRAME_PLAN =
 - source camera is accidental snapshot?: YES / NO
@@ -130,7 +143,7 @@ CREATIVE_SCOPE =
 - controlled Hero Reframe
 - professional lighting
 - four-layer depth / subject separation
-- category-native background architecture
+- product-derived category-native background architecture
 - background translation
 - color grading around source-true food color
 - realistic appetite readability, not appetite mutation
@@ -151,6 +164,8 @@ FORBIDDEN =
 - adapt 9:16 by distorting or rebuilding product
 - preserve a generic venue merely because it exists in source
 - create a premium look primarily from linen / tongs / cups / pottery / wheat / spice bowls / bokeh props
+- build a background without >=3 product-derived design evidences
+- use more decorative objects instead of a clear BACKGROUND_BIG_IDEA
 - treat exact source camera coordinates as Food DNA
 - create extreme unsupported low-angle / wide-angle views
 - give every product unit equal visual weight when multi-product Hero hierarchy is possible
@@ -171,12 +186,14 @@ TARGETED_RETRY_ONLY = TRUE
 4. Topology Completion Plan
 5. Scene Context Split
 6. Category Route
-7. Background Architecture Plan
-8. Hero Reframe Plan
-9. Multi-Product Hero Plan
-10. Four-Layer Hero Stage
-11. Appetite / Lighting / Color
-12. Strict Negatives
+7. Product Derivation Evidence
+8. Background Big Idea
+9. Background Architecture Plan
+10. Hero Reframe Plan
+11. Multi-Product Hero Plan
+12. Four-Layer Hero Stage
+13. Appetite / Lighting / Color
+14. Strict Negatives
 ```
 
 不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt。
@@ -186,6 +203,8 @@ TARGETED_RETRY_ONLY = TRUE
 `generic venue context` 不属于默认锁定项；除非 identity-critical，否则转译为品类原生高级材质舞台。
 
 `background architecture` 必须先于 props 设计；删除 props 后背景仍必须成立。
+
+`BACKGROUND_BIG_IDEA` 必须从当前产品至少 3 项可见证据推导，不能只写“高级、电影感、烘焙氛围”等空泛风格词。
 
 `appetite rendering` 不得提高源产品属性强度；只允许让源图已有属性在更好的摄影下更易读。
 
