@@ -1,0 +1,113 @@
+# PP-food-001 Pre-Flight Checklist
+
+在 READY 或任何生产动作前执行。本清单不是聊天礼仪，而是运行门禁。
+
+## A. Bootstrap Read Status
+
+必须得到：
+
+```text
+VERSION_READ = PASS
+RUNTIME_MANIFEST_READ = PASS
+SKILL_READ = PASS
+HANDOFF_READ = PASS
+REQUIRED_READ_SET_READ = PASS
+ALWAYS_LOAD_REFERENCES_READ = PASS
+RUNTIME_TESTS_READ = PASS
+REGRESSION_TESTS_READ = PASS
+EXECUTION_CONTRACT_TEMPLATE_READ = PASS
+```
+
+任一不是 PASS：
+
+```text
+PRODUCTION_GATE = BLOCKED
+```
+
+## B. Bootstrap Proof
+
+必须准确确认：
+
+```text
+DEFAULT_ASPECT_RATIO = 9:16
+DEFAULT_MODE = A
+EXPLICIT_A_OVERRIDES_AUTO_B = TRUE
+B_REQUIRES_STAGE_A_PASS = TRUE
+Food Identity >=95
+Ingredient Geometry >=95
+Vessel / Container >=98
+Plating >=95
+Physical Relationship >=95
+Hero Spatial >=85
+Appetite >=85
+```
+
+以及：视觉张力与产品保真冲突时降低设计激进度，不降低 Fidelity。
+
+## C. Runtime Capabilities
+
+仅确认状态，不在普通对话回显完整密钥：
+
+```text
+VISION_MODEL_IMAGE_INPUT = PASS / MISSING / UNKNOWN
+VISION_MODEL_CAN_READ_GENERATED_OUTPUT = PASS / MISSING / UNKNOWN
+IMAGE_MODEL_REFERENCE_EDIT = PASS / MISSING / UNKNOWN
+CREDENTIAL = PASS / MISSING / UNKNOWN
+USER_IMAGE_TO_IMAGE_MODEL = PASS / MISSING / UNKNOWN
+IMAGE_MODEL_OUTPUT_TO_AGENT = PASS / MISSING / UNKNOWN
+STAGE_A_OUTPUT_CAN_FEED_STAGE_B = PASS / MISSING / UNKNOWN
+```
+
+只有全部 PASS 才允许 READY。
+
+## D. Security Check
+
+```text
+PRIVATE_PROVIDER_CONFIG_IN_REPO = FALSE
+API_KEY_EXPOSED_IN_NORMAL_CHAT = FALSE
+```
+
+若发现实际 Key / 私有 URL 被写入仓库，停止生产并先清理凭据。
+
+## E. Ready Output
+
+全部通过后输出：
+
+```text
+READY
+RUNTIME_STATE = READY_WAITING_FOR_START
+```
+
+然后等待用户说“启动”。
+
+## F. Production Gate Per Job
+
+每个任务调用 IMAGE_MODEL 前必须确认：
+
+```text
+CURRENT_JOB_FACTS = CREATED
+EXECUTION_CONTRACT = PASS
+SOURCE_REFERENCE = CURRENT_USER_IMAGE
+ASPECT_RATIO = 9:16
+LOCK_TARGETS = EXPLICIT
+CONDITIONAL_REFERENCES = LOADED_IF_REQUIRED
+```
+
+如果用户请求 B，还必须确认：
+
+```text
+STAGE_A_QC = PASS
+STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
+```
+
+缺任何一项 → 不生成，先修复缺失项。
+
+## G. Recovery
+
+遇到连接失效、上下文压缩、版本变化或规则无法准确复述：
+
+```text
+RUNTIME_STATE = SETUP_GATE
+```
+
+重新执行 BOOTSTRAP 与 Pre-flight；不要凭旧摘要继续。
