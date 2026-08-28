@@ -18,47 +18,123 @@ FAIL：只能泛化总结“高保真商拍”，无法复述硬门槛。
 PASS：任一必读项缺失、不可访问或无法确认时 `PRODUCTION_GATE = BLOCKED`。
 FAIL：先出一张试试看，再补读规则。
 
-## R05｜运行能力未确认则 Fail Closed
-READY 前必须确认：
-- VISION_MODEL 能读用户图与生成结果；
-- IMAGE_MODEL 支持 reference-image edit / image-to-image；
-- Credential 已配置；
-- 图片可从宿主传给 IMAGE_MODEL；
-- IMAGE_MODEL 输出可继续被宿主读取/传递。
-
-任一 UNKNOWN/MISSING → BLOCKED。
-
-## R06｜不允许猜图
-宿主默认 LLM 无视觉能力时，上传图必须交给 VISION_MODEL。
-不得根据文件名、用户一句话或常识自行猜 Food DNA。
-
-## R07｜仓库不得保存私有运行配置
-PASS：仓库只声明能力变量和接口要求。
-FAIL：写入具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有模型凭据。
-
-## R08｜READY 后等待“启动”
-PASS：配置与 Pre-flight 均通过后输出：
+## R05｜Declared Capability 不等于 Verified Capability
+静态工具描述、宿主 schema、已配置连接只能证明：
 
 ```text
+RUNTIME_CAPABILITIES_DECLARED = PASS
+```
+
+如果当前配置从未完成真实端到端调用，必须同时是：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
+```
+
+FAIL：没有实际链路证据却声称 `VERIFIED = PASS`、`SMOKE_TESTED = PASS` 或“已经端到端验证”。
+
+## R06｜Declared 完整时允许 READY，但不得伪造 Verified
+若 Mandatory Read、Credential presence、模型路由、reference-edit 能力和图片传递接口均可静态确认，可进入：
+
+```text
+PRODUCTION_GATE = PASS
 READY
 RUNTIME_STATE = READY_WAITING_FOR_START
 ```
 
-并等待用户“启动”。
+但如果没有匹配的已验证 Runtime Profile，必须显式保留：
 
-## R09｜启动后不反复询问配置
-用户“启动”后进入 `PRODUCTION`。除非连接失效，不得每张图都重新询问模型名、URL、Key。
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
+```
 
-## R10｜每个任务必须完成 Job Reads + Execution Contract
+这里的 `PRODUCTION_GATE = PASS` 只表示“配置足以开始真实生产验证”，不等于端到端链路已经验证。
+
+## R07｜首次真实生产调用兼任一次性验证
+当 `FIRST_LIVE_VERIFICATION_REQUIRED = TRUE` 时，不额外生成无业务价值的测试图。
+
+用户启动后的第一笔真实 A/B 任务必须用实际链路验证：
+- VISION_MODEL 能真实读取当前用户图；
+- IMAGE_MODEL 能真实接收 reference image 并返回结果；
+- VISION_MODEL / Agent 能真实读取生成结果；
+- 若任务为 B，Stage A PASS 图能真实传给 Stage B。
+
+在该任务最终交付前，以上实际链路必须成功。成功后才可写：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PASS
+RUNTIME_PROFILE_VERIFIED = TRUE
+FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
+```
+
+## R08｜已验证 Runtime Profile 可跨会话复用
+已验证 profile 必须保存在**宿主私有、本地/持久状态**，不得提交仓库。
+
+如果当前非秘密配置指纹与已验证 profile 一致：
+
+```text
+RUNTIME_PROFILE_FINGERPRINT_MATCH = TRUE
+RUNTIME_CAPABILITIES_VERIFIED = PASS
+FIRST_LIVE_VERIFICATION_REQUIRED = FALSE
+```
+
+PASS：新会话无需重复 smoke test。
+FAIL：每次冷启动都强制重新生成测试图。
+
+## R09｜Runtime Profile 指纹不得包含秘密
+Fingerprint 可由非秘密运行身份生成，例如：模型标识、连接槽/路由标识、reference-edit 路由模式、Stage A→B pass-through 路由版本、API origin 的不可逆摘要（若宿主需要）。
+
+禁止把 API Key / Token / 完整私有 URL / 用户凭据写入 profile fingerprint 或仓库。
+
+## R10｜配置变化必须使旧验证失效
+以下任一变化导致 fingerprint 不匹配时：
+
+```text
+RUNTIME_CAPABILITIES_VERIFIED = PENDING
+FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
+```
+
+包括视觉模型、图片模型、参考图编辑路由、Stage A→B pass-through 路由或连接身份发生变化。
+
+## R11｜真实调用失败立即使 Profile 失效
+任何已验证 profile 在实际生产中出现以下失败：读图失败、reference edit 失败、凭据失效、输出不可读、A→B 传递失败。
+
+必须：
+
+```text
+RUNTIME_PROFILE_VERIFIED = FALSE
+RUNTIME_STATE = SETUP_GATE
+PRODUCTION_GATE = BLOCKED
+```
+
+不得继续复用旧 PASS。
+
+## R12｜不允许猜图
+宿主默认 LLM 无视觉能力时，上传图必须交给 VISION_MODEL。
+不得根据文件名、用户一句话或常识自行猜 Food DNA。
+
+## R13｜仓库不得保存私有运行配置
+PASS：仓库只声明能力变量和接口要求。
+FAIL：写入具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有模型凭据。
+
+## R14｜READY 后等待“启动”
+PASS：配置与 Pre-flight 均通过后输出 READY 状态，并准确标注 capability evidence level，然后等待用户“启动”。
+
+## R15｜启动后不反复询问配置
+用户“启动”后进入 `PRODUCTION`。除非连接失效、fingerprint 变化或 profile 失效，不得每张图都重新询问模型名、URL、Key。
+
+## R16｜每个任务必须完成 Job Reads + Execution Contract
 PASS：每个 A 任务读取 `A_JOB_ALWAYS_LOAD` 与当前品类规则，再根据 `EXECUTION_CONTRACT_TEMPLATE.md` 建立当前任务合同。
 FAIL：冷启动读完后长期不刷新任务规则，或直接把整仓库交给图片模型自由解释。
 
-## R11｜显式 B 必经 Stage A
+## R17｜显式 B 必经 Stage A
 PASS：原图 → Stage A → Fidelity QC → Stage A PASS 图 → Stage B。
 FAIL：B 直接使用原始随手拍做 KV。
 
-## R12｜上下文压缩/恢复必须重新引导
+## R18｜上下文压缩/恢复必须重新引导
 如果智能体无法在活跃上下文中证明当前 `RUNTIME_MANIFEST.md` 版本和 P0 规则仍被保留，应重新执行 BOOTSTRAP / Pre-flight，而不是凭摘要继续生产。
 
-## R13｜连接失效回 SETUP_GATE
+## R19｜连接失效回 SETUP_GATE
 Key/模型/参考图编辑/视觉读取/图片传递能力失效时，退出 PRODUCTION，回到 SETUP_GATE，只修复缺失项。
