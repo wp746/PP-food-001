@@ -1,6 +1,6 @@
-# Execution Template V6.2
+# Execution Template V6.2.1
 
-Use this as the final IMAGE_MODEL instruction after Fidelity Manifest, Surface State Manifest, semantic/category routing, Scene Context Split, Background Architecture Plan and current Execution Contract are complete.
+Use this as the final IMAGE_MODEL instruction after Fidelity Manifest, Surface State Manifest, semantic/category routing, Scene Context Split, Product Derivation, Background Big Idea, Background Architecture Plan and current Execution Contract are complete.
 
 ---
 
@@ -122,7 +122,34 @@ Category semantics may change environment, materials, light, color and mood only
 
 ---
 
-## 6. Background Architecture Plan — mandatory
+## 6. Product-Derived Background Art Direction — mandatory
+
+Before designing the stage, use:
+
+```text
+{{PRODUCT_DERIVATION_EVIDENCE}}
+```
+
+At least three source-supported design evidences are required from:
+- geometry / repeated rhythm;
+- surface or material behavior;
+- product primary / secondary color;
+- temperature / process;
+- category temperament.
+
+Then define exactly one clear concept:
+
+```text
+BACKGROUND_BIG_IDEA = {{BACKGROUND_BIG_IDEA}}
+```
+
+The Big Idea must describe **space + primary materials + light behavior**. It cannot be vague words like “premium bakery”, “cinematic food”, “warm lifestyle” or “luxury table”.
+
+If a completely different food category could use the same Big Idea nearly unchanged, redesign before generation.
+
+---
+
+## 7. Background Architecture Plan — mandatory
 
 ```text
 {{BACKGROUND_ARCHITECTURE_PLAN}}
@@ -131,8 +158,9 @@ Category semantics may change environment, materials, light, color and mood only
 Core rule:
 
 ```text
+PRODUCT_DERIVED_STAGE > GENERIC_PREMIUM_STYLE
 BACKGROUND_ARCHITECTURE > PROP_STYLING
-CATEGORY_MATERIAL_LOGIC > GENERIC_PREMIUM_PROPS
+ONE_BIG_STAGE_IDEA > MANY_DECORATIVE_OBJECTS
 ```
 
 Build the environment first from **2–3 primary material planes / spatial masses**, not from decorative objects.
@@ -146,7 +174,7 @@ The background must include:
 - controlled occlusion;
 - deliberate light-cut / shadow architecture;
 - reflective-versus-absorptive material contrast;
-- clean negative space for later KV.
+- designed negative space for later KV.
 
 Props are OPTIONAL. If used, they are subordinate and low contrast.
 
@@ -154,13 +182,13 @@ Do not use linen, tongs, cups, pottery, wheat, ingredient bowls, bokeh or other 
 
 Internal test:
 
-> If every prop were removed, would the background still look like a world-class commercial stage designed for this food?
+> If every prop were removed, would the background still look like a world-class commercial stage designed specifically for this food?
 
 If no, redesign background before generation.
 
 ---
 
-## 7. Controlled Hero Reframe
+## 8. Controlled Hero Reframe
 
 ```text
 {{HERO_REFRAME_PLAN}}
@@ -176,7 +204,7 @@ No extreme low angle, extreme wide angle, unsupported rotation or invented unsee
 
 ---
 
-## 8. Multi-Product Hero Hierarchy
+## 9. Multi-Product Hero Hierarchy
 
 ```text
 {{MULTI_PRODUCT_HERO_PLAN}}
@@ -188,7 +216,7 @@ Create hierarchy only through light pool, local sharpness, rim, contrast, DOF, n
 
 ---
 
-## 9. Four-layer Hero Stage
+## 10. Four-layer Hero Stage
 
 1. **L1** near-camera entry — heavily defocused stage lip/material edge/support edge; props not required.
 2. **L2** Hero — sharpest plane, clear light pool.
@@ -197,11 +225,13 @@ Create hierarchy only through light pool, local sharpness, rim, contrast, DOF, n
 
 A single blurred wall, single gradient or one undifferentiated bokeh field does not count as L4.
 
+In 9:16, L4 should continue upward with designed depth; the upper frame cannot become a large empty blurred wall.
+
 Light the Hero with large controlled 45° key, precise rear/side separation where useful, correct contact shadows and visible brightness/color-temperature separation.
 
 ---
 
-## 10. Appetite rendering
+## 11. Appetite rendering
 
 Atmosphere comes from making the **source-true state** more readable.
 
@@ -209,7 +239,7 @@ Use better light placement, specular control, texture definition, color accuracy
 
 ---
 
-## 11. Color / material realism
+## 12. Color / material realism
 
 Preserve accurate food base colors and source-level material intensity.
 
@@ -219,7 +249,7 @@ Avoid universal orange-brown warmth, black-gold formulas, extreme teal-orange, c
 
 ---
 
-## 12. Strict negatives
+## 13. Strict negatives
 
 Strictly avoid:
 - any final aspect ratio other than exact 9:16 portrait;
@@ -229,7 +259,10 @@ Strictly avoid:
 - vessel/tray/direct-support replacement;
 - generic shop/display-case cleanup presented as Hero photography;
 - background relying on prop kits instead of material architecture;
+- a background with no clear product-derived Big Idea;
+- fewer than three product-derived background evidences;
 - flat backdrop / fake L4 / two-layer depth;
+- upper-half empty blurred wall in vertical composition;
 - equal-weight inventory look;
 - excessive steam/smoke;
 - pasted-product integration;
@@ -240,7 +273,7 @@ Strictly avoid:
 
 ## Final quality target
 
-The output must feel like the **same exact real product**, in the **same surface/cooking state**, professionally re-photographed on a **category-native architectural material stage**, with true L1/L2/L3/L4 depth and strict 9:16 vertical composition.
+The output must feel like the **same exact real product**, in the **same surface/cooking state**, professionally re-photographed on a **product-derived category-native architectural material stage**, with true L1/L2/L3/L4 depth and strict 9:16 vertical composition.
 
 The quality jump must come from camera, lighting, background architecture, spatial hierarchy, color and material readability — never from changing the food.
 
@@ -250,7 +283,9 @@ CORE COMMAND:
 
 **PRESERVE THE PRODUCT AND ITS CURRENT SURFACE STATE.**
 
-**DESIGN THE BACKGROUND AS MATERIAL ARCHITECTURE, NOT A PROP KIT.**
+**DERIVE THE STAGE FROM THE PRODUCT.**
+
+**ONE BIG BACKGROUND IDEA, NOT A PROP KIT.**
 
 **CREATE A WORLD-CLASS HERO STAGE.**
 
