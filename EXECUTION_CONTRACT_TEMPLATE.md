@@ -17,26 +17,28 @@ SOURCE_PRODUCT =
 - food/product identity:
 - temperature/cooking state:
 - serving mode:
+- direct support identity:
+- venue context identity-critical?: YES / NO
 
 VISIBLE_FACTS =
-- major ingredients:
-- ingredient geometry / cuts / widths / thickness / orientation:
+- major ingredients/materials:
+- ingredient/product geometry / cuts / widths / thickness / orientation:
 - visible count / arrangement relationships:
-- vessel / packaging identity:
-- plating topology:
-- sauce / oil / broth / cream / ice state:
+- vessel / packaging / tray identity:
+- plating / product-field topology:
+- sauce / oil / broth / cream / ice / crust state:
 - physical contacts / supports:
 
 REGION_BUDGET =
 - Region A Subject Core: VERY_LOW
-- Region B Subject Support: LOW_TO_MEDIUM
-- Region C Environment: HIGH
+- Region B Direct Support: LOW
+- Region C Generic Environment: HIGH
 
 LOCK_TARGETS =
 - Food Identity >=95
 - Ingredient Geometry >=95
 - Vessel / Container >=98
-- Plating >=95
+- Plating / Arrangement >=95
 - Physical Relationship >=95
 
 CATEGORY_SEMANTICS =
@@ -45,26 +47,61 @@ CATEGORY_SEMANTICS =
 - temperature logic:
 - semantic confidence:
 - selected material-stage direction:
+- selected Stage A category route:
+
+SCENE_CONTEXT_SPLIT =
+- DIRECT_SUPPORT_TO_LOCK:
+- GENERIC_VENUE_CONTEXT_TO_TRANSLATE:
+- IDENTITY_CRITICAL_CONTEXT_TO_PRESERVE:
+
+HERO_REFRAME_PLAN =
+- source camera is accidental snapshot?: YES / NO
+- crop / canvas extension:
+- focal-length feel:
+- allowed camera-height / pitch adjustment:
+- visible-face proportions to preserve:
+- support-plane / overlap / foreshortening constraints:
+
+MULTI_PRODUCT_HERO_PLAN =
+- applicable: YES / NO
+- PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER:
+- SUPPORTING_PRODUCT_FIELD:
+- hierarchy by light / sharpness / rim / contrast / DOF only:
+- no move / remove / duplicate / re-stack: TRUE
+
+HERO_STAGE_PLAN =
+- L1 near-camera entry:
+- L2 Hero + light pool:
+- L3 category-native material depth:
+- L4 deep recession with >=2 perceptible depth cues:
+- negative space:
+- rim / subject-background separation:
 
 CREATIVE_SCOPE =
 - canvas extension / 9:16 composition
+- controlled Hero Reframe
 - professional lighting
-- depth / subject separation
+- four-layer depth / subject separation
 - category-semantic material stage
-- background
+- background translation
 - color grading
 - realistic appetite rendering
 
 FORBIDDEN =
 - add/remove/replace major ingredients
 - change identity-defining geometry
-- replace vessel/package
+- replace vessel/package/direct support without permission
 - redesign package text/logo
-- re-plate product
-- change physical relationships
+- re-plate/re-stack/move product units
+- change count / overlap order
+- change meaningful physical relationships
 - invent unsupported heat/steam/gloss
 - adapt 9:16 by distorting or rebuilding product
-- import previous-job food facts
+- preserve a generic venue merely because it exists in the source
+- treat exact source camera coordinates as Food DNA
+- create extreme unsupported low-angle / wide-angle views
+- give every product unit equal visual weight when multi-product Hero hierarchy is possible
+- import previous-job food facts or visual skin
 
 STAGE_A_QC_REQUIRED = TRUE
 TARGETED_RETRY_ONLY = TRUE
@@ -72,9 +109,24 @@ TARGETED_RETRY_ONLY = TRUE
 
 ## IMAGE_MODEL Compilation Rule
 
-最终图像编辑指令必须从本合同编译，且第一段先写 Subject Lock，再写摄影/环境升级。
+最终图像编辑指令必须从本合同编译，顺序固定：
 
-不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt；仓库负责约束与路由，Contract 负责把当前任务编译成短、明确、可执行的指令。
+```text
+1. Subject / Direct-Support Lock
+2. Scene Context Split
+3. Category Route
+4. Hero Reframe Plan
+5. Multi-Product Hero Plan
+6. Four-Layer Hero Stage
+7. Appetite / Lighting / Color
+8. Strict Negatives
+```
+
+不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt。
+
+`source camera coordinates` 不属于默认锁定项；锁定的是产品视图几何、排列、直接承载和可信透视。
+
+`generic venue context` 不属于默认锁定项；除非 identity-critical，否则转译为品类原生高级材质舞台。
 
 ## B Handoff Fields
 
