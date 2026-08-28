@@ -8,7 +8,7 @@
 SOURCE_TRUTH = CURRENT_USER_IMAGE
 ```
 
-原图可见像素是真实产品真相。用户明确提供的菜名/品类信息可以帮助语义路由，但不能覆盖原图食材、器皿、摆盘和物理关系。
+原图可见像素是真实产品真相。用户明确提供的菜名/品类信息可以帮助语义路由，但不能覆盖原图食材、器皿、摆盘、排列和物理关系。
 
 未知区域只允许 Minimum Plausible Continuation，不得借扩图重做主体。
 
@@ -18,11 +18,9 @@ SOURCE_TRUTH = CURRENT_USER_IMAGE
 DEFAULT_ASPECT_RATIO = 9:16
 ```
 
-横图、方图、竖图都默认输出 9:16。适配方式优先级：画布延展 > 背景重构 > 镜头/空间重组。禁止拉伸、压缩、裁坏关键产品或重做产品适配画幅。
+横图、方图、竖图都默认输出 9:16。适配优先级：画布延展 > 背景重构 > Controlled Hero Reframe。禁止拉伸、压缩、裁坏关键产品或重做产品适配画幅。
 
 ## P2. A / B Intent Router
-
-优先级：
 
 ```text
 1. Explicit A → Stage A only
@@ -31,7 +29,7 @@ DEFAULT_ASPECT_RATIO = 9:16
 4. Otherwise → A
 ```
 
-商业信息包括：产品/菜名、品牌/店铺、主标题、副标题、地址、电话、价格、核心食材、卖点、新品/活动等。
+明显商业信息：产品/菜名、品牌/店铺、主副标题、地址、电话、价格、核心食材、卖点、新品/活动等。
 
 ```text
 EXPLICIT_A_OVERRIDES_AUTO_B = TRUE
@@ -44,7 +42,7 @@ B_CAN_SKIP_STAGE_A = FALSE
 
 当前任务只允许使用：当前图可见事实、当前用户明确提供的信息、当前任务已验证的中间产物。
 
-除非用户明确要求沿用，上一任务的品牌、产品名、食材、口味、地址、电话、Slogan、文案和场景事实全部失效。
+除非用户明确要求沿用，上一任务的品牌、产品名、食材、口味、地址、电话、Slogan、文案、场景事实和视觉皮肤全部失效。
 
 ## P4. Runtime Roles
 
@@ -60,13 +58,14 @@ B_CAN_SKIP_STAGE_A = FALSE
 Food Identity >=95
 Ingredient Geometry >=95
 Vessel / Container Identity >=98
-Plating Topology >=95
+Plating / Arrangement >=95
 Physical Relationship Fidelity >=95
 Photography >=85
 Semantic Relevance >=85
 Hero Spatial Score >=85
 Appetite Score >=85
 NO CRITICAL FAILURE
+NO HERO_SPATIAL_CRITICAL_FAILURE
 ```
 
 不可牺牲顺序：
@@ -74,12 +73,12 @@ NO CRITICAL FAILURE
 ```text
 Food Identity
 > Major Ingredient Identity
-> Ingredient Geometry
-> Vessel / Packaging
+> Ingredient / Product Geometry
+> Vessel / Packaging / Direct Support
 > Physical Relationships
-> Plating Topology
-> Sauce / Oil / Broth / Cream / Ice State
-> Visible Count / Arrangement
+> Plating / Arrangement Topology
+> Sauce / Oil / Broth / Cream / Ice / Crust State
+> Visible Count / Overlap
 > Material Realism
 > Color
 > Composition
@@ -89,34 +88,96 @@ Food Identity
 > Atmosphere
 ```
 
-视觉张力与保真冲突时：
+冲突时：
 
 ```text
 REDUCE_DESIGN_AGGRESSION = TRUE
 REDUCE_FIDELITY = NEVER
 ```
 
-## P6. Subject Lock
+## P6. Subject + Direct Support Lock
 
-必须锁定：产品身份、主辅食材、几何、数量关系、器皿/包装、摆盘拓扑、酱汁/油/汤体/奶油/冰块状态、手持/餐具/托盘等物理关系。
+必须锁定：产品身份、主辅食材/材质、几何、数量关系、器皿/包装、摆盘/阵列拓扑、表面状态、手持/餐具/托盘/烘焙纸等**直接承载与物理关系**。
 
-禁止：加减/替换主要食材、换器皿、重画包装、重摆盘、把产品标准化成“另一份更漂亮的同类食品”。
+禁止：加减/替换主要食材、换器皿、重画包装、重摆盘、移动/删除/复制/重排产品、把产品标准化成“另一份更漂亮的同类食品”。
 
 Stage A Prompt 前部必须是强硬具体锁定，不接受仅写“参考原图”“保持一致”。
 
-## P7. Hero Stage
+## P7. Hero Stage + Scene Context Precedence
 
-Stage A 是高级材质舞台上的 Food Hero，不是默认真实经营场所。
+Stage A 是高级材质舞台上的 Food Hero，不是默认真实经营场所，也不是普通门店照片的清洁升级。
+
+优先级：
+
+```text
+Food DNA / Direct Support
+> World-Class Hero Stage
+> Category Semantic Translation
+> Generic Source Venue Appearance
+```
+
+```text
+HERO_STAGE_OVERRIDES_GENERIC_VENUE_CONTEXT = TRUE
+DIRECT_SUPPORT_RELATION_LOCKED = TRUE
+GENERIC_VENUE_CONTEXT_LOCKED = FALSE_BY_DEFAULT
+```
+
+例外：包装零售货架、品牌/标签展示结构、手持关系或用户明确要求保留的场所，才可视为 identity-critical context。
+
+普通开放式面包/甜点展示柜中的柜体、墙面、店内空间不是默认 Food DNA；可以在保留产品与原托盘/直接承载关系的前提下转译成品类原生高级材质舞台。
 
 必须：
 - 从当前食品属性推导材质、色彩、温度、光线和身份锚点；
-- 建立 L1 前景 / L2 Hero / L3 中后景 / L4 深背景四层空间；
-- 产品为唯一锐利主角并处于光池；
-- 语义道具只在主体外部、低对比、虚化且不得暗示主体新增食材；
-- 冷食零热蒸汽，热食仅克制且物理合理的蒸汽；
+- 建立可观察的 L1 / L2 / L3 / L4 四层空间；
+- L4 至少有两个可感知的后退材质/光影线索；单一虚墙/渐变/bokeh 不算；
+- Hero 处于明确 light pool；
+- rim / brightness / temperature separation 雕刻主体；
+- 环境道具低对比、虚化、品类相关，不靠通用道具包冒充高级；
+- 冷食零热蒸汽，热食仅克制且物理合理；
 - 食欲感来自真实材质，不来自塑料高光、过饱和或浓烟。
 
-## P8. Stage B Handoff
+## P8. Controlled Hero Reframe
+
+```text
+CONTROLLED_HERO_REFRAME_ALLOWED = TRUE
+SOURCE_CAMERA_COORDINATES_ARE_FOOD_DNA = FALSE
+```
+
+允许：9:16 扩图、裁切、构图重组、焦段感调整、轻到中度机位高度/俯仰调整、光学主次重建。
+
+必须锁定：产品可见面比例、几何、数量、排列、重叠顺序、直接承载面、可信透视和器皿/托盘形态。
+
+禁止：极端低机位、极端广角、生成源图未支持的新侧面、旋转成全新视角、为构图改变产品数量或位置。
+
+目标：
+
+> **锁产品视图几何，不锁偶然的随手拍相机坐标。**
+
+## P9. Multi-Product Hero Hierarchy
+
+多产品场景必须：
+
+```text
+MULTI_PRODUCT_HERO_HIERARCHY_REQUIRED = TRUE
+```
+
+从原图已存在的前景单体或小簇选：
+
+```text
+PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER
+```
+
+其余保持不变，作为：
+
+```text
+SUPPORTING_PRODUCT_FIELD
+```
+
+只能通过 light pool、局部锐度、rim、对比、景深、负空间和受控 reframe 建立层级；不得移动、删除、复制、缩放或重排产品。
+
+如果画面首先读成库存/展示陈列而非 Hero，Hero Spatial FAIL。
+
+## P10. Stage B Handoff
 
 任何 B 请求：
 
@@ -126,17 +187,15 @@ CURRENT_STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 
 不得让 Stage B 回退原始随手拍，也不得引用上一任务图片。
 
-## P9. Targeted Retry
+## P11. Targeted Retry
 
 失败先诊断再修正，不随机整张重抽。
 
-典型类型：Ingredient / Vessel / Plating / Physical Relationship / Weak Photography / Generic Background / Temperature / Excessive Effect / Scene Integration / 9:16 Composition。
+典型类型：Ingredient / Vessel / Plating / Physical Relationship / Weak Photography / Generic Background / Temperature / Excessive Effect / Scene Integration / Generic Display Case / Camera Too Conservative / Multi-Product Inventory Look / Fake Four-Layer Depth / Wrong Category Material Language / 9:16 Composition。
 
-最多逐级收紧到 Attempt 3 Ultra-Conservative Subject Mode。宁可降低摄影戏剧性，也不允许产品漂移。
+最多逐级收紧到 Attempt 3 Ultra-Conservative Subject Mode。宁可降低危险的摄影戏剧性，也不允许产品漂移；但不得因为保真就退化成普通随手拍/门店展示照。
 
-## P10. Capability Evidence + Runtime Profile
-
-**Declared capability 与 Verified capability 必须分开。**
+## P12. Capability Evidence + Runtime Profile
 
 静态 schema、宿主能力说明、连接存在只能证明：
 
@@ -157,17 +216,13 @@ RUNTIME_CAPABILITIES_VERIFIED = PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
 ```
 
-允许进入 READY，但不得声称“已经 smoke tested / 已端到端验证”。
+允许进入 READY，但不得声称已端到端验证。
 
 第一次真实业务调用兼任验证，不额外生成无业务价值测试图。验证成功后可把 profile 保存在宿主私有持久状态；fingerprint 不变时跨会话复用。
 
-Fingerprint 只允许使用非秘密运行身份；不得包含 API Key、Token、完整私有 URL 或用户凭据。
+## P13. Fail Closed
 
-配置 identity 变化或真实调用失败 → profile 立即失效。
-
-## P11. Fail Closed
-
-以下任一项无法确认时：
+以下任一项无法确认：
 
 ```text
 PRODUCTION_GATE = BLOCKED
@@ -181,19 +236,16 @@ PRODUCTION_GATE = BLOCKED
 - Credential 未就绪；
 - 图片输入/输出不能被正确传递；
 - 当前 Execution Contract 未建立；
+- Hero Reframe / Multi-Product Plan 未建立或明确 N/A；
 - 规则文件存在未解决冲突。
 
-`RUNTIME_CAPABILITIES_VERIFIED = PENDING` 本身不是配置缺失；它表示首次真实任务需要在最终交付前完成 live verification。
+`RUNTIME_CAPABILITIES_VERIFIED = PENDING` 本身不是配置缺失；它表示首次真实任务需要在交付前完成 live verification。
 
-禁止“先出一张无业务价值测试图再说”。
+## P14. Repository Security Boundary
 
-## P12. Repository Security Boundary
+仓库只保存通用能力约定和变量名，不保存具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有凭据或 Runtime Profile 真实运行值。
 
-仓库只保存通用能力约定和变量名，不保存：具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有凭据、Runtime Profile 的真实运行值。
-
-运行值只存在宿主 Secret / Environment / Connection / 私有持久状态。
-
-## P13. Runtime State
+## P15. Runtime State
 
 ```text
 SETUP_GATE
