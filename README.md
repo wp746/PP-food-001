@@ -2,15 +2,15 @@
 
 高保真美食商业摄影 Stage A Skill。
 
-当前版本：**6.0.0**
+当前版本：**6.0.1**
 
 ## 目标
 
 把用户真实随手拍升级成 9:16 电影级/商业级 Food Hero，同时锁定真实产品身份、主要食材几何、器皿/包装、摆盘和物理关系。
 
-## V6.0 的重点
+## V6.0 架构
 
-V6.0 不再依赖“智能体自觉把所有文件读全”。新增跨智能体 fail-closed runtime protocol：
+跨智能体 fail-closed runtime protocol：
 
 ```text
 AGENTS.md
@@ -23,14 +23,25 @@ AGENTS.md
 → QC / targeted retry
 ```
 
-核心变化：
-- P0 规则只在 `RUNTIME_MANIFEST.md` 定义一次；
-- 冷启动必须完成 Mandatory Read 与读取证明；
-- 漏读 / 能力未知 / Contract 缺失时禁止生产；
-- 每个新任务先编译短 Execution Contract，再调用图片模型；
-- 上下文压缩后无法证明 P0 规则仍在时重新 Bootstrap；
-- Codex 可通过根目录 `AGENTS.md` 自动进入 Bootstrap；
-- 仓库不保存任何具体聚合平台、URL、Key 或私有模型配置。
+核心：P0 规则单一真相源、Mandatory Read、读取证明、每任务 Execution Contract、上下文压缩后重新 Bootstrap、Codex 根目录 AGENTS 自动入口。
+
+## V6.0.1 稳定性补丁
+
+修正“宿主声明支持就被误判成端到端已验证”的问题：
+
+```text
+RUNTIME_CAPABILITIES_DECLARED
+!=
+RUNTIME_CAPABILITIES_VERIFIED
+```
+
+- 静态 schema / 配置只能得到 `DECLARED = PASS`；
+- 真实调用成功或匹配 verified Runtime Profile 才能得到 `VERIFIED = PASS`；
+- 无 verified profile 时允许 READY，但必须标记 `VERIFIED = PENDING`；
+- 第一笔真实业务调用兼任一次性验证，不额外浪费测试图；
+- verified profile 存在宿主私有持久状态，配置 fingerprint 不变即可跨会话复用；
+- 配置变化或真实调用失败立即使 profile 失效；
+- fingerprint 和仓库均不得保存 API Key、完整私有 URL 或凭据。
 
 ## 用户入口
 
@@ -44,13 +55,7 @@ AGENTS.md
 
 ## 与 KV Skill 联动
 
-推荐同时安装：
-
-```text
-wp746/wp746-PP-food-KV-001
-```
-
-完整链路：
+推荐同时安装 `wp746/wp746-PP-food-KV-001`。
 
 ```text
 原始图
@@ -64,4 +69,4 @@ Stage B 不得回退原始随手拍。
 
 ## 首次安装
 
-从 `BOOTSTRAP.md` 开始。运行模型和 Credential 按 `HANDOFF.md` 配置，全部通过后等待用户说“启动”。
+从 `BOOTSTRAP.md` 开始。运行模型和 Credential 按 `HANDOFF.md` 配置。Pre-flight 的 Declared 能力通过后进入 READY；Verified 状态按 Runtime Profile / 首次真实调用证据决定。
