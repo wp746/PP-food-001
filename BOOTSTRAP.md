@@ -1,20 +1,14 @@
 # PP-food-001 Bootstrap Protocol
 
-本文件解决跨智能体最常见的失效：只读 `SKILL.md`、选择性漏读、上下文压缩后凭摘要继续生产。
+目标：跨智能体冷启动时既不漏掉 P0，又避免“读太多 → 规则互相稀释 → Prompt 过载 → 出图漂移”。
 
 ## 1. Bootstrap Triggers
 
-以下任一情况必须重新执行：
-- 首次 clone / 安装 / 加载；
-- 新智能体或新会话；
-- `VERSION` 变化；
-- 上下文被压缩、重置或恢复；
-- 无法准确复述当前 P0 规则；
-- 运行能力或连接状态未知。
+以下任一情况重新执行：首次安装/新会话、VERSION 变化、上下文压缩/恢复、运行能力未知、无法准确复述当前 P0。
 
-## 2. Mandatory Read Order
+## 2. Runtime Minimal Core｜正常生产必读
 
-任何生产动作之前按顺序读取：
+按顺序读取：
 
 ```text
 1. VERSION
@@ -24,101 +18,109 @@
 5. HANDOFF.md
 6. REQUIRED_READ_SET.md
 7. PRE_FLIGHT_CHECKLIST.md
-8. REQUIRED_READ_SET.md 的 COLD_START_ALWAYS_LOAD references
-9. tests/runtime-handoff-tests.md
-10. tests/test-cases.md
-11. EXECUTION_CONTRACT_TEMPLATE.md
+8. EXECUTION_CONTRACT_TEMPLATE.md
 ```
 
-`SOP-A.md` 是执行A的 Canonical Operator SOP。新智能体不得只读 `SKILL.md` 后凭常识执行 A。
-
-禁止：
-- 自行跳过 `SOP-A.md`；
-- 自行跳过 COLD_START_ALWAYS_LOAD；
-- 用摘要代替正文；
-- Mandatory Read 未完成就生成图片；
-- 把旧会话记忆当当前仓库规则。
-
-## 3. Rule Authority
+正常生产 **不要** 在冷启动读取：
 
 ```text
-P0 runtime invariants: RUNTIME_MANIFEST.md
-Stage role / entrypoint: SKILL.md
-A operator workflow: SOP-A.md
-Runtime configuration: HANDOFF.md
-Detailed methods: references/
-Acceptance / regression: tests/
-Current-job compilation: EXECUTION_CONTRACT_TEMPLATE.md
+tests/*
+全部 references/*
+README.md
+历史案例/旧对话总结
 ```
 
-发现真实冲突：
+`tests/*` 只在 Skill 开发、版本升级、审计、回归验证时读取。
+
+## 3. Authority
 
 ```text
-PRODUCTION_GATE = BLOCKED
+P0 invariants              → RUNTIME_MANIFEST.md
+A 操作流程                  → SOP-A.md
+模型/连接能力               → HANDOFF.md
+当前任务加载策略            → REQUIRED_READ_SET.md
+生产门禁                    → PRE_FLIGHT_CHECKLIST.md
+当前任务编译                → EXECUTION_CONTRACT_TEMPLATE.md
+细节方法                    → references/（按需）
+开发/回归                   → tests/（非生产）
 ```
 
-指出冲突，不自行选一个版本继续。
+真实冲突未解决：`PRODUCTION_GATE = BLOCKED`。
 
-## 4. Bootstrap Proof
+## 4. Bootstrap Proof｜只证明关键不变量
 
-Mandatory Read 后必须准确给出：
+必须确认：
 
 ```text
 REPO_VERSION = <VERSION>
-DEFAULT_ASPECT_RATIO = 9:16
-DEFAULT_INTENT_WITHOUT_BUSINESS_INFO = A
-EXPLICIT_A_OVERRIDES_AUTO_B = TRUE
-B_REQUIRES_STAGE_A_PASS = TRUE
-FOOD_IDENTITY_TARGET = >=95
-INGREDIENT_GEOMETRY_TARGET = >=95
-VESSEL_TARGET = >=98
-PLATING_TARGET = >=95
-PHYSICAL_RELATIONSHIP_TARGET = >=95
-HERO_SPATIAL_TARGET = >=85
-APPETITE_TARGET = >=85
+DEFAULT_ASPECT_RATIO = EXACT 9:16
+EXPLICIT_A = STAGE_A_ONLY
+B_REQUIRES_CURRENT_STAGE_A_PASS = TRUE
+SOURCE_TRUTH = CURRENT_USER_IMAGE
+FOOD_IDENTITY_TARGET >=95
+VESSEL_TARGET >=98
+SOURCE_SURFACE_STATE > APPETITE_ENHANCEMENT
+BACKGROUND_ARCHITECTURE > PROP_STYLING
 RETRY_MODE = TARGETED_NOT_RANDOM
 ```
 
-还必须能解释 `SOP-A.md` 的以下内容：
-- `执行A` 为什么不要求 KV 文案；
-- Reference Lock 为什么必须位于 IMAGE_MODEL Prompt 首段；
-- Source Surface State 为什么不可因“更有食欲”而升级火候/焦化/油亮等级；
-- Product-Derived Background Architecture 为什么优先于道具包；
-- Stage A 失败后为什么必须定向重试。
+并能解释：
+- 默认宿主不识图时必须显式调用 VISION_MODEL；
+- IMAGE_MODEL Prompt 第一段必须锁参考图；
+- “更有食欲”不能重新烹饪/重做表面状态；
+- 当前任务不能继承上一任务产品事实或视觉皮肤。
 
-任一答不准 → 重读对应文件，不能 READY。
+答不准 → 重读 Minimal Core 对应文件。
 
-## 5. Runtime Gate
+## 5. Context Budget｜防漂移硬规则
 
-Bootstrap Proof 后执行 `PRE_FLIGHT_CHECKLIST.md`。
-
-只有：
+正常生产：
 
 ```text
-BOOTSTRAP_READ = PASS
-RUNTIME_CAPABILITIES = PASS
-PRODUCTION_GATE = PASS
+FULL_REPO_DUMP = FORBIDDEN
+TESTS_IN_RUNTIME_CONTEXT = FORBIDDEN
+PREVIOUS_JOB_SKIN_IMPORT = OFF
 ```
 
-才允许：
+每个任务只按 `REQUIRED_READ_SET.md` 加载当前真正需要的 references。不要因为“保险”把所有品类、所有场景、所有示例一起读入当前任务。
+
+IMAGE_MODEL 永远只收到：
 
 ```text
-READY
+当前参考图
++ 当前任务短 Execution Contract
++ 当前任务短 Prompt
+```
+
+不得收到整个仓库 Markdown。
+
+## 6. Runtime Gate
+
+完成 Bootstrap Proof 后运行 `PRE_FLIGHT_CHECKLIST.md`。
+
+静态能力完整即可：
+
+```text
 RUNTIME_STATE = READY_WAITING_FOR_START
 ```
 
-等待用户“启动”后进入 PRODUCTION。
+若无真实端到端证据，准确标注 `RUNTIME_CAPABILITIES_VERIFIED = PENDING`；第一笔真实业务兼任验证，不额外生成测试图。
 
-## 6. Production Refresh
+用户说“启动”后进入 `PRODUCTION`。
 
-每个新任务必须：
+## 7. Production Refresh｜每张新图
 
-1. 刷新 `RUNTIME_MANIFEST.md`；
-2. 刷新 `SOP-A.md`；
-3. 读取 `REQUIRED_READ_SET.md` 的 `A_JOB_ALWAYS_LOAD`；
-4. 加载当前品类需要的 `CATEGORY_CONDITIONAL_LOAD`；
-5. 新建 `CURRENT_JOB_FACTS`；
-6. 按 `EXECUTION_CONTRACT_TEMPLATE.md` 编译合同；
-7. Contract 未完成不得调用 IMAGE_MODEL。
+每个新 A 任务：
 
-长对话后无法证明 Cold-Start Core 或 `SOP-A.md` 仍在活跃上下文 → 重新 Bootstrap。
+```text
+new CURRENT_JOB_FACTS
+→ refresh RUNTIME_MANIFEST P0
+→ load A_JOB_CORE
+→ load only current conditional refs
+→ compile compact EXECUTION_CONTRACT
+→ IMAGE_MODEL
+→ QC
+→ targeted retry if needed
+```
+
+不要每张图重新完整 Bootstrap，除非版本/能力/上下文状态发生变化。
