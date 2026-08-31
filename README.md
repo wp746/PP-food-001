@@ -2,98 +2,86 @@
 
 高保真美食商业摄影 Stage A Skill。
 
-当前版本：**6.2.1**
+当前版本：**6.4.0**
 
-## 目标
+## 这版解决什么
 
-把用户真实随手拍升级成**严格 9:16**世界级商业 Food Hero，同时锁定真实产品身份、食材/产品几何、器皿/包装、排列、物理关系，以及原产品当前表面/火候/熟度状态。
+V6.4.0 不是继续堆 Prompt，而是针对跨智能体安装后常见的漂移做**运行时减法**：
 
-## Runtime
+- 正常生产不再把 tests 和全部 references 一次性读入上下文；
+- 每张新图只加载当前任务需要的规则；
+- 当前任务与上一任务严格隔离；
+- Execution Contract 从超长字段表压缩成 6 个核心块；
+- IMAGE_MODEL 只接收当前参考图 + 当前短合同 + 当前短 Prompt；
+- 保留 Food DNA、Surface State、9:16、Background Architecture、Targeted Retry 等硬门槛。
+
+核心原则：
+
+> **少而明确的当前任务规则 > 大而全的仓库提示词。**
+
+## Runtime Minimal Core
+
+新智能体从 `BOOTSTRAP.md` 开始，正常生产只加载：
 
 ```text
-AGENTS.md
-→ BOOTSTRAP.md
-→ RUNTIME_MANIFEST.md
-→ REQUIRED_READ_SET.md
-→ PRE_FLIGHT_CHECKLIST.md
-→ EXECUTION_CONTRACT_TEMPLATE.md
-→ Stage A
-→ QC / targeted retry
+VERSION
+RUNTIME_MANIFEST.md
+SKILL.md
+SOP-A.md
+HANDOFF.md
+REQUIRED_READ_SET.md
+PRE_FLIGHT_CHECKLIST.md
+EXECUTION_CONTRACT_TEMPLATE.md
 ```
 
-## V6.2.1 核心
+`tests/*` 只用于开发/升级/回归，不进入正常出图上下文。
 
-### 1. Exact 9:16
+## 执行A
+
+用户上传图片说：
 
 ```text
-OUTPUT_ASPECT_RATIO_EXACT = 9:16
-NON_9_16_DELIVERY = CRITICAL_FAILURE
+执行A
 ```
 
-无论源图比例，Stage A 最终交付必须为严格 9:16。非 9:16 不得作为 PASS 图。
+默认：只做 Stage A 商拍，不要求 KV 文案。
 
-### 2. Product-Derived Background Architecture
+链路：
 
 ```text
-PRODUCT_DERIVED_STAGE > GENERIC_PREMIUM_STYLE
-BACKGROUND_ARCHITECTURE > PROP_STYLING
-ONE_BIG_STAGE_IDEA > MANY_DECORATIVE_OBJECTS
+CURRENT USER IMAGE
+→ VISION_MODEL
+→ CURRENT_JOB_FACTS
+→ Compact Execution Contract
+→ IMAGE_MODEL reference edit
+→ QC
+→ targeted retry
+→ Stage A PASS
 ```
 
-每任务必须：
-- `PRODUCT_DERIVATION_EVIDENCE >=3`；
-- 定义一个明确 `BACKGROUND_BIG_IDEA`；
-- 用 2–3 个主材质平面/体块建立近/中/深空间；
-- 使用高差、遮挡、反射/吸光关系、light cut 和深度递进；
-- 9:16 上方继续有设计型空间，不允许大面积虚墙；
-- 道具可为 0，删除道具后背景仍必须成立。
-
-核心文件：
+## 硬门槛
 
 ```text
-references/hero-background-architecture.md
-```
-
-### 3. Surface-State Fidelity
-
-```text
+Output = EXACT 9:16
+Food Identity >=95
+Ingredient Geometry >=95
+Vessel / Container >=98
+Plating / Arrangement >=95
+Physical Relationship >=95
 SOURCE_SURFACE_STATE > APPETITE_ENHANCEMENT
-REVEAL_EXISTING_PROPERTY = YES
-AMPLIFY_PROPERTY_BEYOND_SOURCE = NO
+BACKGROUND_ARCHITECTURE > PROP_STYLING
 ```
 
-食欲提升来自摄影，不来自重新烹饪产品。
+## 防漂移
 
-### 4. Topology-Preserving Completion
+每张新图都建立新的 `CURRENT_JOB_FACTS`。上一任务品牌、产品、场景事实、背景皮肤和示例默认失效。
 
-装盘/器皿因裁切没拍全时，只允许延续同一份产品拓扑：
+禁止把整仓库 Markdown 直接塞给图片模型。
 
-```text
-HIGH confidence → natural continuation
-MEDIUM → minimum conservative continuation
-LOW / UNKNOWN → environment extension only
-```
+## B 联动
 
-> Complete the same serving; do not design a better serving.
-
-### 5. Hero Stage
-
-```text
-Food DNA / Source Surface State / Direct Support
-> World-Class Hero Stage
-> Category Semantic Translation
-> Generic Venue Appearance
-```
-
-普通展示柜/墙面不默认锁定；允许 Controlled Hero Reframe；多产品建立 Primary Hero + Supporting Product Field；Fake L4、普通店内感、道具包高级感直接 FAIL。
-
-## A / B
-
-- `A` → Stage A only；
-- `B` → 仍先完整 Stage A，PASS 后进入 KV；
-- 无 A/B 且无明显商业信息 → 默认 A；
-- 有明显 KV 商业信息 → 自动 B，但仍先 A。
+`执行B` 仍然先完整执行当前任务 Stage A；只有当前 Stage A QC PASS 图可以交给 `PP-food-KV-001`。
 
 ## Security
 
-仓库不保存具体供应商、私有聚合平台、实际 API Base URL、API Key、私有凭据或 Runtime Profile 运行值。
+仓库不保存真实 API Key、私有 Base URL、私有供应商配置或用户凭据。
