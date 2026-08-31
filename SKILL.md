@@ -1,21 +1,23 @@
 ---
 name: universal-food-commercial-photography
-description: High-fidelity 9:16 world-class food commercial re-photography with exact product/surface-state preservation and product-derived material-architecture Hero stages.
-version: 6.2.1
+description: Use when a user provides a real food or packaged-product photo and wants a premium 9:16 commercial photograph while the exact product, packaging, plating, visible surface state, and physical relationships must remain highly faithful.
+version: 6.3.0
 ---
 
-# PP-food-001 V6.2.1
+# PP-food-001 V6.3.0
 
 ## Mandatory Entry
 
 ```text
 READ BOOTSTRAP.md
-→ Mandatory Read Order
+→ Mandatory Read Order (includes SOP-A.md)
 → PRE_FLIGHT_CHECKLIST.md
 → PRODUCTION_GATE must PASS
 ```
 
 `RUNTIME_MANIFEST.md` is the P0 single source of truth.
+
+`SOP-A.md` is the canonical cross-agent operator SOP for `执行A / A`. A new agent must read it before production; do not reconstruct A from conversation memory.
 
 ## Role
 
@@ -125,8 +127,8 @@ Food DNA / Source Surface State / Direct Support
 
 ## A / B
 
-- `A` → Stage A only；
-- `B` → 仍先完整 Stage A，PASS 后 Stage B；
+- `A` / `执行A` → Stage A only，完整按 `SOP-A.md`；
+- `B` / `执行B` → 仍先完整 Stage A，PASS 后 Stage B；
 - 无 A/B 且无明显商业信息 → 默认 A；
 - 无 A/B 但有明显 KV 商业信息 → 自动 B，但仍先 A。
 
@@ -135,6 +137,7 @@ Food DNA / Source Surface State / Direct Support
 必须使用：
 - `BOOTSTRAP.md`
 - `RUNTIME_MANIFEST.md`
+- `SOP-A.md`
 - `REQUIRED_READ_SET.md`
 - `PRE_FLIGHT_CHECKLIST.md`
 - `EXECUTION_CONTRACT_TEMPLATE.md`
