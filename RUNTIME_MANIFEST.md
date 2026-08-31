@@ -20,7 +20,7 @@ OUTPUT_ASPECT_RATIO_EXACT = 9:16
 NON_9_16_DELIVERY = CRITICAL_FAILURE
 ```
 
-无论源图横图、方图、竖图，Stage A 最终交付都必须是**严格 9:16 竖版画布**。
+无论源图横图、方图、竖图，Stage A 最终交付都必须是严格 9:16 竖版画布。
 
 适配优先级：
 
@@ -32,8 +32,6 @@ canvas extension
 ```
 
 禁止：拉伸、压缩、裁坏关键产品、重做产品适配画幅。
-
-如果 IMAGE_MODEL 第一次返回非 9:16：**不得交付**。必须通过 canvas correction / outpaint / targeted retry 修正到严格 9:16，并继续锁住产品。
 
 ## P2. A / B Intent Router
 
@@ -57,9 +55,9 @@ B_CAN_SKIP_STAGE_A = FALSE
 
 ## P4. Runtime Roles
 
-`VISION_MODEL`：识图、Fidelity Manifest、Surface State Manifest、Completion Confidence、品类/温度/语义路由、Background Architecture Plan、生成后 Fidelity/Semantic/Hero/Aspect QC。
+`VISION_MODEL`：识图、当前 Product/Fidelity facts、Surface State、Completion Confidence、品类/温度/语义路由、Background Architecture Plan、生成后 Fidelity/Semantic/Hero/Aspect QC。
 
-`IMAGE_MODEL`：必须支持 reference-image editing / image-to-image；接收真实参考图并执行高保真商拍。
+`IMAGE_MODEL`：必须支持 reference-image editing / image-to-image；接收真实当前参考图并执行高保真商拍。
 
 默认宿主模型无视觉时禁止猜图。
 
@@ -78,7 +76,6 @@ Hero Spatial Score >=85
 Appetite Score >=85
 Output Aspect Ratio = EXACT 9:16
 NO CRITICAL FAILURE
-NO HERO_SPATIAL_CRITICAL_FAILURE
 ```
 
 不可牺牲顺序：
@@ -113,37 +110,30 @@ REDUCE_FIDELITY = NEVER
 
 ```text
 SOURCE_SURFACE_STATE > APPETITE_ENHANCEMENT
-```
-
-所有品类必须锁定原图已有的：基础颜色与梯度、烘烤深浅、焦化程度、熟度、油亮/哑光等级、湿润度、酱汁/油覆盖、脆壳/皮肤状态、裂纹/割口、奶油/糖霜、冷凝/冰霜、透明度等可见状态。
-
-商拍允许通过曝光、显色、光位、镜面高光控制、微对比、纹理解析和色彩分级让这些属性**更清楚**；不允许把属性本身**变得更强**。
-
-```text
 REVEAL_EXISTING_PROPERTY = YES
 AMPLIFY_PROPERTY_BEYOND_SOURCE = NO
 ```
 
-任何输出若看起来像“同类食品，但火候/熟度/表皮/酱汁状态明显不同的一批产品”，直接 Fidelity FAIL。
+所有品类必须锁定原图已有的：基础颜色与梯度、烘烤深浅、焦化程度、熟度、油亮/哑光等级、湿润度、酱汁/油覆盖、脆壳/皮肤状态、裂纹/割口、奶油/糖霜、冷凝/冰霜、透明度等可见状态。
+
+商拍允许让这些属性更清楚，不允许把属性本身推强。若看起来像“同类食品但火候/熟度/表皮/酱汁状态明显不同的一批产品”，直接 Fidelity FAIL。
 
 ## P7. Topology-Preserving Completion
 
-当源图因裁切、取景或装盘边缘没有拍全时，允许补全，但只允许补全**同一份产品/同一器皿/同一摆盘拓扑**。
+当源图因裁切、取景或装盘边缘没拍全，只允许补全同一份产品/同一器皿/同一摆盘拓扑。
 
 ```text
 HIGH → natural continuation allowed
 MEDIUM → minimum conservative continuation only
-LOW / UNKNOWN → do not invent product content
+LOW / UNKNOWN → environment extension only
 ```
 
-补全必须延续：食材身份、几何/切法、尺度、方向、层级、重叠、密度、数量关系、表面状态、酱汁/油/汤体状态、容器/承载关系。
+必须延续食材身份、几何/切法、尺度、方向、层级、重叠、密度、数量关系、表面状态与承载关系。
 
 ```text
 COMPLETE_THE_SAME_SERVING = TRUE
 DESIGN_A_BETTER_SERVING = FALSE
 ```
-
-低置信度时优先环境延展、裁切调整或自然遮挡，不强行补产品。
 
 ## P8. Subject + Direct Support Lock
 
@@ -151,7 +141,7 @@ DESIGN_A_BETTER_SERVING = FALSE
 
 禁止：加减/替换主要食材、换器皿、重画包装、重摆盘、移动/删除/复制/重排产品、把产品标准化成“另一份更漂亮的同类食品”。
 
-Stage A Prompt 前部必须是强硬具体锁定，不接受仅写“参考原图”“保持一致”。
+Stage A IMAGE_MODEL Prompt 第一段必须是强硬具体 Reference Lock，不接受仅写“参考原图”“保持一致”。
 
 ## P9. Hero Stage + Scene Context Precedence
 
@@ -162,11 +152,9 @@ Food DNA / Source Surface State / Direct Support
 > Generic Source Venue Appearance
 ```
 
-普通开放式展示柜中的柜体、墙面、店内空间不是默认 Food DNA；可以在保留产品与原托盘/直接承载关系的前提下转译成品类原生高级材质舞台。
+普通展示柜/墙面/店内空间不是默认 Food DNA；在保留产品和直接承载关系的前提下可以转译成品类原生高级材质舞台。
 
-必须建立可观察的 L1 / L2 / L3 / L4 四层空间；L4 至少有两个可感知的后退材质/光影线索；Hero 处于明确 light pool。
-
-Hero / Appetite 只能提升摄影表现，不能覆盖 P6 Surface State Lock。
+Hero 必须有清晰前中后景、明确 light pool、可感知后退空间；空间证据不足或普通店内感明显 → Hero FAIL。
 
 ## P10. Background Architecture — All Categories
 
@@ -175,31 +163,24 @@ BACKGROUND_ARCHITECTURE > PROP_STYLING
 CATEGORY_MATERIAL_LOGIC > GENERIC_PREMIUM_PROPS
 ```
 
-每个 Stage A 任务必须建立 `BACKGROUND_ARCHITECTURE_PLAN`，至少包含：
+每个 Stage A 必须有：
 
 ```text
-category_material_logic
-food-derived_color_logic
-primary_material_planes = 2-3
-near / mid / deep spatial masses
+PRODUCT_DERIVATION_EVIDENCE >=3
+BACKGROUND_BIG_IDEA = one clear concept
+PRIMARY_MATERIAL_PLANES = 2-3
+NEAR / MID / DEEP spatial masses
 height / depth variation
 occlusion relationship
 light-cut / shadow architecture
-reflective-vs-absorptive material relationship
+reflective-vs-absorptive relationship
 negative-space zone
 props = OPTIONAL / subordinate
 ```
 
-**删除所有辅助道具后，背景仍必须像世界级商业摄影舞台。**
+删除辅助道具后，背景仍必须像世界级商业摄影舞台。
 
-以下情况直接 Background / Hero FAIL：
-- 主要依赖亚麻布、夹子、杯子、陶罐、麦穗、香料碟、灯泡等道具制造高级感；
-- 去掉道具后只剩普通木柜、虚墙或空背景；
-- 材质只作为小物件出现，没有形成空间平面/体块；
-- 背景没有台面高差、前后遮挡、材质反射差和光影切面；
-- 换成完全不同食品，背景仍几乎无需改变。
-
-道具可为 0；背景高级感必须首先来自**空间建筑 + 材质 + 光影**。
+以下直接 FAIL：主要靠亚麻、夹子、杯子、陶罐、麦穗、香料碟、灯泡/bokeh 等道具包；去掉道具后只剩普通背景；不同品类换主体后背景几乎无需改变。
 
 ## P11. Controlled Hero Reframe
 
@@ -208,17 +189,15 @@ CONTROLLED_HERO_REFRAME_ALLOWED = TRUE
 SOURCE_CAMERA_COORDINATES_ARE_FOOD_DNA = FALSE
 ```
 
-允许 9:16 扩图、裁切、构图重组、焦段感调整、轻到中度机位高度/俯仰调整、光学主次重建。
+允许 9:16 扩图、裁切、构图重组、焦段感调整、轻到中度机位调整；必须锁定产品可见面比例、几何、数量、排列、重叠顺序、直接承载面和可信透视。
 
-必须锁定：产品可见面比例、几何、数量、排列、重叠顺序、直接承载面、可信透视和器皿/托盘形态。
-
-禁止极端低机位、极端广角、生成源图未支持的新侧面、旋转成全新视角、为构图改变产品数量或位置。
+禁止极端新视角、极端广角、生成源图未支持的新侧面，或为构图改变产品数量/位置。
 
 ## P12. Multi-Product Hero Hierarchy
 
-多产品场景从原图已存在的前景单体或小簇选 `PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER`；其余保持不变成为 `SUPPORTING_PRODUCT_FIELD`。
+多产品场景从原图已存在的前景单体/小簇选择 `PRIMARY_HERO_UNIT / CLUSTER`；其余保持为 Supporting Product Field。
 
-只能通过 light pool、局部锐度、rim、对比、景深、负空间和受控 reframe 建立层级；不得移动、删除、复制、缩放或重排产品。
+只能通过光、锐度、对比、景深、负空间和受控 reframe 建立层级；不得移动、删除、复制、缩放或重排产品。
 
 ## P13. Stage B Handoff
 
@@ -234,9 +213,9 @@ CURRENT_STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 
 失败先诊断再修正，不随机整张重抽。
 
-典型类型：Ingredient / Vessel / Plating / Physical Relationship / Surface State Drift / Unsupported Completion / Weak Photography / Generic Background / Background Architecture / Temperature / Excessive Effect / Scene Integration / Generic Display Case / Camera Too Conservative / Multi-Product Inventory Look / Fake Four-Layer Depth / Wrong Category Material Language / 9:16 Composition。
+典型类型：Food/Ingredient Drift、Vessel/Package Drift、Surface State Drift、Unsupported Completion、Weak Photography、Generic Background、Background Architecture、Temperature/Physics、Hero Composition、Wrong Category Material Language、9:16 Composition。
 
-最多逐级收紧到 Attempt 3 Ultra-Conservative Subject Mode。宁可降低危险的摄影戏剧性，也不允许产品漂移；但不得因为保真退化成普通随手拍。
+最多 3 次逐级收紧。宁可降低危险的摄影戏剧性，也不降低 Fidelity；但不得退化为普通随手拍。
 
 ## P15. Capability Evidence + Runtime Profile
 
@@ -246,48 +225,68 @@ CURRENT_STAGE_B_REFERENCE = CURRENT_JOB_STAGE_A_PASS_IMAGE
 RUNTIME_CAPABILITIES_DECLARED = PASS
 ```
 
-只有真实调用链成功，或存在与当前非秘密配置 fingerprint 匹配的已验证 Runtime Profile，才能证明：
+真实调用链成功，或存在与当前非秘密配置 fingerprint 匹配的已验证 Runtime Profile，才可：
 
 ```text
 RUNTIME_CAPABILITIES_VERIFIED = PASS
 ```
 
-若静态配置完整但没有匹配 profile：
+否则：
 
 ```text
 RUNTIME_CAPABILITIES_VERIFIED = PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE
 ```
 
-允许进入 READY，但不得声称已端到端验证。第一次真实业务调用兼任验证，不额外生成无业务价值测试图。
+允许 READY，但不得声称已端到端验证。第一次真实业务调用兼任验证，不额外生成无业务价值测试图。
 
-## P16. Fail Closed
+## P16. Runtime Context Discipline｜防过载
 
-以下任一项无法确认：
+正常生产采用 Minimal Core：
+
+```text
+FULL_REPO_DUMP = FORBIDDEN
+TESTS_IN_NORMAL_RUNTIME = FORBIDDEN
+LOAD_ALL_REFERENCES = FORBIDDEN
+PREVIOUS_JOB_SKIN_IMPORT = OFF
+```
+
+每个 A 任务只激活当前任务需要的 reference；品类、场景、示例与上一任务不自动延续。
+
+IMAGE_MODEL 只接收：
+
+```text
+CURRENT_USER_IMAGE
++ compact current A Execution Contract
++ compact current A Prompt
+```
+
+不得把 SOP、tests、全部 references、历史案例或旧任务总结原样拼进 IMAGE_MODEL Prompt。
+
+## P17. Fail Closed
+
+以下任一无法确认：
 
 ```text
 PRODUCTION_GATE = BLOCKED
 ```
 
-- Mandatory Read 未完成；
+- Runtime Minimal Core 未完成；
 - Pre-flight 未通过；
 - `RUNTIME_CAPABILITIES_DECLARED != PASS`；
-- VISION_MODEL 不能读图；
-- IMAGE_MODEL 不支持参考图编辑；
-- Credential 未就绪；
-- 图片输入/输出不能被正确传递；
-- 当前 Execution Contract 未建立；
-- `SURFACE_STATE_MANIFEST` 未建立；
-- `TOPOLOGY_COMPLETION_PLAN` 未建立或明确 N/A；
-- `BACKGROUND_ARCHITECTURE_PLAN` 未建立；
-- Hero Reframe / Multi-Product Plan 未建立或明确 N/A；
+- VISION_MODEL 不能读当前图；
+- IMAGE_MODEL 不支持 reference edit；
+- Credential / 图片传递未就绪；
+- 当前 compact Execution Contract 未建立；
+- Product Lock / Surface State / Completion / Background Big Idea / Hero Plan 无法解析；
+- 当前合同出现未授权 previous-job contamination；
 - 规则文件存在未解决冲突。
 
-## P17. Repository Security Boundary
+## P18. Repository Security Boundary
 
 仓库只保存通用能力约定和变量名，不保存具体供应商名、私有聚合平台名、实际 API Base URL、API Key、私有凭据或 Runtime Profile 真实运行值。
 
-## P18. Runtime State
+## P19. Runtime State
 
 ```text
 SETUP_GATE
@@ -304,4 +303,4 @@ RUNTIME_CAPABILITIES_VERIFIED = PASS / PENDING
 FIRST_LIVE_VERIFICATION_REQUIRED = TRUE / FALSE
 ```
 
-连接失效、profile fingerprint 不匹配或能力变为 UNKNOWN/MISSING 时，退回 SETUP_GATE，只修复缺失项。
+连接失效、profile fingerprint 不匹配、版本变化或上下文压缩后无法证明 P0 时，退回 SETUP_GATE，只修复缺失项。
