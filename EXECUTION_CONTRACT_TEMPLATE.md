@@ -1,232 +1,112 @@
-# PP-food-001 Execution Contract Template
+# PP-food-001 Compact Execution Contract
 
-每个新任务在调用 IMAGE_MODEL 前，先在内部编译一份当前任务合同。用户不需要填写 JSON，也不需要看到内部字段。
+每个 A 任务在调用 IMAGE_MODEL 前，只编译**当前任务专属、短而无冲突**的合同。不要把整个仓库翻译进合同。
 
 ## Contract
 
 ```text
 JOB_MODE = A | B_UPSTREAM_STAGE_A
-ASPECT_RATIO = 9:16
-OUTPUT_ASPECT_RATIO_EXACT = 9:16
-NON_9_16_DELIVERY = CRITICAL_FAILURE
+SOURCE_REFERENCE = CURRENT_USER_IMAGE
+OUTPUT = EXACT 9:16
 
-CURRENT_JOB_FACTS =
-- user_visible_facts:
-- user_explicit_facts:
-- legacy_facts_allowed: NO, unless user explicitly requests continuation
-
-SOURCE_PRODUCT =
-- food/product identity:
-- temperature/cooking state:
-- serving mode:
-- direct support identity:
-- venue context identity-critical?: YES / NO
-
-VISIBLE_FACTS =
+1) PRODUCT_LOCK
+- identity:
 - major ingredients/materials:
-- ingredient/product geometry / cuts / widths / thickness / orientation:
-- visible count / arrangement relationships:
-- vessel / packaging / tray identity:
-- plating / product-field topology:
-- sauce / oil / broth / cream / ice / crust state:
-- physical contacts / supports:
+- geometry / count / arrangement:
+- vessel / package / direct support:
+- plating topology / physical relationships:
+- source surface state:
 
-SURFACE_STATE_LOCK =
-- base color / gradient:
-- browning level:
-- char level:
-- cooking doneness:
-- gloss / matte level:
-- moisture level:
-- sauce / oil coverage:
-- crust / skin state:
-- crack / scoring state:
-- cream / frosting / powder state if applicable:
-- condensation / frost / translucency if applicable:
-- rule: REVEAL_EXISTING_PROPERTY_ONLY
+2) COMPLETION
+- cropped/incomplete?: YES / NO
+- confidence: HIGH / MEDIUM / LOW / NA
+- allowed continuation:
+- forbidden invention:
 
-TOPOLOGY_COMPLETION_PLAN =
-- applicable: YES / NO
-- completion confidence: HIGH / MEDIUM / LOW
-- cropped / incomplete target:
-- identity to continue:
-- geometry / cut / scale to continue:
-- orientation / layer / overlap to continue:
-- density / count relationship to continue:
-- source surface state to continue:
-- direct support / container continuation:
-- unsupported content forbidden:
-- LOW confidence => ENVIRONMENT_EXTENSION_ONLY
-
-REGION_BUDGET =
-- Region A Subject Core + Surface State: VERY_LOW
-- Region B Direct Support: LOW
-- Region C Generic Environment: HIGH
-
-LOCK_TARGETS =
-- Food Identity >=95
-- Ingredient Geometry >=95
-- Vessel / Container >=98
-- Plating / Arrangement >=95
-- Physical Relationship >=95
-- Source Surface / Material State = LOCKED
-
-CATEGORY_SEMANTICS =
+3) CURRENT_ROUTE
 - food_category:
-- cuisine_family if supported:
+- dish/product semantics:
 - temperature logic:
-- semantic confidence:
-- selected material-stage direction:
-- selected Stage A category route:
+- scene/direct-support split:
+- selected Stage A route:
 
-SCENE_CONTEXT_SPLIT =
-- DIRECT_SUPPORT_TO_LOCK:
-- GENERIC_VENUE_CONTEXT_TO_TRANSLATE:
-- IDENTITY_CRITICAL_CONTEXT_TO_PRESERVE:
-
-PRODUCT_DERIVATION_EVIDENCE =
-- geometry evidence:
-- surface/material evidence:
-- color evidence:
-- temperature/process evidence:
-- category temperament evidence:
-- minimum supporting evidence count >=3
-
-BACKGROUND_BIG_IDEA =
-- one clear spatial/material/light concept derived from current product:
-- why another food category would require a different stage:
-
-BACKGROUND_ARCHITECTURE_PLAN =
-- category_material_logic:
-- food-derived_color_logic:
-- primary_material_planes: 2-3
-- L1_near_spatial_mass:
-- L3_mid_spatial_mass:
-- L4_deep_spatial_masses: >=2 depth cues
-- height_variation:
-- depth_variation:
-- occlusion_relationship:
-- light_cut_and_shadow_architecture:
-- reflective_vs_absorptive_material_relationship:
-- negative_space_zone:
-- props_required?: YES / NO
-- if props: subordinate role only
-- prop_dependency_for_premium_look: FALSE
-
-HERO_REFRAME_PLAN =
-- source camera is accidental snapshot?: YES / NO
-- strict portrait canvas = 9:16
-- crop / canvas extension:
-- focal-length feel:
-- allowed camera-height / pitch adjustment:
-- visible-face proportions to preserve:
-- support-plane / overlap / foreshortening constraints:
-
-MULTI_PRODUCT_HERO_PLAN =
-- applicable: YES / NO
-- PRIMARY_HERO_UNIT / PRIMARY_HERO_CLUSTER:
-- SUPPORTING_PRODUCT_FIELD:
-- hierarchy by light / sharpness / rim / contrast / DOF only:
-- no move / remove / duplicate / re-stack: TRUE
-
-HERO_STAGE_PLAN =
-- L1 near-camera entry:
-- L2 Hero + light pool:
-- L3 category-native material depth:
-- L4 deep recession with >=2 perceptible depth cues:
+4) HERO_STAGE
+- PRIMARY_HERO:
+- controlled reframe:
+- product-derived evidence: >=3
+- BACKGROUND_BIG_IDEA:
+- primary materials: 2–3
+- near / mid / deep architecture:
+- light-cut / shadow / reflect-vs-absorb logic:
 - negative space:
-- rim / subject-background separation:
 
-CREATIVE_SCOPE =
-- strict 9:16 portrait canvas extension / composition
-- topology-preserving completion when evidence supports it
-- controlled Hero Reframe
-- professional lighting
-- four-layer depth / subject separation
-- product-derived category-native background architecture
-- background translation
-- color grading around source-true food color
-- realistic appetite readability, not appetite mutation
+5) HARD_NEGATIVES
+- no product redesign
+- no ingredient add/remove/replace
+- no vessel/package redesign
+- no re-plating / re-stacking
+- no surface-state amplification
+- no unsupported steam/condensation/garnish
+- no previous-job facts/skin
+- no generic prop-pack premium styling
+- no non-9:16 delivery
 
-FORBIDDEN =
-- deliver any non-9:16 Stage A final image
-- add/remove/replace major ingredients
-- change identity-defining geometry
-- change browning / char / doneness / gloss / moisture / sauce coverage / crust state beyond source
-- exaggerate cracks / scoring / burst openings
-- replace vessel/package/direct support without permission
-- redesign package text/logo
-- re-plate/re-stack/move product units
-- use completion as permission to beautify or invent food
-- change count / overlap order
-- change meaningful physical relationships
-- invent unsupported heat/steam/gloss/condensation/garnish
-- adapt 9:16 by distorting or rebuilding product
-- preserve a generic venue merely because it exists in source
-- create a premium look primarily from linen / tongs / cups / pottery / wheat / spice bowls / bokeh props
-- build a background without >=3 product-derived design evidences
-- use more decorative objects instead of a clear BACKGROUND_BIG_IDEA
-- treat exact source camera coordinates as Food DNA
-- create extreme unsupported low-angle / wide-angle views
-- give every product unit equal visual weight when multi-product Hero hierarchy is possible
-- import previous-job food facts or visual skin
-
-STAGE_A_QC_REQUIRED = TRUE
-TARGETED_RETRY_ONLY = TRUE
+6) QC_TARGETS
+Food Identity >=95
+Ingredient Geometry >=95
+Vessel / Container >=98
+Plating / Arrangement >=95
+Physical Relationship >=95
+Photography >=85
+Semantic >=85
+Hero Spatial >=85
+Appetite >=85
 ```
 
-## IMAGE_MODEL Compilation Rule
+## Compilation Rule
 
-最终图像编辑指令必须从本合同编译，顺序固定：
+IMAGE_MODEL Prompt 固定只编译为 6 个短块：
 
 ```text
-1. Exact 9:16 Output Contract
-2. Subject / Direct-Support Lock
-3. Surface / Material State Lock
-4. Topology Completion Plan
-5. Scene Context Split
-6. Category Route
-7. Product Derivation Evidence
-8. Background Big Idea
-9. Background Architecture Plan
-10. Hero Reframe Plan
-11. Multi-Product Hero Plan
-12. Four-Layer Hero Stage
-13. Appetite / Lighting / Color
-14. Strict Negatives
+A. Reference Lock — 必须第一段
+B. Current Product DNA
+C. Allowed Completion / Hero Reframe
+D. Current Category + Background Big Idea
+E. Lighting / Materials / 9:16 Hero Composition
+F. Hard Negatives
 ```
 
-不得直接把整仓库 Markdown 原样拼进 IMAGE_MODEL Prompt。
+禁止加入：
+- tests 原文；
+- 旧任务信息；
+- 全部品类示例；
+- 仓库结构说明；
+- Runtime Profile 说明；
+- 重复三遍以上的同义约束。
 
-`source camera coordinates` 不属于默认锁定项；锁定的是产品视图几何、排列、直接承载和可信透视。
+## Reference Lock Canonical Opening
 
-`generic venue context` 不属于默认锁定项；除非 identity-critical，否则转译为品类原生高级材质舞台。
+Prompt 第一段必须表达同等强度含义：
 
-`background architecture` 必须先于 props 设计；删除 props 后背景仍必须成立。
+> 以当前用户上传参考图为唯一产品真相。严格锁定原始食物/产品身份、主要食材或材质、几何与数量关系、器皿/包装、摆盘/阵列拓扑、源表面状态和直接物理关系。不得为了更高级、更饱满或更有食欲而重做、替换、增减、重排或重新烹饪主体。创意主要发生在灯光、背景、环境、景深、Hero 构图和商业摄影品质层。
 
-`BACKGROUND_BIG_IDEA` 必须从当前产品至少 3 项可见证据推导，不能只写“高级、电影感、烘焙氛围”等空泛风格词。
+## Anti-Drift Rule
 
-`appetite rendering` 不得提高源产品属性强度；只允许让源图已有属性在更好的摄影下更易读。
-
-`topology completion` 只允许延续同一份产品，不提供重新摆盘或重新烹饪权限。
-
-若第一次 IMAGE_MODEL 返回非 9:16，不得交付，必须针对画布比例进行修正后重新 QC。
-
-## B Handoff Fields
-
-如果 `JOB_MODE = B_UPSTREAM_STAGE_A`，Stage A PASS 后追加：
+如果当前合同里出现上一任务品牌/产品/地址/口味/视觉皮肤，且用户未明确要求沿用：
 
 ```text
-STAGE_A_PASS_IMAGE = <current job output reference>
+CONTRACT_CONTAMINATION = TRUE
+PRODUCTION_GATE = BLOCKED
+```
+
+## B Handoff
+
+若 `JOB_MODE = B_UPSTREAM_STAGE_A`：
+
+```text
 STAGE_A_QC = PASS
-STAGE_A_ASPECT_RATIO = 9:16
+STAGE_A_PASS_IMAGE = CURRENT_JOB_OUTPUT
 HANDOFF_TO_STAGE_B = ALLOWED
 ```
 
-若 Stage A 未 PASS：
-
-```text
-HANDOFF_TO_STAGE_B = BLOCKED
-```
-
-先定向重试 Stage A。
+否则 Stage B BLOCKED。
