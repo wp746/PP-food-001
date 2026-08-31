@@ -1,175 +1,91 @@
 ---
 name: universal-food-commercial-photography
-description: Use when a user provides a real food or packaged-product photo and wants a premium 9:16 commercial photograph while the exact product, packaging, plating, visible surface state, and physical relationships must remain highly faithful.
-version: 6.3.0
+description: Use when a user provides a real food, beverage, bakery, or packaged-product photo and wants a premium commercial photograph while the exact product identity, geometry, vessel or package, arrangement, surface state, and physical relationships must remain highly faithful.
+version: 6.4.0
 ---
 
-# PP-food-001 V6.3.0
+# PP-food-001 V6.4.0
 
-## Mandatory Entry
+## Entry
+
+Start with `BOOTSTRAP.md`.
+
+Normal production uses the **Runtime Minimal Core** only. Do not load `tests/*` or all `references/*` into production context.
+
+Authority:
 
 ```text
-READ BOOTSTRAP.md
-→ Mandatory Read Order (includes SOP-A.md)
-→ PRE_FLIGHT_CHECKLIST.md
-→ PRODUCTION_GATE must PASS
+P0 invariants        → RUNTIME_MANIFEST.md
+A operator SOP       → SOP-A.md
+runtime capability   → HANDOFF.md
+per-job reads        → REQUIRED_READ_SET.md
+production gate      → PRE_FLIGHT_CHECKLIST.md
+current-job contract → EXECUTION_CONTRACT_TEMPLATE.md
 ```
-
-`RUNTIME_MANIFEST.md` is the P0 single source of truth.
-
-`SOP-A.md` is the canonical cross-agent operator SOP for `执行A / A`. A new agent must read it before production; do not reconstruct A from conversation memory.
 
 ## Role
 
 ```text
 CURRENT USER IMAGE
 → VISION_MODEL
-→ CURRENT_JOB_FACTS / Fidelity Manifest
-→ Surface State Manifest
-→ Topology Completion Plan
-→ Scene Context Split
-→ Category Route
-→ Product Derivation Evidence
-→ Background Big Idea
-→ Background Architecture Plan
-→ Hero Reframe / Multi-Product Hero Plan
-→ Execution Contract
+→ CURRENT_JOB_FACTS
+→ compact A Execution Contract
 → IMAGE_MODEL reference edit
-→ Fidelity + Semantic + Hero + Appetite + Aspect QC
+→ QC
 → targeted retry
-→ Stage A PASS image
+→ Stage A PASS
 ```
 
-## P0 Output Rule — Exact 9:16
+## Non-Negotiables
 
 ```text
-DEFAULT_ASPECT_RATIO = 9:16
-OUTPUT_ASPECT_RATIO_EXACT = 9:16
-NON_9_16_DELIVERY = CRITICAL_FAILURE
-```
-
-无论原图横/方/竖，Stage A 最终成片都必须是严格 9:16 竖版。
-
-如果第一次 IMAGE_MODEL 返回非 9:16，不得交付，必须 canvas correction / outpaint / targeted retry 后重新 QC。
-
-9:16 适配不能通过拉伸、裁坏产品或重做产品实现。
-
-## Product-Derived Background Architecture
-
-本版本进一步收紧“Food DNA 锁住，但背景仍像普通店内/烘焙图库”的问题。
-
-```text
-PRODUCT_DERIVED_STAGE > GENERIC_PREMIUM_STYLE
-BACKGROUND_ARCHITECTURE > PROP_STYLING
-ONE_BIG_STAGE_IDEA > MANY_DECORATIVE_OBJECTS
-```
-
-每个 Stage A 任务必须读取并执行：
-
-```text
-references/hero-background-architecture.md
-```
-
-必须建立：
-- `PRODUCT_DERIVATION_EVIDENCE >=3`；
-- 一个明确 `BACKGROUND_BIG_IDEA`；
-- 2–3 个主材质平面/体块；
-- 近 / 中 / 深空间质量；
-- 台面高差、遮挡与纵深；
-- light cut / shadow architecture；
-- reflective vs absorptive material relationship；
-- 9:16 上方继续退进的设计型负空间；
-- 道具可为 0，且永远从属。
-
-删除所有辅助道具后，背景仍必须像世界级商业摄影舞台。否则 Background Architecture FAIL。
-
-禁止用亚麻布、夹子、咖啡杯、陶罐、麦穗、香料碟、灯泡/bokeh 等道具包冒充高级感。
-
-## Surface-State Fidelity
-
-```text
+SOURCE_TRUTH = CURRENT_USER_IMAGE
+OUTPUT = EXACT 9:16
+Food Identity >=95
+Ingredient Geometry >=95
+Vessel / Container >=98
+Plating / Arrangement >=95
+Physical Relationship >=95
 SOURCE_SURFACE_STATE > APPETITE_ENHANCEMENT
-REVEAL_EXISTING_PROPERTY = YES
-AMPLIFY_PROPERTY_BEYOND_SOURCE = NO
+BACKGROUND_ARCHITECTURE > PROP_STYLING
+RETRY = TARGETED_NOT_RANDOM
 ```
 
-锁定原图实际基础颜色、火候/熟度、烘烤/焦化、油亮/湿润、酱汁覆盖、皮肤/壳、裂纹/割口、奶油/糖霜、冷凝/透明度等状态。
-
-食欲提升来自摄影读取能力，不来自重新烹饪产品。
-
-## Topology-Preserving Completion
-
-装盘/器皿因源图裁切没拍全时，可以补全**同一份产品**：
-
-```text
-HIGH confidence → natural continuation
-MEDIUM → minimum conservative continuation
-LOW / UNKNOWN → environment extension only
-```
-
-> Complete the same serving; do not design a better serving.
-
-## Hero-Stage Rules
-
-```text
-Food DNA / Source Surface State / Direct Support
-> World-Class Hero Stage
-> Category Semantic Translation
-> Generic Venue Appearance
-```
-
-- generic display case 不默认锁柜体/墙面；
-- source camera coordinates 不是 Food DNA；
-- 允许 Controlled Hero Reframe；
-- 多产品必须 Primary Hero + Supporting Product Field；
-- L1/L2/L3/L4 必须有可观察证据；
-- Fake L4、普通展示柜感、道具包高级感直接 FAIL。
+Food/Product DNA is conservative. Background architecture, lighting, depth and commercial photography can be aggressive only when they do not alter the product.
 
 ## A / B
 
-- `A` / `执行A` → Stage A only，完整按 `SOP-A.md`；
-- `B` / `执行B` → 仍先完整 Stage A，PASS 后 Stage B；
-- 无 A/B 且无明显商业信息 → 默认 A；
-- 无 A/B 但有明显 KV 商业信息 → 自动 B，但仍先 A。
+- `A / 执行A` → Stage A only, follow `SOP-A.md`.
+- `B / 执行B` → still complete current Stage A first; only Stage A PASS may enter Stage B.
+- No A/B + no clear KV business info → A.
+- No A/B + clear KV business info → B, but Stage A still first.
 
-## Runtime Protocol
+## Anti-Drift Runtime Rule
 
-必须使用：
-- `BOOTSTRAP.md`
-- `RUNTIME_MANIFEST.md`
-- `SOP-A.md`
-- `REQUIRED_READ_SET.md`
-- `PRE_FLIGHT_CHECKLIST.md`
-- `EXECUTION_CONTRACT_TEMPLATE.md`
-- `HANDOFF.md`
+Every new image creates a new `CURRENT_JOB_FACTS`.
 
-不要把整仓库 Markdown 原样塞给 IMAGE_MODEL。先读规则，再编译当前任务 Contract。
+Do not inherit previous-job product facts, brand facts, copy, food entity, category skin, background skin or examples unless the user explicitly asks to continue them.
 
-## Acceptance
-
-必须满足：
+Do not send the repository to IMAGE_MODEL. Send only:
 
 ```text
-Output Aspect Ratio = EXACT 9:16
-Food Fidelity >=95
-Vessel Fidelity >=98
-Source Surface State = PASS
-Product Derivation Evidence >=3
-Background Big Idea = PASS
-Background Architecture = PASS
-Photography >=85
-Semantic >=85
-Hero Spatial >=85
-Appetite >=85
-No Critical Failure
+current reference image
++ compact current-job contract
++ compact current-job prompt
 ```
 
-Mandatory Read、Pre-flight、Execution Contract、Surface State、Completion Plan、Background Big Idea、Background Architecture、Hero plans 任一无法确认：
+## Packaging
+
+For packaged products, package shape, lid/seal, label structure, logo/brand text, visible hard information and relative layout belong to Product DNA. Photography may change; packaging identity may not.
+
+## Fail Closed
+
+If VISION_MODEL cannot read the current image, IMAGE_MODEL cannot perform reference editing, credentials/pass-through are unavailable, the current contract is contaminated/incomplete, or a P0 conflict is unresolved:
 
 ```text
 PRODUCTION_GATE = BLOCKED
 ```
 
-## Security Boundary
+## Security
 
-仓库不得保存具体供应商名、私有聚合平台配置、实际 API Base URL、API Key、私有凭据或 Runtime Profile 真实运行值。
+Never store real API keys, private provider configuration, private base URLs, or user credentials in the repository.
